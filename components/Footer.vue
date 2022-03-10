@@ -18,7 +18,7 @@
 						v-if="$siteConfig.discordURL"
 						:href="$siteConfig.discordURL"
 						target="_blank">
-						<b-img src="@/assets/img/logos/discord.svg" width="60px" />
+						<b-img src="@/assets/img/logos/discord.svg" width="64px" />
 					</b-link>
 					<b-link
 						v-if="$siteConfig.instagramURL"
@@ -42,7 +42,7 @@
 						v-if="$siteConfig.marketplaceURL"
 						:href="$siteConfig.marketplaceURL"
 						target="_blank"
-						class="px-2 py-1">
+						class="px-3 py-1">
 							<b-img src="@/assets/img/logos/opensea.svg" width="30px" />
 					</b-link>
 					<b-link
@@ -57,7 +57,7 @@
 					<div class="d-flex flex-column align-items-center align-items-md-end">
 						<span class="text-light" style="font-size: small">Powered By</span>
 						<b-link href="https://zerocodenft.com" target="_blank">
-							<b-img-lazy width="100px" src="@/assets/img/zerocodenftlogo_white.svg" />
+							<b-img-lazy width="100px" src="/img/zerocodenftlogo_white.svg" />
 						</b-link>
 					</div>
 				</b-col>

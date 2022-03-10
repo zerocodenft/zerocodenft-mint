@@ -2,11 +2,11 @@ import getSiteMeta from './utils/siteMeta'
 
 const {
 	API_URL,
-	WEBSITE_ID,
 } = process.env
+
 const siteConfig = require('./siteConfig.json')
 
-const { title, description, url, iconName } = siteConfig
+const { title, description, url, mainImage } = siteConfig
 
 export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -14,10 +14,6 @@ export default {
 
 	// Target: https://go.nuxtjs.dev/config-target
 	target: 'static',
-
-	env: {
-		WEBSITE_ID,
-	},
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
 	head: {
@@ -33,7 +29,7 @@ export default {
 				url: url,
 				title: title,
 				description: description,
-				mainImage: `${url}/${iconName}`,
+				mainImage: mainImage,
 			}),
 		],
 		link: [
