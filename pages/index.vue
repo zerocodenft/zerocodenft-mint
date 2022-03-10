@@ -8,8 +8,8 @@
 				class="d-flex align-items-center justify-content-center backdrop-blur">
 				<b-jumbotron
 					:header="$siteConfig.title"
-					class="shadow text-center jumbo"
 					:lead="$siteConfig.description"
+					class="shadow text-center jumbo"
 					bg-variant="dark"
 					text-variant="white">
 					<div v-if="showCountdown">
@@ -98,7 +98,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #container {
 	overflow: hidden;
 	min-height: calc(100vh - 164px);
@@ -114,6 +114,7 @@ export default {
 
 .jumbo {
 	max-width: 50%;
+	overflow-wrap: break-word;
 }
 
 @media (max-width: 600px) {
