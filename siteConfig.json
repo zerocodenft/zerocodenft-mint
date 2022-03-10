@@ -8,7 +8,7 @@
 	"instagramURL": "https://instagram.com/zerocodenft",
 	"twitterURL": "https://twitter.com/zero_code_nft",
 	"discordURL": "https://discord.gg/NdEpB6ZYKn",
-	"blockExplorerUrl": "https://rinkeby.etherscan.io/address/0x133774396Fd4FF6310Eea1146531C0523e037Da4",
+	"blockExplorerUrl": "https://rinkeby.etherscan.io/address/0x402fe7a8c27f483e05ae216473da7f3b6fcef7cf",
 	"facebookURL": null,
 	"tiktokURL": null,
 	"marketplaceURL": "https://testnets.opensea.io/collection/zerocodenftofficial",
@@ -19,15 +19,13 @@
 	"smartContract": {
 		"name": "Zero Code NFT",
 		"symbol": "ZC",
-		"address": "0x133774396Fd4FF6310Eea1146531C0523e037Da4",
+		"address": "0x402fe7a8c27f483e05ae216473da7f3b6fcef7cf",
 		"collectionSize": 5000,
 		"maxTokensPerTransaction": 1,
 		"mintPrice": 0,
 		"chainId": 4,
 		"hasWhitelist": true,
-		"whitelist": [
-			"0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"
-		],
+		"whitelist": ["0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"],
 		"hasDelayedReveal": false,
 		"abi": [
 			{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
@@ -126,58 +124,6 @@
 				"type": "event"
 			},
 			{
-				"inputs": [],
-				"name": "COLLECTION_SIZE",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "MINT_PRICE",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "PRESALE_MINT_PRICE",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TOKENS_PER_PERSON_PUB_LIMIT",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TOKENS_PER_PERSON_WL_LIMIT",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "TOKENS_PER_TRAN_LIMIT",
-				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{ "internalType": "address", "name": "to", "type": "address" },
-					{ "internalType": "uint256", "name": "count", "type": "uint256" }
-				],
-				"name": "airdrop",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{ "internalType": "address", "name": "to", "type": "address" },
 					{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }
@@ -193,13 +139,6 @@
 				],
 				"name": "balanceOf",
 				"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "canReveal",
-				"outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
 				"stateMutability": "view",
 				"type": "function"
 			},
@@ -224,9 +163,9 @@
 			},
 			{
 				"inputs": [],
-				"name": "merkleRoot",
-				"outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-				"stateMutability": "view",
+				"name": "mint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -253,29 +192,8 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bytes32[]",
-						"name": "merkleProof",
-						"type": "bytes32[]"
-					},
-					{ "internalType": "uint256", "name": "count", "type": "uint256" }
-				],
-				"name": "redeem",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "renounceOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [{ "internalType": "string", "name": "uri", "type": "string" }],
-				"name": "reveal",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -307,7 +225,11 @@
 				"inputs": [],
 				"name": "saleStatus",
 				"outputs": [
-					{ "internalType": "enum Ihor.SaleStatus", "name": "", "type": "uint8" }
+					{
+						"internalType": "enum ZeroCodeNFT.SaleStatus",
+						"name": "",
+						"type": "uint8"
+					}
 				],
 				"stateMutability": "view",
 				"type": "function"
@@ -323,34 +245,9 @@
 				"type": "function"
 			},
 			{
-				"inputs": [{ "internalType": "string", "name": "uri", "type": "string" }],
-				"name": "setBaseUri",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{ "internalType": "bytes32", "name": "root", "type": "bytes32" }
-				],
-				"name": "setMerkleRoot",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{ "internalType": "uint256", "name": "price", "type": "uint256" }
-				],
-				"name": "setPublicMintPrice",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
-						"internalType": "enum Ihor.SaleStatus",
+						"internalType": "enum ZeroCodeNFT.SaleStatus",
 						"name": "status",
 						"type": "uint8"
 					}
@@ -408,13 +305,6 @@
 					{ "internalType": "address", "name": "newOwner", "type": "address" }
 				],
 				"name": "transferOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "withdraw",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
