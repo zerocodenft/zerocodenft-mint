@@ -12,7 +12,7 @@ export default async ({env, redirect, route, $cloudFns, $axios}, inject) => {
     const siteId = route.query['siteId']
     if(!siteId) {
         // alert("Site configuration is missing!")
-        redirect('error?type=missingConfig')
+        redirect('/error?type=missingConfig')
     }
     
     try {
@@ -26,7 +26,7 @@ export default async ({env, redirect, route, $cloudFns, $axios}, inject) => {
         siteConfig = data
     } catch (err) {
         // console.error('Error getting config', {err})
-        redirect('error?type=missingConfig')
+        redirect('/error?type=missingConfig')
     }
 
     inject('siteConfig', siteConfig)
