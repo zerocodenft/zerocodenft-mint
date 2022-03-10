@@ -113,7 +113,7 @@ export default {
 }
 
 .jumbo {
-	max-width: 50%;
+	max-width: 60%;
 	overflow-wrap: break-word;
 }
 
