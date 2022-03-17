@@ -9,7 +9,8 @@ export default async ({env, redirect, route, $cloudFns, $axios}, inject) => {
         return
     }
     
-    const siteId = route.query['siteId']
+    const siteId = route.query['siteId'] || localStorage.getItem('siteId')
+    localStorage.setItem('siteId', siteId)
     if(!siteId) {
         // alert("Site configuration is missing!")
         redirect('/error?type=missingConfig')

@@ -13,7 +13,7 @@
 					bg-variant="dark"
 					text-variant="white">
 					<div v-if="showCountdown">
-						<Countdown :date="$siteConfig.dropDate" />
+						<Countdown :date="dropDate" />
 					</div>
 					<div v-else>
 						<h4 v-if="!isCounterHidden" class="pt-2 text-light">
@@ -46,6 +46,11 @@ console.groupEnd()
 
 import MintMixin from '@/mixins/mint'
 import { ethers } from 'ethers'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export default {
 	mixins: [MintMixin],
@@ -54,7 +59,8 @@ export default {
 			count: 1,
 			mintedCount: 0,
 			collectionSize: 0,
-			isCounterHidden: true
+			isCounterHidden: true,
+			dropDate: null
 		}
 	},
 	
@@ -65,10 +71,15 @@ export default {
 			address,
 			collectionSize,
 		} = this.$siteConfig.smartContract
+		
+		const { 
+			dropDate,
+			dropTimeZone
+		} = this.$siteConfig
 
 		this.isCounterHidden = this.$siteConfig.isCounterHidden
 		this.collectionSize = collectionSize
-
+		this.dropDate = dayjs.utc(dropDate).tz(dropTimeZone).format()
 		try {
 			// give some time for wallet plugin to init
 			setTimeout(async () => {
