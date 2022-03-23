@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import MintMixin from '@/mixins/mint'
 import { SALE_STATUS, getMerkeTree } from '@/utils'
 import { ethers } from 'ethers'
+import { getExplorerUrl } from '@/utils/metamask'
 
 export default {
     name: "MintButton",
@@ -30,7 +30,6 @@ export default {
 		mintCount: Number,
         soldOut: Boolean
     },
-    mixins: [MintMixin],
     data() {
         return {
 			isBusy: false
@@ -158,6 +157,24 @@ export default {
 			} finally {
 				this.isBusy = false
 			}
+		},
+		createToastMessage(hash, msg, chainId) {
+			const h = this.$createElement
+			return h('div', [
+				h('div', [`${msg} `]),
+				h(
+					'b-link',
+					{
+						props: {
+							target: '_blank',
+							href: `${getExplorerUrl(
+								chainId
+							)}/tx/${hash}`,
+						},
+					},
+					['View on block explorer >']
+				),
+			])
 		},
 	},
 }

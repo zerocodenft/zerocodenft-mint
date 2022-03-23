@@ -15,7 +15,7 @@
 	"backgroundImageURL": "/img/background.jpg",
 	"iconURL": "/img/logo.svg",
 	"faviconURL": null,
-	"isCounterHidden": false,
+	"isCounterHidden": true,
 	"smartContract": {
 		"name": "Zero Code NFT",
 		"symbol": "ZC",
