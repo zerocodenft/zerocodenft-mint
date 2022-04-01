@@ -12,7 +12,15 @@ const getMerkeTree = (whitelist) => {
     return new MerkleTree(leafNodes, ethers.utils.keccak256, { sortPairs: true })
 }
 
+const getHexProof = (list, address) => {
+	const merkleTree = getMerkeTree(list)
+	return merkleTree.getHexProof(
+		ethers.utils.keccak256(address)
+	)
+}
+
 export {
     SALE_STATUS,
-	getMerkeTree
+	getMerkeTree,
+	getHexProof
 }

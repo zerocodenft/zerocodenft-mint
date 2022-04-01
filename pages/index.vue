@@ -31,6 +31,7 @@
 				</b-jumbotron>
 			</b-col>
 		</b-row>
+		<!-- <ConnectWalletModal /> -->
 	</b-container>
 </template>
 

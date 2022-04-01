@@ -29,6 +29,7 @@
 				</b-navbar-nav>
 			</b-collapse>
 		</b-navbar>
+		<!-- <ConnectWalletModal /> -->
 	</div>
 </template>
 

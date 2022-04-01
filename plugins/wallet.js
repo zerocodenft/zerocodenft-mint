@@ -2,8 +2,25 @@ import Vue from 'vue'
 import { ethers } from 'ethers'
 import MetaMaskOnboarding from '@metamask/onboarding'
 import { getCurrency, CHAINID_CONFIG_MAP } from '@/utils/metamask'
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
-export default ({store}, inject) => {
+//  Create WalletConnect Provider
+const provider = new WalletConnectProvider({
+  rpc: Object.entries(CHAINID_CONFIG_MAP)
+    .filter(([k,_]) => !isNaN(k))
+    .reduce((acc, val) => {
+        const [key, value] = val
+        const rpcUrl = value.rpcUrls[0]
+        acc[key] = rpcUrl
+        return acc
+    }, {})
+});
+
+// provider.enable();
+
+export default (ctx, inject) => {
+
+    // console.log(new Vue().$bvModal)
 
     const wallet = Vue.observable({
         account: null,
@@ -41,6 +58,11 @@ export default ({store}, inject) => {
             else {
                 this.disconnect()
             }
+        },
+
+        preConnect() {
+            const instance = new Vue()
+            instance.$bvModal.show("connectWallet")
         },
 
         async connect() {
@@ -116,6 +138,8 @@ export default ({store}, inject) => {
 
         wallet.init()
     }
+
+    wallet.preConnect()
 
     inject('wallet', wallet)
 }

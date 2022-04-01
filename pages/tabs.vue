@@ -67,7 +67,7 @@
 import MintMixin from '@/mixins/mint'
 import { ethers } from 'ethers'
 // import { getExplorerUrl } from '@/utils/metamask'
-import { SALE_STATUS, getMerkeTree } from '@/utils'
+import { SALE_STATUS, getHexProof } from '@/utils'
 
 export default {
 	layout: 'tabs',
@@ -78,6 +78,9 @@ export default {
 			isBusy: false,
 			message: {},
 		}
+	},
+	mounted() {
+		console.log(getHexProof(this.$siteConfig.smartContract.whitelist, "0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"))
 	},
 	methods: {
 		async mint() {
@@ -149,10 +152,7 @@ export default {
 				})
 
 				if (hasWhitelist) {
-					const merkleTree = getMerkeTree(whitelist)
-					const hexProof = merkleTree.getHexProof(
-						ethers.utils.keccak256(this.$wallet.account)
-					)
+					const hexProof = getHexProof(whitelist, this.$walelt.address)
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
