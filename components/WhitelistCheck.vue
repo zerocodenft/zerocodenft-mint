@@ -56,8 +56,10 @@ export default {
                 else {
                     addressToCheck = ethers.utils.getAddress(this.address)
                 }
-    
-                this.isWhitelisted = this.$siteConfig.smartContract.whitelist.includes(addressToCheck)
+
+                const wl = this.$siteConfig.smartContract.whitelist.map(a => ethers.utils.getAddress(a))
+                // console.log(addressToCheck, wl)
+                this.isWhitelisted = wl.includes(addressToCheck)
             } catch (err) {
                 this.$bvToast.toast(
 					'Check failed',
