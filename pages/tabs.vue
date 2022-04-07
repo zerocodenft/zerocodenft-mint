@@ -8,9 +8,9 @@
 				content-class="mt-3"
 				justified
 				active-nav-item-class="font-weight-bold text-zerocodenft">
-				<b-tab title="Mint" active class="tab px-3 pb-2">
+				<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
 					<div>
-						<h6 v-if="!$siteConfig.isCounterHidden" class="pt-2 text-center">
+						<h6 v-if="!$siteConfig.isCounterHidden" class="pt-1 text-center">
 							Minted: {{ mintedCount }}/{{ collectionSize }}
 						</h6>
 						<b-form-input
@@ -25,23 +25,25 @@
 							"
 							step="1">
 						</b-form-input>
-						<p v-show="message.text" :class="`text-${message.variant}`">
+						<b-alert :show="!!message.text" :variant="message.variant" dismissible class="text-center">
 							{{ message.text }}
-						</p>
-						<b-overlay :show="isBusy">
-							<b-button
-								v-if="soldOut"
-								class="bg-gradient-primary border-0"
-								:disabled="!$siteConfig.marketplaceURL"
-								:href="$siteConfig.marketplaceURL"
-								target="_blank"
-								>SOLD OUT</b-button
-							>
-							<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
-								>Mint [{{ mintCount }}]</b-button
-							>
-						</b-overlay>
-						<div class="text-center pt-2">
+						</b-alert>
+						<div class="text-center">
+							<b-overlay :show="isBusy">
+								<b-button
+									v-if="soldOut"
+									class="bg-gradient-primary border-0"
+									:disabled="!$siteConfig.marketplaceURL"
+									:href="$siteConfig.marketplaceURL"
+									target="_blank"
+									>SOLD OUT</b-button
+								>
+								<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
+									>Mint [{{ mintCount }}]</b-button
+								>
+							</b-overlay>
+						</div>
+						<div v-if="!$siteConfig.isAttributionHidden" class="text-center pt-2">
 							<b-link
 								class="text-muted zerocode-link text-monospace"
 								href="https://zerocodenft.com"
@@ -66,8 +68,7 @@
 <script>
 import MintMixin from '@/mixins/mint'
 import { ethers } from 'ethers'
-// import { getExplorerUrl } from '@/utils/metamask'
-import { SALE_STATUS, getHexProof } from '@/utils'
+import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
 
 export default {
 	layout: 'tabs',
@@ -123,14 +124,15 @@ export default {
 				const isPresale = saleStatus === SALE_STATUS.Presale
 
 				if (isPresale) {
-					const addrToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const isWhitelisted = whitelist.includes(addrToCheck)
+					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
+					const wl = whitelist.map(a => ethers.utils.getAddress(a))
+					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
 					console.log({ isWhitelisted })
 
 					if (!isWhitelisted) {
 						this.message = {
 							variant: 'danger',
-							text: 'Your wallet address is not whitelisted',
+							text: `Address ${this.$wallet.accountCompact} is not whitelisted`,
 						}
 						return
 					}

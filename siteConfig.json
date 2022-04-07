@@ -27,6 +27,7 @@
 		"hasWhitelist": true,
 		"whitelist": ["0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"],
 		"hasDelayedReveal": false,
+		"isAttributionHidden": false,
 		"abi": [
 			{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
 			{

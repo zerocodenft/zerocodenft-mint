@@ -21,6 +21,7 @@
 
 <script>
 import { ethers } from 'ethers'
+import { checkWhitelisted } from '@/utils'
 
 export default {
     data() {
@@ -56,9 +57,12 @@ export default {
                 else {
                     addressToCheck = ethers.utils.getAddress(this.address)
                 }
-    
-                this.isWhitelisted = this.$siteConfig.smartContract.whitelist.includes(addressToCheck)
+
+                const wl = this.$siteConfig.smartContract.whitelist.map(a => ethers.utils.getAddress(a))
+                // console.log('whitelisted', checkWhitelisted(wl, '0x629149b974987fac5dcda210ddb6cc60a0ac7e1b'))
+                this.isWhitelisted = checkWhitelisted(wl, addressToCheck)
             } catch (err) {
+                console.error(err)
                 this.$bvToast.toast(
 					'Check failed',
 					{

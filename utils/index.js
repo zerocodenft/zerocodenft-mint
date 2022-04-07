@@ -14,13 +14,18 @@ const getMerkeTree = (whitelist) => {
 
 const getHexProof = (list, address) => {
 	const merkleTree = getMerkeTree(list)
-	return merkleTree.getHexProof(
-		ethers.utils.keccak256(address)
-	)
+	return merkleTree.getHexProof(ethers.utils.keccak256(address))
+}
+
+const checkWhitelisted = (list, address) => {
+	const merkleTree = getMerkeTree(list)
+	const hexProof = merkleTree.getHexProof(ethers.utils.keccak256(address))
+	return merkleTree.verify(hexProof, ethers.utils.keccak256(address), merkleTree.getRoot())
 }
 
 export {
     SALE_STATUS,
 	getMerkeTree,
-	getHexProof
+	getHexProof,
+	checkWhitelisted
 }
