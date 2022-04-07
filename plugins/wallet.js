@@ -2,21 +2,6 @@ import Vue from 'vue'
 import { ethers } from 'ethers'
 import MetaMaskOnboarding from '@metamask/onboarding'
 import { getCurrency, CHAINID_CONFIG_MAP } from '@/utils/metamask'
-import WalletConnectProvider from "@walletconnect/web3-provider";
-
-//  Create WalletConnect Provider
-const provider = new WalletConnectProvider({
-  rpc: Object.entries(CHAINID_CONFIG_MAP)
-    .filter(([k,_]) => !isNaN(k))
-    .reduce((acc, val) => {
-        const [key, value] = val
-        const rpcUrl = value.rpcUrls[0]
-        acc[key] = rpcUrl
-        return acc
-    }, {})
-});
-
-// provider.enable();
 
 export default (ctx, inject) => {
 
@@ -28,6 +13,7 @@ export default (ctx, inject) => {
         network: null,
         balance: null,
         provider: null,
+        web3Modal: null,
 
         get hexChainId() {
             return '0x' + this.network?.chainId?.toString(16)
@@ -39,12 +25,38 @@ export default (ctx, inject) => {
             return this.network?.chainId
         },
 
-        async init() {
-            this.provider = new ethers.providers.Web3Provider(window.ethereum) //prefably diff node like Infura, Alchemy or Moralis
+        async connect() {
+            // if(!MetaMaskOnboarding.isMetaMaskInstalled()) {
+            //     const onboarding = new MetaMaskOnboarding()
+            //     onboarding.startOnboarding()
+            //     return
+            // }
+            if(!this.web3Modal) throw Error("Web3 modal is not initialized")
+        
+            const instance = await this.web3Modal.connect()
+            this.provider = new ethers.providers.Web3Provider(instance)
+
+            this.provider.on('accountsChanged', ([newAddress]) => {
+                console.info('accountsChanged', newAddress)
+                this.setAccount(newAddress)
+            })
+            this.provider.on('chainChanged', async (chainId) => {
+                console.info('chainChanged', chainId)
+                this.init()
+            })
+
             this.network = await this.provider.getNetwork()
             const [account] = await this.provider.listAccounts()
 
+            console.info('wallet connected', {account})
             !!account && this.setAccount(account)
+        },
+
+        disconnect() {
+            this.web3Modal.clearCachedProvider()
+            wallet.account = null
+            wallet.accountCompact = 'Connect Wallet'
+            wallet.balance = null
         },
 
         async setAccount(newAccount) {
@@ -58,34 +70,6 @@ export default (ctx, inject) => {
             else {
                 this.disconnect()
             }
-        },
-
-        preConnect() {
-            const instance = new Vue()
-            instance.$bvModal.show("connectWallet")
-        },
-
-        async connect() {
-            if(!MetaMaskOnboarding.isMetaMaskInstalled()) {
-                const onboarding = new MetaMaskOnboarding()
-                onboarding.startOnboarding()
-                return
-            }
-        
-            wallet.network = await wallet.provider.getNetwork()
-
-            const [account] = await wallet.provider.send('eth_requestAccounts')
-            console.info('wallet connected', {account})
-
-            if(account) {
-                await wallet.setAccount(account)
-            }
-        },
-
-        disconnect() {
-            wallet.account = null
-            wallet.accountCompact = 'Connect Wallet'
-            wallet.balance = null
         },
 
         async switchNetwork(chainId) {
@@ -123,23 +107,6 @@ export default (ctx, inject) => {
             return signer.signMessage(msg)
         }
     })
-
-    if(window.ethereum) {
-    
-        window.ethereum.on('accountsChanged', ([newAddress]) => {
-            console.info('accountsChanged', newAddress)
-            wallet.setAccount(newAddress)
-        })
-    
-        window.ethereum.on('chainChanged', async (chainId) => {
-            console.info('chainChanged', chainId)
-            wallet.init()
-        })
-
-        wallet.init()
-    }
-
-    wallet.preConnect()
 
     inject('wallet', wallet)
 }

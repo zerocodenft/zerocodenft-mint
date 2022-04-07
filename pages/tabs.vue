@@ -80,9 +80,6 @@ export default {
 			message: {},
 		}
 	},
-	mounted() {
-		console.log(getHexProof(this.$siteConfig.smartContract.whitelist, "0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"))
-	},
 	methods: {
 		async mint() {
 			const {
@@ -154,7 +151,7 @@ export default {
 				})
 
 				if (hasWhitelist) {
-					const hexProof = getHexProof(whitelist, this.$walelt.address)
+					const hexProof = getHexProof(whitelist, this.$wallet.account)
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
