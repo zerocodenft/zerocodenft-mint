@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { SALE_STATUS, getMerkeTree } from '@/utils'
+import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
 import { ethers } from 'ethers'
 import { getExplorerUrl } from '@/utils/metamask'
 
@@ -74,12 +74,13 @@ export default {
 				const isPresale = saleStatus === SALE_STATUS.Presale
 
 				if(isPresale) {
-					const addrToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const isWhitelisted = whitelist.includes(addrToCheck)
+					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
+					const wl = whitelist.map(a => ethers.utils.getAddress(a))
+					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
 					console.log({ isWhitelisted })
 
 					if (!isWhitelisted) {
-						this.$bvToast.toast('Your wallet address is not whitelisted', {
+						this.$bvToast.toast(`Address ${this.$wallet.accountCompact} is not whitelisted`, {
 							title: 'Mint',
 							variant: 'danger',
 						})
@@ -103,14 +104,12 @@ export default {
 				})
 
 				if (hasWhitelist) {
-					const merkleTree = getMerkeTree(whitelist)
-					const hexProof = merkleTree.getHexProof(ethers.utils.keccak256(this.$wallet.account))
-					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
-					txResponse = await signedContract.redeem(hexProof, this.$props.mintCount, {
+					const hexProof = getHexProof(whitelist, this.$wallet.account)
+					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
 					})
 				} else {
-					txResponse = await signedContract.mint(this.$props.mintCount, {
+					txResponse = await signedContract.mint(this.mintCount, {
 						value,
 					})
 				}

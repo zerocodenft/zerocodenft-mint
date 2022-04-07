@@ -54,7 +54,7 @@
 					</b-link>
 				</b-col>
 				<b-col sm="12" md="3">
-					<div class="d-flex flex-column align-items-center align-items-md-end">
+					<div v-if="!$siteConfig.isAttributionHidden" class="d-flex flex-column align-items-center align-items-md-end">
 						<span class="text-light" style="font-size: small">Powered By</span>
 						<b-link href="https://zerocodenft.com" target="_blank">
 							<b-img-lazy width="100px" src="/img/zerocodenftlogo_white.svg" />
