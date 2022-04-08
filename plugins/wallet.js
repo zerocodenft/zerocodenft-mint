@@ -14,9 +14,9 @@ export default (ctx, inject) => {
         balance: null,
         provider: null,
         web3Modal: null,
-        web3ModalInstance: null,
         walletName: null,
         isMetamask: false,
+        canDisconnect: false,
 
         get hexChainId() {
             return '0x' + this.network?.chainId?.toString(16)
@@ -33,7 +33,7 @@ export default (ctx, inject) => {
 
         async init(instance) {
             this.provider = new ethers.providers.Web3Provider(instance)
-            // console.log(this.provider)
+            // console.log(this.provider.provider)
             this.network = await this.provider.getNetwork()
             const [account] = await this.provider.listAccounts()
             await this.setAccount(account)
@@ -48,7 +48,8 @@ export default (ctx, inject) => {
             if(!this.web3Modal) throw Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
-            this.web3ModalInstance = instance
+            // console.log(instance, Object.keys(instance))
+            this.canDisconnect = typeof instance.disconnect === 'function'            
             this.isMetamask = instance.isMetaMask
             this.walletName = this.isMetamask ? 'Metamask' : instance.walletMeta?.name
             
@@ -65,8 +66,10 @@ export default (ctx, inject) => {
         },
 
         disconnect() {
-            wallet.web3ModalInstance.disconnect()
-            wallet.web3Modal.clearCachedProvider()
+            if(wallet.canDisconnect) {
+                wallet.provider.provider.disconnect()
+            }
+            wallet.web3Modal?.clearCachedProvider()
             wallet.account = null
             wallet.accountCompact = 'Connect Wallet'
             wallet.balance = null
