@@ -14,6 +14,9 @@ export default (ctx, inject) => {
         balance: null,
         provider: null,
         web3Modal: null,
+        web3ModalInstance: null,
+        walletName: null,
+        isMetamask: false,
 
         get hexChainId() {
             return '0x' + this.network?.chainId?.toString(16)
@@ -24,9 +27,13 @@ export default (ctx, inject) => {
         get chainId() {
             return this.network?.chainId
         },
+        get isConnected() {
+            return this.account !== null
+        },
 
         async init(instance) {
             this.provider = new ethers.providers.Web3Provider(instance)
+            // console.log(this.provider)
             this.network = await this.provider.getNetwork()
             const [account] = await this.provider.listAccounts()
             await this.setAccount(account)
@@ -41,7 +48,9 @@ export default (ctx, inject) => {
             if(!this.web3Modal) throw Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
-            console.log(instance)
+            this.web3ModalInstance = instance
+            this.isMetamask = instance.isMetaMask
+            this.walletName = this.isMetamask ? 'Metamask' : instance.walletMeta?.name
             
             instance.on('accountsChanged', ([newAddress]) => {
                 console.info('accountsChanged', newAddress)
@@ -56,7 +65,8 @@ export default (ctx, inject) => {
         },
 
         disconnect() {
-            this.web3Modal.clearCachedProvider()
+            wallet.web3ModalInstance.disconnect()
+            wallet.web3Modal.clearCachedProvider()
             wallet.account = null
             wallet.accountCompact = 'Connect Wallet'
             wallet.balance = null
@@ -79,9 +89,15 @@ export default (ctx, inject) => {
 
         async switchNetwork(chainId) {
 
+            if(!this.isMetamask || this.walletName !== 'Metamask') {
+                throw new Error('Selected wallet network is not supported')
+            }
+
             if(!chainId || this.chainId === chainId || this.hexChainId === chainId) {
                 return
             }
+
+            console.log('switchNetwork')
 
             const config = CHAINID_CONFIG_MAP[chainId]
 
@@ -95,6 +111,7 @@ export default (ctx, inject) => {
                     setTimeout(() => resolve(), 1000)
                 })
 			} catch (err) {
+                console.error('switchNetwork', err)
 				// This error code indicates that the chain has not been added to MetaMask.
 				if (err.code === 4902) {
                     await this.provider.send('wallet_addEthereumChain', [config])

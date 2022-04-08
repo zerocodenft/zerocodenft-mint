@@ -9,6 +9,9 @@
 				justified
 				active-nav-item-class="font-weight-bold text-zerocodenft">
 				<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
+					<div class="text-center">
+						<b-button size="sm" :disabled="!$wallet.isConnected" @click="$wallet.disconnect">Disconnect</b-button>
+					</div>
 					<div>
 						<h6 v-if="!$siteConfig.isCounterHidden" class="pt-1 text-center">
 							Minted: {{ mintedCount }}/{{ collectionSize }}
