@@ -75,7 +75,7 @@
 					v-if="$siteConfig.smartContract.hasWhitelist"
 					title="Whitelist"
 					lazy
-					class="tab px-3 pb-2">
+					class="tab px-3 pb-2 border-0">
 					<WhitelistCheck />
 				</b-tab>
 			</b-tabs>
@@ -172,7 +172,7 @@ export default {
 				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
 				// }
 				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(ethers.utils.formatUnits(gasPrice, 'gwei'))
+				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)
