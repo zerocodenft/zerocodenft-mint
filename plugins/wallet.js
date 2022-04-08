@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ethers } from 'ethers'
-import MetaMaskOnboarding from '@metamask/onboarding'
+// import MetaMaskOnboarding from '@metamask/onboarding'
 import { getCurrency, CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
 export default (ctx, inject) => {
@@ -45,10 +45,11 @@ export default (ctx, inject) => {
             //     onboarding.startOnboarding()
             //     return
             // }
-            if(!this.web3Modal) throw Error("Web3 modal is not initialized. Please contact support.")
+            if(!this.web3Modal) throw new Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
             console.log(instance, instance.isMetaMask)
+
             this.canDisconnect = typeof instance.disconnect === 'function'            
             this.isMetamask = instance.isMetaMask || instance.walletMeta?.name === 'MetaMask'
             this.walletName = instance.walletMeta?.name
@@ -76,7 +77,6 @@ export default (ctx, inject) => {
         },
 
         async setAccount(newAccount) {
-            console.log('account', newAccount)
             if(newAccount) {
                 this.account = newAccount
                 this.accountCompact = `${newAccount.substring(0, 4)}...${newAccount.substring(newAccount.length - 4)}`
@@ -93,7 +93,7 @@ export default (ctx, inject) => {
         async switchNetwork(chainId) {
 
             if(!this.isMetamask) {
-                throw new Error('Selected wallet network is not supported')
+                throw new Error('Selected wallet/account is not supported on this blockchain')
             }
 
             if(!chainId || this.chainId === chainId || this.hexChainId === chainId) {
@@ -107,12 +107,16 @@ export default (ctx, inject) => {
 					{ chainId: config.chainId },
 				])
 
+                // return this.provider.ready 
                 // create a small delay to let the wallet reset to new network
                 return new Promise((resolve) => {
                     setTimeout(() => resolve(), 1000)
                 })
 			} catch (err) {
                 console.error('switchNetwork', {err})
+
+                if(err?.message === 'JSON RPC response format is invalid') return
+
 				// This error code indicates that the chain has not been added to MetaMask.
 				if (err.code === 4902 || err.message.endsWith('Try adding the chain using wallet_addEthereumChain first.')) {
                     await this.provider.send('wallet_addEthereumChain', [config])
