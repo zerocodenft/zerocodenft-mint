@@ -26,7 +26,6 @@ export default {
 	data() {
 		return {
 			theme: 'light',
-			network: 'rinkeby',
 			providerOptions: {
 				walletconnect: {
 					package: WalletConnectProvider,

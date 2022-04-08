@@ -10,7 +10,7 @@
 				active-nav-item-class="font-weight-bold text-zerocodenft">
 				<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
 					<div class="text-center">
-						<b-button size="sm" v-show="$wallet.isConnected && $wallet.canDisconnect" @click="$wallet.disconnect">Disconnect</b-button>
+						<b-button size="sm" variant="link" v-show="$wallet.isConnected && $wallet.canDisconnect" @click="$wallet.disconnect">Disconnect Wallet</b-button>
 					</div>
 					<div>
 						<h6 v-if="!$siteConfig.isCounterHidden" class="pt-1 text-center">
@@ -104,8 +104,6 @@ export default {
 					await this.$wallet.switchNetwork(targetChainId)
 				}
 
-				console.log('here')
-
 				this.isBusy = true
 
 				const signedContract = new ethers.Contract(
@@ -183,7 +181,8 @@ export default {
 					text: 'Mint successful!',
 				}
 			} catch (err) {
-				console.error({ err })
+				console.error(err)
+				if(!err) return
 				const { data, reason, message, code, method, error } = err
 				const text =
 					error?.message || data?.message || reason || message || 'Minting failed'

@@ -48,10 +48,10 @@ export default (ctx, inject) => {
             if(!this.web3Modal) throw Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
-            // console.log(instance, Object.keys(instance))
+            console.log(instance, instance.isMetaMask)
             this.canDisconnect = typeof instance.disconnect === 'function'            
-            this.isMetamask = instance.isMetaMask
-            this.walletName = this.isMetamask ? 'Metamask' : instance.walletMeta?.name
+            this.isMetamask = instance.isMetaMask || instance.walletMeta?.name === 'MetaMask'
+            this.walletName = instance.walletMeta?.name
             
             instance.on('accountsChanged', ([newAddress]) => {
                 console.info('accountsChanged', newAddress)
@@ -92,15 +92,13 @@ export default (ctx, inject) => {
 
         async switchNetwork(chainId) {
 
-            if(!this.isMetamask || this.walletName !== 'Metamask') {
+            if(!this.isMetamask) {
                 throw new Error('Selected wallet network is not supported')
             }
 
             if(!chainId || this.chainId === chainId || this.hexChainId === chainId) {
                 return
             }
-
-            console.log('switchNetwork')
 
             const config = CHAINID_CONFIG_MAP[chainId]
 
@@ -114,9 +112,9 @@ export default (ctx, inject) => {
                     setTimeout(() => resolve(), 1000)
                 })
 			} catch (err) {
-                console.error('switchNetwork', err)
+                console.error('switchNetwork', {err})
 				// This error code indicates that the chain has not been added to MetaMask.
-				if (err.code === 4902) {
+				if (err.code === 4902 || err.message.endsWith('Try adding the chain using wallet_addEthereumChain first.')) {
                     await this.provider.send('wallet_addEthereumChain', [config])
                 } else {
                     throw err
