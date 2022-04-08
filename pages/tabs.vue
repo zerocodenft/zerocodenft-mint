@@ -155,15 +155,15 @@ export default {
 
 				let txOverrides = {}
 
-				if(chainId === '137') {
-					// polygon requires 30 gwei min gas fee to combat spam
-					// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
+				// if(targetChainId === '137') {
+				// 	// polygon requires 30 gwei min gas fee to combat spam
+				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
 
-					const gasPrice = await this.$wallet.provider.getGasPrice()
-					console.log(ethers.utils.formatUnits(gasPrice, "gwei"))
-					txOverrides = {
-						gasPrice
-					}
+				// }
+				const gasPrice = await this.$wallet.provider.getGasPrice()
+				console.log(ethers.utils.formatUnits(gasPrice, "gwei"))
+				txOverrides = {
+					gasPrice
 				}
 
 				if (hasWhitelist) {
