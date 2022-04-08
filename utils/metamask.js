@@ -185,41 +185,52 @@ export function getMainnetConfig(testnetChainId) {
 	throw new Error("Matching mainnet config not found")
 }
 
+export const testMainChainIdMap = {
+	'4': 1,
+	'97': 56,
+	'80001': 137,
+	'43113': 43114,
+	'4002': 250,
+	'338': 25,
+	'16': 19
+}
+
 export const CHAINID_CONFIG_MAP = {
-	'43114': AVALANCHE_MAINNET_PARAMS,
-	'43113': AVALANCHE_TESTNET_PARAMS,
-	'80001': POLYGON_MUMBAI_TESTNET_CONFIG,
-	'4': ETHEREUM_RINKEBY,
 	'1': ETHEREUM_MAINNET,
-	'4002': FANTOM_TESTNET_CONFIG,
-	'250': FANTOM_MAINNET_CONFIG,
+	'4': ETHEREUM_RINKEBY,
 	'56': BSC_MAINNET,
 	'97': BSC_TESTNET,
-	'338': CRONOS_TESTNET,
+	'137': POLYGON_MAINNET_PARAMS,
+	'80001': POLYGON_MUMBAI_TESTNET_CONFIG,
+	'43114': AVALANCHE_MAINNET_PARAMS,
+	'43113': AVALANCHE_TESTNET_PARAMS,
+	'250': FANTOM_MAINNET_CONFIG,
+	'4002': FANTOM_TESTNET_CONFIG,
 	'25': CRONOS_MAINNET,
-	'16': SONGBIRD_TESTNET,
+	'338': CRONOS_TESTNET,
 	'19': SONGBIRD_MAINNET,
+	'16': SONGBIRD_TESTNET,
 
+	'0x1': ETHEREUM_MAINNET,
+	'0x4': ETHEREUM_RINKEBY,
+	'0x38': BSC_MAINNET,
+	'0x61': BSC_TESTNET,
+	'0x89': POLYGON_MAINNET_PARAMS,
+	'0xFA': FANTOM_MAINNET_CONFIG,
 	'0xA86A': AVALANCHE_MAINNET_PARAMS,
 	'0xA869': AVALANCHE_TESTNET_PARAMS,
 	'0x13881': POLYGON_MUMBAI_TESTNET_CONFIG,
-	'0x89': POLYGON_MAINNET_PARAMS,
-	'0x4': ETHEREUM_RINKEBY,
-	'0x1': ETHEREUM_MAINNET,
 	'0xFA2': FANTOM_TESTNET_CONFIG,
-	'0xFA': FANTOM_MAINNET_CONFIG,
-	'0x38': BSC_MAINNET,
-	'0x61': BSC_TESTNET,
-	'0x152': CRONOS_TESTNET,
 	'0x19': CRONOS_MAINNET,
-	'0x10': SONGBIRD_TESTNET,
-	'0x13': SONGBIRD_MAINNET
+	'0x152': CRONOS_TESTNET,
+	'0x13': SONGBIRD_MAINNET,
+	'0x10': SONGBIRD_TESTNET
 }
 
 export const FAUCETS = {
 	"43113": ["https://faucet.avax-test.network"],
 	"80001": ["https://faucet.polygon.technology"],
-	"4": ["https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"],
+	"4": ["https://rinkebyfaucet.com", "https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"],
 	"4002": ["https://faucet.fantom.network"],
 	"97": ["https://testnet.binance.org/faucet-smart"],
 	"338": ["https://cronos.crypto.org/faucet"],
@@ -228,6 +239,13 @@ export const FAUCETS = {
 
 export const isTestnet = (chainId) => {
 	return ['43113', '80001', '4', '4002', '97', '338', '16', '0xA869', '0x13881', '0x4', '0xFA2', '0x61', '0x152', '0x10'].includes(chainId)
+}
+
+export const getMainnetChain = (testnetChainId) => {
+	const config = CHAINID_CONFIG_MAP[testnetChainId]
+	if(!config) throw new Error("Chain ID not found")
+
+	return config.chainId
 }
 
 export function getExplorerUrl(chainId) {
