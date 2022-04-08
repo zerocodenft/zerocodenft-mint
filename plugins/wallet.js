@@ -25,31 +25,34 @@ export default (ctx, inject) => {
             return this.network?.chainId
         },
 
+        async init(instance) {
+            this.provider = new ethers.providers.Web3Provider(instance)
+            this.network = await this.provider.getNetwork()
+            const [account] = await this.provider.listAccounts()
+            await this.setAccount(account)
+        },
+
         async connect() {
             // if(!MetaMaskOnboarding.isMetaMaskInstalled()) {
             //     const onboarding = new MetaMaskOnboarding()
             //     onboarding.startOnboarding()
             //     return
             // }
-            if(!this.web3Modal) throw Error("Web3 modal is not initialized")
+            if(!this.web3Modal) throw Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
-            this.provider = new ethers.providers.Web3Provider(instance)
-
-            this.provider.on('accountsChanged', ([newAddress]) => {
+            console.log(instance)
+            
+            instance.on('accountsChanged', ([newAddress]) => {
                 console.info('accountsChanged', newAddress)
                 this.setAccount(newAddress)
             })
-            this.provider.on('chainChanged', async (chainId) => {
+            instance.on('chainChanged', async (chainId) => {
                 console.info('chainChanged', chainId)
-                this.init()
+                await this.init(instance)
             })
 
-            this.network = await this.provider.getNetwork()
-            const [account] = await this.provider.listAccounts()
-
-            console.info('wallet connected', {account})
-            !!account && this.setAccount(account)
+            await this.init(instance)
         },
 
         disconnect() {
@@ -60,10 +63,12 @@ export default (ctx, inject) => {
         },
 
         async setAccount(newAccount) {
+            console.log('account', newAccount)
             if(newAccount) {
                 this.account = newAccount
                 this.accountCompact = `${newAccount.substring(0, 4)}...${newAccount.substring(newAccount.length - 4)}`
 
+                // console.log('here', this, this.provider)
                 const balance = (await this.provider.getBalance(newAccount)).toString()
                 this.balance = `${(+ethers.utils.formatEther(balance)).toFixed(3)} ${getCurrency(this.network.chainId)}`
             }
@@ -84,8 +89,6 @@ export default (ctx, inject) => {
 				await this.provider.send('wallet_switchEthereumChain', [
 					{ chainId: config.chainId },
 				])
-
-                await this.init()
 
                 // create a small delay to let the wallet reset to new network
                 return new Promise((resolve) => {

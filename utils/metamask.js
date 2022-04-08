@@ -84,7 +84,7 @@ export const ETHEREUM_RINKEBY = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: [],
+	rpcUrls: ['https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279'],
 	blockExplorerUrls: ['https://rinkeby.etherscan.io']
 }
 
@@ -96,7 +96,7 @@ export const ETHEREUM_MAINNET = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: [],
+	rpcUrls: ['https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279'],
 	blockExplorerUrls: ['https://etherscan.io'],
 }
 

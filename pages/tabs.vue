@@ -101,6 +101,8 @@ export default {
 					await this.$wallet.switchNetwork(targetChainId)
 				}
 
+				console.log('here')
+
 				this.isBusy = true
 
 				const signedContract = new ethers.Contract(
