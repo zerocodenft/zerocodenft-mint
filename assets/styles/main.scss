@@ -24,3 +24,16 @@ $theme-gradient: linear-gradient(100.07deg, #DB6F3D -28.71%, #9534DE 36.75%, #5F
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+.zerocode-link {
+	&:hover {
+		background: linear-gradient(
+			100.07deg,
+			#db6f3d -28.71%,
+			#9534de 36.75%,
+			#5fb9e6 103.59%
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+}
