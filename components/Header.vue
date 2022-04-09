@@ -14,37 +14,20 @@
 						v-if="$siteConfig.smartContract.hasWhitelist"
 						class="text-center"
 						to="/whitelist"
-						>Whitelist Check</b-nav-item
+						>Whitelist</b-nav-item
 					>
 				</b-navbar-nav>
 
 				<!-- Right aligned nav items -->
 				<b-navbar-nav class="ml-auto">
-					<b-button
+					<!-- <b-button
 						variant="light"
 						:disabled="!!$wallet.account"
 						@click="onWalletConnect">
 						<strong>{{ $wallet.accountCompact }}</strong>
-					</b-button>
+					</b-button> -->
 				</b-navbar-nav>
 			</b-collapse>
 		</b-navbar>
 	</div>
 </template>
-
-<script>
-export default {
-	methods: {
-		async onWalletConnect() {
-			try {
-				await this.$wallet.connect()
-			} catch (err) {
-				this.$bvToast.toast(err.message || 'Wallet connection failed', {
-					title: 'Wallet',
-					variant: 'danger',
-				})
-			}
-		},
-	},
-}
-</script>

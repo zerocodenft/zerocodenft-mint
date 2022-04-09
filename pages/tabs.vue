@@ -9,6 +9,16 @@
 				justified
 				active-nav-item-class="font-weight-bold text-zerocodenft">
 				<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
+					<div class="text-center">
+						<b-button
+							size="sm"
+							variant="link"
+							:disabled="isBusy"
+							v-show="$wallet.isConnected && $wallet.canDisconnect"
+							@click="$wallet.disconnect"
+							>Disconnect Wallet</b-button
+						>
+					</div>
 					<div>
 						<h6 v-if="!$siteConfig.isCounterHidden" class="pt-1 text-center">
 							Minted: {{ mintedCount }}/{{ collectionSize }}
@@ -25,7 +35,11 @@
 							"
 							step="1">
 						</b-form-input>
-						<b-alert :show="!!message.text" :variant="message.variant" dismissible class="text-center">
+						<b-alert
+							:show="message.show || !!message.text"
+							:variant="message.variant"
+							dismissible
+							class="text-center">
 							{{ message.text }}
 						</b-alert>
 						<div class="text-center">
@@ -38,7 +52,11 @@
 									target="_blank"
 									>SOLD OUT</b-button
 								>
-								<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
+								<b-button
+									v-else
+									class="bg-gradient-primary border-0"
+									block
+									@click="mint"
 									>Mint [{{ mintCount }}]</b-button
 								>
 							</b-overlay>
@@ -57,7 +75,7 @@
 					v-if="$siteConfig.smartContract.hasWhitelist"
 					title="Whitelist"
 					lazy
-					class="tab px-3 pb-2">
+					class="tab px-3 pb-2 border-0">
 					<WhitelistCheck />
 				</b-tab>
 			</b-tabs>
@@ -90,7 +108,7 @@ export default {
 				whitelist,
 			} = this.$siteConfig.smartContract
 
-            this.message = {}
+			this.message = {}
 
 			try {
 				if (!this.$wallet.account) {
@@ -122,7 +140,7 @@ export default {
 
 				if (isPresale) {
 					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const wl = whitelist.map(a => ethers.utils.getAddress(a))
+					const wl = whitelist.map((a) => ethers.utils.getAddress(a))
 					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
 					console.log({ isWhitelisted })
 
@@ -146,19 +164,27 @@ export default {
 
 				console.log({
 					buyPrice,
-					total,
-					value,
+					total
 				})
+
+				// if(targetChainId === '137') {
+				// 	// polygon requires 30 gwei min gas fee to combat spam
+				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
+				// }
+				const gasPrice = await this.$wallet.provider.getGasPrice()
+				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
+						gasPrice
 					})
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, {
 						value,
+						gasPrice
 					})
 				}
 
@@ -169,16 +195,18 @@ export default {
 					this.mintedCount = Number(await signedContract.totalSupply())
 					this.message = {
 						variant: 'success',
-						text: 'Mint confirmed!',
+						text: 'Mint confirmed 🎉',
 					}
 				})
 
 				this.message = {
 					variant: 'success',
-					text: 'Mint successful!',
+					text: 'Mint successful! Wait for confirmation.',
+					show: 5,
 				}
 			} catch (err) {
-				console.error({ err })
+				console.error(err)
+				if (!err) return
 				const { data, reason, message, code, method, error } = err
 				const text =
 					error?.message || data?.message || reason || message || 'Minting failed'

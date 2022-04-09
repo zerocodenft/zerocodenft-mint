@@ -16,6 +16,14 @@
 			@click="mint"
 			>MINT</b-button
 		>
+		<b-button
+			variant="link"
+			class="text-white mt-1"
+			:disabled="isBusy"
+			v-show="$wallet.isConnected && $wallet.canDisconnect"
+			@click="$wallet.disconnect"
+			>Disconnect Wallet</b-button
+		>
 	</b-overlay>
 </template>
 
@@ -25,16 +33,16 @@ import { ethers } from 'ethers'
 import { getExplorerUrl } from '@/utils/metamask'
 
 export default {
-    name: "MintButton",
-    props: {
+	name: 'MintButton',
+	props: {
 		mintCount: Number,
-        soldOut: Boolean
-    },
-    data() {
-        return {
-			isBusy: false
-        }
-    },
+		soldOut: Boolean,
+	},
+	data() {
+		return {
+			isBusy: false,
+		}
+	},
 	methods: {
 		async mint() {
 			const {
@@ -73,17 +81,20 @@ export default {
 
 				const isPresale = saleStatus === SALE_STATUS.Presale
 
-				if(isPresale) {
+				if (isPresale) {
 					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const wl = whitelist.map(a => ethers.utils.getAddress(a))
+					const wl = whitelist.map((a) => ethers.utils.getAddress(a))
 					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
 					console.log({ isWhitelisted })
 
 					if (!isWhitelisted) {
-						this.$bvToast.toast(`Address ${this.$wallet.accountCompact} is not whitelisted`, {
-							title: 'Mint',
-							variant: 'danger',
-						})
+						this.$bvToast.toast(
+							`Address ${this.$wallet.accountCompact} is not whitelisted`,
+							{
+								title: 'Mint',
+								variant: 'danger',
+							}
+						)
 						return
 					}
 				}
@@ -97,20 +108,24 @@ export default {
 				const total = this.$props.mintCount * buyPrice
 				const value = ethers.utils.parseEther(total.toString())
 
-				console.log({ 
+				console.log({
 					buyPrice,
 					total,
-					value
 				})
+
+				const gasPrice = await this.$wallet.provider.getGasPrice()
+				console.log(ethers.utils.formatUnits(gasPrice, 'gwei'))
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
+						gasPrice,
 					})
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, {
 						value,
+						gasPrice,
 					})
 				}
 
@@ -166,9 +181,7 @@ export default {
 					{
 						props: {
 							target: '_blank',
-							href: `${getExplorerUrl(
-								chainId
-							)}/tx/${hash}`,
+							href: `${getExplorerUrl(chainId)}/tx/${hash}`,
 						},
 					},
 					['View on block explorer >']
