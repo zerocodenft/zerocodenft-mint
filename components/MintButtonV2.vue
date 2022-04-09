@@ -1,50 +1,59 @@
 <template>
-	<b-overlay :show="isBusy">
-		<b-button
-			v-if="soldOut"
-			:disabled="!$siteConfig.marketplaceURL"
-			:href="$siteConfig.marketplaceURL"
-			target="_blank"
-			>SOLD OUT</b-button
-		>
-		<b-button
-			v-else
-			class="font-weight-bold"
-			block
-			variant="light"
+	<div>
+		<b-form-input
+			v-model.number="mintCount"
+			class="mb-2"
 			size="lg"
-			@click="mint"
-			>MINT</b-button
-		>
-		<b-button
-			variant="link"
-			class="text-white mt-1"
-			:disabled="isBusy"
-			v-show="$wallet.isConnected && $wallet.canDisconnect"
-			@click="$wallet.disconnect"
-			>Disconnect Wallet</b-button
-		>
-	</b-overlay>
+			type="range"
+			min="1"
+			:max="
+				$siteConfig.smartContract.maxTokensPerTransaction ||
+				$siteConfig.smartContract.collectionSize
+			"
+			step="1">
+		</b-form-input>
+        <b-alert
+            :show="message.show || !!message.text"
+            :variant="message.variant"
+            dismissible
+            class="text-center">
+            {{ message.text }}
+        </b-alert>
+		<div class="text-center">
+			<b-overlay :show="isBusy">
+				<b-button
+					v-if="soldOut"
+					class="bg-gradient-primary border-0"
+					:disabled="!$siteConfig.marketplaceURL"
+					:href="$siteConfig.marketplaceURL"
+					target="_blank"
+					>SOLD OUT</b-button
+				>
+				<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
+					>Mint [{{ mintCount }}]</b-button
+				>
+			</b-overlay>
+		</div>
+	</div>
 </template>
 
 <script>
-import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
 import { ethers } from 'ethers'
-import { getExplorerUrl } from '@/utils/metamask'
+import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
 
 export default {
-	name: 'MintButton',
 	props: {
-		mintCount: Number,
 		soldOut: Boolean,
 	},
-	data() {
+    data() {
 		return {
+			mintCount: 1,
 			isBusy: false,
+			message: {},
 		}
 	},
-	methods: {
-		async mint() {
+    methods: {
+        async mint() {
 			const {
 				chainId: targetChainId,
 				address,
@@ -53,6 +62,8 @@ export default {
 				whitelist,
 				firstXFree
 			} = this.$siteConfig.smartContract
+
+			this.message = {}
 
 			try {
 				if (!this.$wallet.account) {
@@ -73,10 +84,10 @@ export default {
 				const saleStatus = await signedContract.saleStatus()
 
 				if (saleStatus === SALE_STATUS.Paused) {
-					this.$bvToast.toast('Minting is currently PAUSED', {
-						title: 'Mint',
+					this.message = {
 						variant: 'warning',
-					})
+						text: 'Minting is currently PAUSED',
+					}
 					return
 				}
 
@@ -89,13 +100,10 @@ export default {
 					console.log({ isWhitelisted })
 
 					if (!isWhitelisted) {
-						this.$bvToast.toast(
-							`Address ${this.$wallet.accountCompact} is not whitelisted`,
-							{
-								title: 'Mint',
-								variant: 'danger',
-							}
-						)
+						this.message = {
+							variant: 'danger',
+							text: `Address ${this.$wallet.accountCompact} is not whitelisted`,
+						}
 						return
 					}
 				}
@@ -119,27 +127,33 @@ export default {
 						console.log({mintedCount, overflow, mintCount: this.mintCount})
 					}
 				}
-
+	
 				const value = ethers.utils.parseEther(total.toString())
 
 				console.log({
 					buyPrice,
 					total,
+					value
 				})
 
+				// if(targetChainId === '137') {
+				// 	// polygon requires 30 gwei min gas fee to combat spam
+				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
+				// }
 				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(ethers.utils.formatUnits(gasPrice, 'gwei'))
+				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)
+					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
-						gasPrice,
+						gasPrice
 					})
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, {
 						value,
-						gasPrice,
+						gasPrice
 					})
 				}
 
@@ -147,61 +161,32 @@ export default {
 
 				txResponse.wait().then(async (res) => {
 					// console.log({ res });
-					this.$emit('minted', +(await signedContract.totalSupply()))
-					const msg = [
-						this.createToastMessage(
-							txResponse.hash,
-							'Mint transaction confirmed!',
-							targetChainId
-						),
-					]
-					this.$bvToast.toast(msg, {
-						title: 'Mint',
+					this.message = {
 						variant: 'success',
-					})
+						text: 'Mint confirmed! 🎉',
+					}
 				})
 
-				const msg = [
-					this.createToastMessage(
-						txResponse.hash,
-						'Mint successful!',
-						targetChainId
-					),
-				]
-				this.$bvToast.toast(msg, {
-					title: 'Mint',
+				this.message = {
 					variant: 'success',
-				})
+					text: 'Mint successful!',
+					show: 5,
+				}
 			} catch (err) {
-				console.error({ err })
+				console.error(err)
+				if (!err) return
+
 				const { data, reason, message, code, method, error } = err
-				this.$bvToast.toast(
-					error?.message || data?.message || reason || message || 'Minting failed',
-					{
-						title: 'Mint',
-						variant: 'danger',
-					}
-				)
+				const text =
+					error?.message || data?.message || reason || message || 'Minting failed'
+				this.message = {
+					variant: 'danger',
+					text,
+				}
 			} finally {
 				this.isBusy = false
 			}
 		},
-		createToastMessage(hash, msg, chainId) {
-			const h = this.$createElement
-			return h('div', [
-				h('div', [`${msg} `]),
-				h(
-					'b-link',
-					{
-						props: {
-							target: '_blank',
-							href: `${getExplorerUrl(chainId)}/tx/${hash}`,
-						},
-					},
-					['View on block explorer >']
-				),
-			])
-		},
-	},
+    }
 }
 </script>

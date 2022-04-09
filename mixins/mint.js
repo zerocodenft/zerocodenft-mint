@@ -10,7 +10,8 @@ export default {
 		return {
 			mintedCount: 0,
 			collectionSize: 0,
-			dropDate: null
+			dropDate: null,
+			mintedCountIntervalId: null
 		}
 	},
 	mounted() {
@@ -42,9 +43,10 @@ export default {
 				this.collectionSize = +(await nftContract.COLLECTION_SIZE())
 				
 				if(!isCounterHidden) {
-					this.mintedCount = +(await nftContract.totalSupply())
+					this.mintedCountIntervalId = setInterval(async () => {
+						this.mintedCount = +(await nftContract.totalSupply())
+					}, 6000)
 				}
-
 			}, 2000)
 		} catch (err) {
 			console.error({ err })
@@ -58,6 +60,36 @@ export default {
 			return this.mintedCount >= this.collectionSize
 		}
 	},
-    methods: {
-    }
+	watch: {
+		'$wallet.provider': async function (newVal, oldVal) {
+			const {
+				abi,
+				address,
+			} = this.$siteConfig.smartContract
+
+			const { 
+				isCounterHidden
+			} = this.$siteConfig
+
+			console.log('watch', newVal)
+
+			if(isCounterHidden) {
+				return
+			}
+
+			if(newVal === null && this.mintedCountIntervalId !== null) {
+				clearInterval(this.mintedCountIntervalId)
+				this.mintedCountIntervalId = null
+				return
+			}
+
+			if(newVal !== null) {
+				const nftContract = new ethers.Contract(address, abi, newVal)
+				this.mintedCount = +(await nftContract.totalSupply()) // set immediately, dont wait for the interval
+				this.mintedCountIntervalId = setInterval(async () => {
+					this.mintedCount = +(await nftContract.totalSupply())
+				}, 6000)
+			}
+		}
+	}
 }
