@@ -1,11 +1,8 @@
 import Vue from 'vue'
 import { ethers } from 'ethers'
-// import MetaMaskOnboarding from '@metamask/onboarding'
 import { getCurrency, CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
 export default (ctx, inject) => {
-
-    // console.log(new Vue().$bvModal)
 
     const wallet = Vue.observable({
         account: null,
