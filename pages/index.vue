@@ -16,7 +16,7 @@
 						<Countdown :date="dropDate" />
 					</div>
 					<div v-else>
-						<h4 v-if="!this.$siteConfig.smartContract.isCounterHidden" class="pt-2 text-light">
+						<h4 v-if="!$siteConfig.isCounterHidden" class="pt-2 text-light">
 							Minted: {{ mintedCount }}/{{ collectionSize }}
 						</h4>
 						<b-form-spinbutton
@@ -39,6 +39,25 @@ import MintMixin from '@/mixins/mint'
 
 export default {
 	mixins: [MintMixin],
+	head() {
+		return this.$siteConfig.widgetBotConfig ?
+		{
+			script: [
+			{
+				src: 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3',
+				async: true,
+				defer: true,
+					callback: () => {
+                        console.log(this.$siteConfig.widgetBotConfig)
+						new Crate({
+							...this.$siteConfig.widgetBotConfig,
+						})
+					},
+				},
+			],
+		}
+		: {}
+	},
 	data() {
 		return {
 			mintCount: 1,
