@@ -128,7 +128,7 @@ export default {
 				})
 
 				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(ethers.utils.formatUnits(gasPrice, 'gwei'))
+				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)

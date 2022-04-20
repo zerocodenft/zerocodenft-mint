@@ -71,7 +71,7 @@ export default {
 				isCounterHidden
 			} = this.$siteConfig
 
-			console.log('watch', newVal)
+			// console.log('watch', newVal)
 
 			if(isCounterHidden) {
 				return
