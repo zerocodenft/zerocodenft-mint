@@ -26,6 +26,25 @@ import MintMixin from '@/mixins/mint'
 export default {
     layout: 'no-headers',
     mixins: [MintMixin],
+    head() {
+		return this.$siteConfig.widgetBotConfig ?
+		{
+			script: [
+			{
+				src: 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3',
+				async: true,
+				defer: true,
+					callback: () => {
+                        console.log(this.$siteConfig.widgetBotConfig)
+						new Crate({
+							...this.$siteConfig.widgetBotConfig,
+						})
+					},
+				},
+			],
+		}
+		: {}
+	}
 }
 </script>
 
