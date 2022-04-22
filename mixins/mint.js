@@ -16,41 +16,16 @@ export default {
 	},
 	mounted() {
 		const {
-			chainId: targetChainId,
-			abi,
-			address,
 			collectionSize,
 		} = this.$siteConfig.smartContract
 		
 		const { 
 			dropDate,
 			dropTimeZone,
-			isCounterHidden
 		} = this.$siteConfig
 
 		this.collectionSize = collectionSize
 		this.dropDate = dayjs.utc(dropDate).tz(dropTimeZone).format()
-		try {
-			// give some time for wallet plugin to init
-			setTimeout(async () => {
-				if (this.showCountdown || !this.$wallet.provider) return
-
-				if (this.$wallet.chainId !== +targetChainId) {
-					await this.$wallet.switchNetwork(targetChainId)
-				}
-
-				const nftContract = new ethers.Contract(address, abi, this.$wallet.provider)
-				this.collectionSize = +(await nftContract.COLLECTION_SIZE())
-				
-				if(!isCounterHidden) {
-					this.mintedCountIntervalId = setInterval(async () => {
-						this.mintedCount = +(await nftContract.totalSupply())
-					}, 6000)
-				}
-			}, 2000)
-		} catch (err) {
-			console.error({ err })
-		}
 	},
     computed: {
 		showCountdown() {
@@ -61,8 +36,9 @@ export default {
 		}
 	},
 	watch: {
-		'$wallet.provider': async function (newVal, oldVal) {
+		'$wallet.network': async function (newVal, oldVal) {
 			const {
+				chainId,
 				abi,
 				address,
 			} = this.$siteConfig.smartContract
@@ -71,23 +47,27 @@ export default {
 				isCounterHidden
 			} = this.$siteConfig
 
-			// console.log('watch', newVal)
+			
+			const hasTotalSupply = !!abi.find(x => x.name === 'totalSupply')
 
-			if(isCounterHidden) {
+			if(isCounterHidden || !hasTotalSupply) {
 				return
 			}
 
-			if(newVal === null && this.mintedCountIntervalId !== null) {
+			// console.log('mintedCountIntervalId', this.mintedCountIntervalId, this.$wallet.provider, this.$wallet.chainId, +chainId)
+
+			if(this.mintedCountIntervalId !== null && (this.$wallet.provider === null || this.$wallet.chainId !== +chainId)) {
 				clearInterval(this.mintedCountIntervalId)
 				this.mintedCountIntervalId = null
 				return
 			}
 
-			if(newVal !== null) {
-				const nftContract = new ethers.Contract(address, abi, newVal)
-				this.mintedCount = +(await nftContract.totalSupply()) // set immediately, dont wait for the interval
+			if(this.$wallet.provider !== null && this.$wallet.chainId === +chainId) {
+				const nftContract = new ethers.Contract(address, abi, this.$wallet.provider)
+				this.mintedCount = +(await nftContract.totalSupply()) // set immediately
 				this.mintedCountIntervalId = setInterval(async () => {
 					this.mintedCount = +(await nftContract.totalSupply())
+					console.log('mintedCount', this.mintedCount)
 				}, 6000)
 			}
 		}

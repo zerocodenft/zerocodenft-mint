@@ -86,7 +86,7 @@ export default {
 					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
 					const wl = whitelist.map((a) => ethers.utils.getAddress(a))
 					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
-					console.log({ isWhitelisted })
+					console.info({ isWhitelisted })
 
 					if (!isWhitelisted) {
 						this.$bvToast.toast(
@@ -128,7 +128,7 @@ export default {
 				})
 
 				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
+				console.info(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)

@@ -37,15 +37,10 @@ export default (ctx, inject) => {
         },
 
         async connect() {
-            // if(!MetaMaskOnboarding.isMetaMaskInstalled()) {
-            //     const onboarding = new MetaMaskOnboarding()
-            //     onboarding.startOnboarding()
-            //     return
-            // }
             if(!this.web3Modal) throw new Error("Web3 modal is not initialized. Please contact support.")
         
             const instance = await this.web3Modal.connect()
-            console.log(instance, instance.isMetaMask)
+            // console.log(instance, instance.isMetaMask)
 
             this.canDisconnect = typeof instance.disconnect === 'function'            
             this.isMetamask = instance.isMetaMask || instance.walletMeta?.name === 'MetaMask'
