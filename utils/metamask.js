@@ -22,7 +22,6 @@ export const AVALANCHE_TESTNET_PARAMS = {
 	blockExplorerUrls: ['https://testnet.snowtrace.io']
 }
 
-
 export const POLYGON_MAINNET_PARAMS = {
 	chainId: '0x89',
 	chainName: 'Polygon Mainnet',
@@ -60,7 +59,10 @@ export const FANTOM_TESTNET_CONFIG = {
 		symbol: 'FTM',
 		decimals: 18,
 	},
-	rpcUrls: ['https://xapi.testnet.fantom.network/lachesis', 'https://rpc.testnet.fantom.network'],
+	rpcUrls: [
+		'https://xapi.testnet.fantom.network/lachesis',
+		'https://rpc.testnet.fantom.network'
+	],
 	blockExplorerUrls: ['https://testnet.ftmscan.com']
 }
 
@@ -84,7 +86,7 @@ export const ETHEREUM_RINKEBY = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ['https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279'],
+	rpcUrls: ["https://eth-rinkeby.alchemyapi.io/v2/eY57F0-qi9WoMojLu9bc3xQuByUU4S-c"],
 	blockExplorerUrls: ['https://rinkeby.etherscan.io']
 }
 
@@ -96,7 +98,7 @@ export const ETHEREUM_MAINNET = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ['https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279'],
+	rpcUrls: [],
 	blockExplorerUrls: ['https://etherscan.io'],
 }
 
@@ -172,17 +174,76 @@ export const SONGBIRD_MAINNET = {
 	blockExplorerUrls: ['https://songbird-explorer.flare.network'],
 }
 
-// get corresponding mainnet config based on testnet chainID
-export function getMainnetConfig(testnetChainId) {
-	if(['0x4', '4'].includes(testnetChainId)) return ETHEREUM_MAINNET
-	if(['0xA869', '43113'].includes(testnetChainId)) return AVALANCHE_MAINNET_PARAMS
-	if(['0x89', '80001'].includes(testnetChainId)) return POLYGON_MAINNET_PARAMS
-	if(['0xFA2', '4002'].includes(testnetChainId)) return FANTOM_MAINNET_CONFIG
-	if(['0x38', '56'].includes(testnetChainId)) return BSC_MAINNET
-	if(['0x19', '25'].includes(testnetChainId)) return CRONOS_MAINNET
-	if(['0x13', '19'].includes(testnetChainId)) return SONGBIRD_MAINNET
+export const THINKIUM_TESTNET = {
+	chainId: '0xEA61',
+	chainName: 'Thinkium Testnet',
+	nativeCurrency: {
+		name: 'Thinkium',
+		symbol: 'TKM',
+		decimals: 18
+	},
+	rpcUrls: ['https://test1.thinkiumrpc.net'],
+	blockExplorerUrls: ['http://browser.thinkiumdev.net'],
+}
 
-	throw new Error("Matching mainnet config not found")
+export const THINKIUM_MAINNET = {
+	chainId: '0x11171',
+	chainName: 'Thinkium Mainnet',
+	nativeCurrency: {
+		name: 'Thinkium',
+		symbol: 'TKM',
+		decimals: 18
+	},
+	rpcUrls: ['https://proxy1.thinkiumrpc.net'],
+	blockExplorerUrls: ['https://www.thinkiumscan.net'],
+}
+
+export const ARBITRUM_MAINNET = {
+	chainId: '0xA4B1',
+	chainName: 'Arbitrum One (Mainnet)',
+	nativeCurrency: {
+		name: 'Arbitrum',
+		symbol: 'ETH',
+		decimals: 18
+	},
+	rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+	blockExplorerUrls: ['https://arbiscan.io'],
+}
+
+export const ARBITRUM_TESTNET = {
+	chainId: '0x66EEB',
+	chainName: 'Arbitrum Testnet',
+	nativeCurrency: {
+		name: 'Arbitrum',
+		symbol: 'ETH',
+		decimals: 18
+	},
+	rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
+	blockExplorerUrls: ['https://testnet.arbiscan.io'],
+}
+
+export const OPTIMISM_MAINNET = {
+	chainId: '0xA',
+	chainName: 'Optimistic Ethereum (Mainnet)',
+	nativeCurrency: {
+		name: 'Ethereum',
+		symbol: 'ETH',
+		decimals: 18
+	},
+	rpcUrls: ['https://mainnet.optimism.io'],
+	blockExplorerUrls: ['https://optimistic.etherscan.io'],
+}
+
+export const OPTIMISM_TESTNET = {
+	chainId: '0x45',
+	chainName: 'Optimistic Ethereum Testnet',
+	nativeCurrency: {
+		name: 'Ethereum',
+		symbol: 'ETH',
+		decimals: 18
+	},
+	rpcUrls: ['https://kovan.optimism.io'],
+	blockExplorerUrls: ['https://kovan-optimistic.etherscan.io'],
 }
 
 export const testMainChainIdMap = {
@@ -192,8 +253,50 @@ export const testMainChainIdMap = {
 	'43113': 43114,
 	'4002': 250,
 	'338': 25,
-	'16': 19
+	'16': 19,
+	'60001': 70001,
+	'421611': 42161,
+	'69': 10
 }
+
+// const CHAINS_INFO = {
+// 	'0x4': {
+// 		isTestnet: true,
+// 		config: ETHEREUM_RINKEBY,
+// 		mainnetConfig: ETHEREUM_MAINNET,
+// 		mainnetChainId: 1,
+// 		currency: ETHEREUM_RINKEBY['0xA869']?.nativeCurrency.symbol || 'Unknown',
+// 		blockExplorer: ETHEREUM_RINKEBY['0xA869']?.blockExplorerUrls[0],
+// 		faucets: ["https://rinkebyfaucet.com", "https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"]
+// 	},
+// 	'0xA869': {
+// 		isTestnet: true,
+// 		config: AVALANCHE_TESTNET_PARAMS,
+// 		mainnetConfig: AVALANCHE_MAINNET_PARAMS,
+// 		mainnetChainId: 43114,
+// 		currency: AVALANCHE_TESTNET_PARAMS['0xA869']?.nativeCurrency.symbol || 'Unknown',
+// 		blockExplorer: AVALANCHE_TESTNET_PARAMS['0xA869']?.blockExplorerUrls[0],
+// 		faucets: ["https://faucet.avax-test.network"]
+// 	},
+// 	'0x61': {
+// 		isTestnet: true,
+// 		config: BSC_TESTNET,
+// 		mainnetConfig: BSC_MAINNET,
+// 		mainnetChainId: 56,
+// 		currency: BSC_TESTNET['0xA869']?.nativeCurrency.symbol || 'Unknown',
+// 		blockExplorer: BSC_TESTNET['0xA869']?.blockExplorerUrls[0],
+// 		faucets: ["https://testnet.binance.org/faucet-smart"]
+// 	},
+// 	'0x13881': {
+// 		isTestnet: true,
+// 		config: POLYGON_MUMBAI_TESTNET_CONFIG,
+// 		mainnetConfig: POLYGON_MAINNET_PARAMS,
+// 		mainnetChainId: 137,
+// 		currency: POLYGON_MUMBAI_TESTNET_CONFIG['0xA869']?.nativeCurrency.symbol || 'Unknown',
+// 		blockExplorer: POLYGON_MUMBAI_TESTNET_CONFIG['0xA869']?.blockExplorerUrls[0],
+// 		faucets: ["https://faucet.polygon.technology"]
+// 	},
+// }
 
 export const CHAINID_CONFIG_MAP = {
 	'1': ETHEREUM_MAINNET,
@@ -210,21 +313,33 @@ export const CHAINID_CONFIG_MAP = {
 	'338': CRONOS_TESTNET,
 	'19': SONGBIRD_MAINNET,
 	'16': SONGBIRD_TESTNET,
+	'60001': THINKIUM_TESTNET,
+	'70001': THINKIUM_MAINNET,
+	'421611': ARBITRUM_TESTNET,
+	'42161': ARBITRUM_MAINNET,
+	'69': OPTIMISM_TESTNET,
+	'10': OPTIMISM_MAINNET,
 
 	'0x1': ETHEREUM_MAINNET,
 	'0x4': ETHEREUM_RINKEBY,
 	'0x38': BSC_MAINNET,
 	'0x61': BSC_TESTNET,
 	'0x89': POLYGON_MAINNET_PARAMS,
+	'0x13881': POLYGON_MUMBAI_TESTNET_CONFIG,
 	'0xFA': FANTOM_MAINNET_CONFIG,
 	'0xA86A': AVALANCHE_MAINNET_PARAMS,
 	'0xA869': AVALANCHE_TESTNET_PARAMS,
-	'0x13881': POLYGON_MUMBAI_TESTNET_CONFIG,
 	'0xFA2': FANTOM_TESTNET_CONFIG,
 	'0x19': CRONOS_MAINNET,
 	'0x152': CRONOS_TESTNET,
 	'0x13': SONGBIRD_MAINNET,
-	'0x10': SONGBIRD_TESTNET
+	'0x10': SONGBIRD_TESTNET,
+	'0xEA61': THINKIUM_TESTNET,
+	'0x11171': THINKIUM_MAINNET,
+	'0x66EEB': ARBITRUM_TESTNET,
+	'0xA4B1': ARBITRUM_MAINNET,
+	'0x45': OPTIMISM_TESTNET,
+	'0xA': OPTIMISM_MAINNET
 }
 
 export const FAUCETS = {
@@ -234,18 +349,33 @@ export const FAUCETS = {
 	"4002": ["https://faucet.fantom.network"],
 	"97": ["https://testnet.binance.org/faucet-smart"],
 	"338": ["https://cronos.crypto.org/faucet"],
-	"16": ["https://faucet.towolabs.com"]
+	"16": ["https://faucet.towolabs.com"],
+	"60001": ["https://www.thinkiumdev.net/DApp%20Development/Faucet.html"],
+	"421611": ["https://rinkebyfaucet.com", "https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"],
+	'69': ["https://optimismfaucet.xyz"]
 }
 
-export const isTestnet = (chainId) => {
-	return ['43113', '80001', '4', '4002', '97', '338', '16', '0xA869', '0x13881', '0x4', '0xFA2', '0x61', '0x152', '0x10'].includes(chainId)
+const toHex = (chainId) => {
+	const isHex = isNaN(Number(chainId))
+	return isHex 
+		? chainId 
+		: '0x' + chainId.toString(16)
 }
 
-export const getMainnetChain = (testnetChainId) => {
-	const config = CHAINID_CONFIG_MAP[testnetChainId]
-	if(!config) throw new Error("Chain ID not found")
+// get corresponding mainnet config based on testnet chainID
+export function getMainnetConfig(testnetChainId) {
+	if(['0x4', '4'].includes(testnetChainId)) return ETHEREUM_MAINNET
+	if(['0xA869', '43113'].includes(testnetChainId)) return AVALANCHE_MAINNET_PARAMS
+	if(['0x89', '80001'].includes(testnetChainId)) return POLYGON_MAINNET_PARAMS
+	if(['0xFA2', '4002'].includes(testnetChainId)) return FANTOM_MAINNET_CONFIG
+	if(['0x38', '56'].includes(testnetChainId)) return BSC_MAINNET
+	if(['0x19', '25'].includes(testnetChainId)) return CRONOS_MAINNET
+	if(['0x13', '19'].includes(testnetChainId)) return SONGBIRD_MAINNET
+	if(['0xEA61','60001'].includes(testnetChainId)) return THINKIUM_MAINNET
+	if(['0x66EEB', '421611'].includes(testnetChainId)) return ARBITRUM_MAINNET
+	if (['0x45', '69'].includes(testnetChainId)) return OPTIMISM_MAINNET
 
-	return config.chainId
+	throw new Error("Matching mainnet config not found")
 }
 
 export function getExplorerUrl(chainId) {
@@ -256,10 +386,7 @@ export function getCurrency(chainId) {
 	return CHAINID_CONFIG_MAP[chainId]?.nativeCurrency.symbol || 'Unknown'
 }
 
-export function getNetwork(chainId) {
-	return CHAINID_CONFIG_MAP[chainId]?.chainName || 'Unknown'
-}
-
-export function getFaucetList(chainId) {
-	return CHAINID_CONFIG_MAP[chainId]?.faucetUrls || []
+export function getChainInfo(chainId) {
+	const hexChainId = toHex(chainId)
+	return CHAINS_INFO[hexChainId]
 }
