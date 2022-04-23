@@ -30,7 +30,6 @@ export default {
 				walletconnect: {
 					package: WalletConnectProvider,
 					options: {
-						// infuraId: '98302611de2949f1bd81e48d0b52d279',
 						rpc,
 					},
 				},

@@ -98,7 +98,7 @@ export const ETHEREUM_MAINNET = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: [],
+	rpcUrls: ["https://eth-mainnet.alchemyapi.io/v2/KTOAt8HziAmtVspf4HpKYmWK7gAMs7t1"],
 	blockExplorerUrls: ['https://etherscan.io'],
 }
 
