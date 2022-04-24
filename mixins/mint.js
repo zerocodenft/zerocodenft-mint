@@ -26,10 +26,12 @@ export default {
 
 		this.collectionSize = collectionSize
 		this.dropDate = dayjs.utc(dropDate).tz(dropTimeZone).format()
+		
+		console.info('drop date', this.dropDate)
 	},
     computed: {
 		showCountdown() {
-			return new Date(this.$siteConfig.dropDate) > new Date() 
+			return new Date(this.dropDate) > new Date() 
 		},
 		soldOut() {
 			return this.mintedCount >= this.collectionSize
