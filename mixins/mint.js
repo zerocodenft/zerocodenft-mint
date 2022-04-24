@@ -47,8 +47,8 @@ export default {
 				isCounterHidden
 			} = this.$siteConfig
 
-			
-			const hasTotalSupply = !!abi.find(x => x.name === 'totalSupply')
+			console.log('watch', abi)
+			const hasTotalSupply = !!(abi || []).find(x => x.name === 'totalSupply')
 
 			if(isCounterHidden || !hasTotalSupply) {
 				return
