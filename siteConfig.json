@@ -26,7 +26,7 @@
 		"mintPrice": 0,
 		"chainId": 4,
 		"hasWhitelist": true,
-		"whitelist": ["0x060BCa0eAeF80Ea9A5fEB9081456aC4d4d5fa42d"],
+		"whitelist": ["0x34Eca06DB779169003117e8999B5E008086f4cc3"],
 		"hasDelayedReveal": false,
 		"isAttributionHidden": false,
 		"abi": [
