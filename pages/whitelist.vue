@@ -8,7 +8,7 @@
 				class="d-flex align-items-center justify-content-center backdrop-blur">
 				<b-jumbotron
 					:header="$siteConfig.title"
-					class="shadow text-center"
+					class="shadow text-center py-4"
 					lead="Check whitelisted status"
 					bg-variant="dark"
 					text-variant="white">

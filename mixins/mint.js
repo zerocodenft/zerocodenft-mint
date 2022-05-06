@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -18,7 +19,8 @@ export default {
 		const {
 			abi,
 			address,
-			collectionSize
+			collectionSize,
+			chainId
 		} = this.$siteConfig.smartContract
 		
 		const { 
@@ -29,12 +31,17 @@ export default {
 		this.collectionSize = collectionSize
 		this.dropDate = dayjs.utc(dropDate).tz(dropTimeZone).format()
 
-		const alchemyProvider = new ethers.providers.AlchemyProvider()
+		const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
+		const alchemyProvider = new ethers.providers.JsonRpcProvider(providerUrl)
+
 		const nftContract = new ethers.Contract(address, abi, alchemyProvider)
+		console.log(alchemyProvider, nftContract)
 		try {
 			this.mintedCount = +(await nftContract.totalSupply())
 			console.log('mintedCount', this.mintedCount)
-		} catch {}
+		} catch (err) {
+			console.error({err})
+		}
 
 	},
     computed: {
