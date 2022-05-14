@@ -1,6 +1,5 @@
 <template>
-	<div>
-		<b-navbar toggleable="lg" type="dark" variant="dark">
+		<b-navbar toggleable="lg" type="dark" variant="dark" class="header">
 			<b-navbar-brand to="/">
 				{{ $siteConfig.title }}
 				<!-- <b-img src="logo.svg" alt="logo" width="60px" /> -->
@@ -29,5 +28,10 @@
 				</b-navbar-nav>
 			</b-collapse>
 		</b-navbar>
-	</div>
 </template>
+
+<style lang="scss" scoped>
+.header {
+	height: $header-height
+}
+</style>

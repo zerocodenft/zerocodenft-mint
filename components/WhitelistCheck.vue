@@ -11,7 +11,7 @@
 		</b-form-group>
 		<b-button
 			block
-			class="bg-gradient-primary border-0"
+			variant="light"
 			:disabled="!address"
 			@click="checkWhitelisted"
 			>Check</b-button

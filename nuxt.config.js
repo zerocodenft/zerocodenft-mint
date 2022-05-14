@@ -76,6 +76,7 @@ export default {
 		'bootstrap-vue/nuxt',
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
+		'@nuxtjs/style-resources'
 	],
 
 	axios: {
@@ -84,6 +85,10 @@ export default {
 
 	bootstrapVue: {
 		icons: false,
+	},
+
+	styleResources: {
+		scss: ['./assets/styles/_variables.scss']
 	},
 
 	sitemap: {

@@ -1,9 +1,9 @@
 <template>
-	<footer class="bg-dark py-4">
+	<footer class="bg-dark py-4 footer">
 		<b-container fluid>
 			<b-row>
 				<b-col sm="12" md="3">
-					<b-nav class="justify-content-center justify-content-md-start">
+					<b-nav v-if="$siteConfig.iconURL" class="justify-content-center justify-content-md-start">
 						<b-img-lazy :src="$siteConfig.iconURL" width="60px" alt="logo" />
 					</b-nav>
 				</b-col>
@@ -72,4 +72,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.footer {
+	height: $footer-height;
+}
+</style>
