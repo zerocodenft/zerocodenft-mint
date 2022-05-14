@@ -1,8 +1,9 @@
 export default function ({ $axios, $config }, inject) {
-    // Create a custom axios instance
     const cloudFns = $axios.create({})
+
+    // console.log($config)
   
-    cloudFns.setBaseURL('https://zerocodenft-functions.azurewebsites.net/api')
+    cloudFns.setBaseURL($config.AZURE_FUNCTIONS_URL)
   
     inject('cloudFns', cloudFns)
   }

@@ -35,7 +35,7 @@ export default {
 		const alchemyProvider = new ethers.providers.JsonRpcProvider(providerUrl)
 
 		const nftContract = new ethers.Contract(address, abi, alchemyProvider)
-		console.log(alchemyProvider, nftContract)
+		// console.log(alchemyProvider, nftContract)
 		try {
 			this.mintedCount = +(await nftContract.totalSupply())
 			console.log('mintedCount', this.mintedCount)

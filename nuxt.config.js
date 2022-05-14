@@ -2,6 +2,7 @@ import getSiteMeta from './utils/siteMeta'
 
 const {
 	API_URL,
+	AZURE_FUNCTIONS_URL
 } = process.env
 
 const siteConfig = require('./siteConfig.json')
@@ -11,6 +12,11 @@ const { title, description, url, mainImage } = siteConfig
 export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
+
+	publicRuntimeConfig: {
+		API_URL,
+		AZURE_FUNCTIONS_URL
+	},
 
 	// Target: https://go.nuxtjs.dev/config-target
 	target: 'static',
@@ -73,7 +79,7 @@ export default {
 	],
 
 	axios: {
-		baseURL: API_URL,
+		baseURL: API_URL
 	},
 
 	bootstrapVue: {
