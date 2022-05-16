@@ -134,8 +134,8 @@ export const CRONOS_TESTNET = {
 		symbol: 'TCRO',
 		decimals: 18
 	},
-	rpcUrls: ['https://cronos-testnet-3.crypto.org:8545/'],
-	blockExplorerUrls: ['https://cronos.crypto.org/explorer'],
+	rpcUrls: ['https://evm-t3.cronos.org'],
+	blockExplorerUrls: ['https://testnet.cronoscan.com/'],
 }
 
 export const CRONOS_MAINNET = {
@@ -146,8 +146,8 @@ export const CRONOS_MAINNET = {
 		symbol: 'CRO',
 		decimals: 18
 	},
-	rpcUrls: ['https://evm-cronos.crypto.org'],
-	blockExplorerUrls: ['https://cronos.crypto.org/explorer'],
+	rpcUrls: ['https://evm.cronos.org'],
+	blockExplorerUrls: ['https://cronoscan.com/'],
 }
 
 export const SONGBIRD_TESTNET = {
