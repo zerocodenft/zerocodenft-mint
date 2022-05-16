@@ -59,6 +59,8 @@ export default {
 					await this.$wallet.connect()
 				}
 
+				console.log('mint', this.$wallet.chainId, +targetChainId)
+
 				if (this.$wallet.chainId !== +targetChainId) {
 					await this.$wallet.switchNetwork(targetChainId)
 				}

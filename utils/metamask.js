@@ -135,7 +135,7 @@ export const CRONOS_TESTNET = {
 		decimals: 18
 	},
 	rpcUrls: ['https://evm-t3.cronos.org'],
-	blockExplorerUrls: ['https://testnet.cronoscan.com/'],
+	blockExplorerUrls: ['https://testnet.cronoscan.com'],
 }
 
 export const CRONOS_MAINNET = {
@@ -147,7 +147,7 @@ export const CRONOS_MAINNET = {
 		decimals: 18
 	},
 	rpcUrls: ['https://evm.cronos.org'],
-	blockExplorerUrls: ['https://cronoscan.com/'],
+	blockExplorerUrls: ['https://cronoscan.com'],
 }
 
 export const SONGBIRD_TESTNET = {
