@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
+import { SALE_STATUS } from '@/constants'
+import { getHexProof, checkWhitelisted } from '@/utils'
 import { ethers } from 'ethers'
 import { getExplorerUrl } from '@/utils/metamask'
 
