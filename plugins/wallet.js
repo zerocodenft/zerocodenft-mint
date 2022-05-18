@@ -90,9 +90,8 @@ export default (ctx, inject) => {
             })
 
             if(!this.isMetamask) {
-                console.log('Selected wallet/account is not supported on this blockchain')
-                // throw new Error('Selected wallet/account is not supported on this blockchain')
-                return
+                // console.log('Selected wallet/account is not supported on this blockchain')
+                throw new Error('Selected wallet/account is not working via Wallet Connect. Please use Metamask instead.')
             }
 
             if(!chainId || this.chainId === chainId || this.hexChainId === chainId) {
