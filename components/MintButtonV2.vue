@@ -13,6 +13,14 @@
 				<b-button v-else class="bg-gradient-primary border-0" size="lg" block @click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
+						<b-button
+			variant="link"
+			class="text-dark mt-1"
+			:disabled="isBusy"
+			v-show="$wallet.isConnected && $wallet.canDisconnect"
+			@click="$wallet.disconnect"
+			>Disconnect Wallet</b-button
+		>
 			</b-overlay>
 		</div>
 		<b-alert

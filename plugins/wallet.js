@@ -84,8 +84,14 @@ export default (ctx, inject) => {
 
         async switchNetwork(chainId) {
 
+            console.log('switchNetwork', {
+              networkChainId: this.chainId,
+              targetChainId: chainId
+            })
+
             if(!this.isMetamask) {
-                throw new Error('Selected wallet/account is not supported on this blockchain')
+                // console.log('Selected wallet/account is not supported on this blockchain')
+                throw new Error('Selected wallet/account is not working via Wallet Connect. Please use Metamask instead.')
             }
 
             if(!chainId || this.chainId === chainId || this.hexChainId === chainId) {
