@@ -1,25 +1,6 @@
 <template>
 	<div>
-		<b-form-input
-			v-model.number="mintCount"
-			class="mb-2"
-			size="lg"
-			type="range"
-			min="1"
-			:max="
-				$siteConfig.smartContract.maxTokensPerTransaction ||
-				$siteConfig.smartContract.collectionSize
-			"
-			step="1">
-		</b-form-input>
-        <b-alert
-            :show="message.show || !!message.text"
-            :variant="message.variant"
-            dismissible
-            class="text-center">
-            {{ message.text }}
-        </b-alert>
-		<div class="text-center">
+		<div class="text-center mb-2">
 			<b-overlay :show="isBusy">
 				<b-button
 					v-if="soldOut"
@@ -29,7 +10,7 @@
 					target="_blank"
 					>SOLD OUT</b-button
 				>
-				<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
+				<b-button v-else class="bg-gradient-primary border-0" size="lg" block @click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
 						<b-button
@@ -42,31 +23,40 @@
 		>
 			</b-overlay>
 		</div>
+		<b-alert
+            :show="message.show || !!message.text"
+            :variant="message.variant"
+            dismissible
+            class="text-center">
+            {{ message.text }}
+        </b-alert>
 	</div>
 </template>
 
 <script>
 import { ethers } from 'ethers'
-import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
+import { getHexProof, checkWhitelisted } from '@/utils'
+import { SALE_STATUS } from '@/constants'
 
 export default {
 	props: {
 		soldOut: Boolean,
+		mintCount: {
+			type: Number,
+			default: 1
+		}
 	},
     data() {
 		return {
-			mintCount: 1,
 			isBusy: false,
-			message: {},
+			message: {}
 		}
 	},
     methods: {
         async mint() {
 			const {
 				chainId: targetChainId,
-				address,
 				hasWhitelist,
-				abi,
 				whitelist,
 				firstXFree
 			} = this.$siteConfig.smartContract
@@ -84,11 +74,7 @@ export default {
 
 				this.isBusy = true
 
-				const signedContract = new ethers.Contract(
-					address,
-					abi,
-					this.$wallet.provider.getSigner()
-				)
+				const signedContract = this.$smartContract.connect(this.$wallet.provider.getSigner())
 				const saleStatus = await signedContract.saleStatus()
 
 				if (saleStatus === SALE_STATUS.Paused) {
@@ -144,10 +130,6 @@ export default {
 					value
 				})
 
-				// if(targetChainId === '137') {
-				// 	// polygon requires 30 gwei min gas fee to combat spam
-				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
-				// }
 				const gasPrice = await this.$wallet.provider.getGasPrice()
 				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
 
@@ -167,6 +149,12 @@ export default {
 
 				console.log({ txResponse })
 
+				this.message = {
+					variant: 'success',
+					text: 'Mint successful!',
+					show: 5,
+				}
+
 				txResponse.wait().then(async (res) => {
 					// console.log({ res });
 					this.message = {
@@ -174,12 +162,6 @@ export default {
 						text: 'Mint confirmed! 🎉',
 					}
 				})
-
-				this.message = {
-					variant: 'success',
-					text: 'Mint successful!',
-					show: 5,
-				}
 			} catch (err) {
 				console.error(err)
 				if (!err) return

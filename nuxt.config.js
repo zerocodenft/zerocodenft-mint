@@ -62,10 +62,14 @@ export default {
 		'@/plugins/wallet',
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
+		'@/plugins/smartContract'
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
-	components: true,
+	components: [
+		'@/components',
+		'@/components/general'
+	],
 
 	// Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
 	buildModules: [],
@@ -76,6 +80,7 @@ export default {
 		'bootstrap-vue/nuxt',
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
+		'@nuxtjs/style-resources'
 	],
 
 	axios: {
@@ -84,6 +89,10 @@ export default {
 
 	bootstrapVue: {
 		icons: false,
+	},
+
+	styleResources: {
+		scss: ['./assets/styles/_variables.scss']
 	},
 
 	sitemap: {

@@ -9,33 +9,29 @@ export default async ({ redirect, route, $cloudFns, $axios }, inject) => {
         return
     }
     
-    const websiteId = route.query['siteId'] || localStorage.getItem('siteId')
-    localStorage.setItem('websiteId', websiteId)
-    if(!websiteId) {
+    const siteId = route.query['siteId'] || localStorage.getItem('siteId')
+    localStorage.setItem('siteId', siteId)
+    if(!siteId) {
         redirect('/error?type=missingConfig')
     }
-    
-    let siteData
-    
+        
     try {
-        const { data } = await $cloudFns.get('/siteconfig', { params: { websiteId } })
-        siteData = data
+        const { data } = await $cloudFns.get('/siteconfig', { params: { websiteId: siteId } })
+        siteConfig = data
     }
     catch(err1) {
         try {
             // fallback in case cloud function is not working
-            const { data } = await $axios.get(`/websites/${websiteId}/config`)
-            siteData = data
+            const { data } = await $axios.get(`/websites/${siteId}/config`)
+            siteConfig = data
         } catch(err2) {
             redirect('/error?type=missingConfig')
         }
     }
-    const { iconURL, backgroundImageURL } = siteData
+    const { iconURL, backgroundImageURL } = siteConfig
 
-    siteData.iconURL = iconURL || siteConfigLocal.iconURL
-    siteData.backgroundImageURL = backgroundImageURL || siteConfigLocal.backgroundImageURL
-
-    siteConfig = siteData
+    siteConfig.iconURL = iconURL || siteConfigLocal.iconURL
+    siteConfig.backgroundImageURL = backgroundImageURL || siteConfigLocal.backgroundImageURL
 
     inject('siteConfig', siteConfig)
 }

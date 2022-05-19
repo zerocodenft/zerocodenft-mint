@@ -37,11 +37,8 @@
 </template>
 
 <script>
-import MintMixin from '@/mixins/mint'
-
 export default {
     layout: 'no-headers',
-    mixins: [MintMixin],
 }
 </script>
 
