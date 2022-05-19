@@ -6,7 +6,7 @@
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
             <div v-if="mintMax > 1" class="mb-2">
-                <div v-if="$siteConfig.mintCountSelector === MINT_SELECTOR_TYPE.Range" class="mb-2">
+                <div v-if="$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range" class="d-flex mb-2">
                     <RangeSelector :max="mintMax" @onChange="onSelectedCountChange" />
                     <h5 class="pl-3 font-weight-bold">{{ mintCount }}</h5>
                 </div>

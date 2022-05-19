@@ -5,8 +5,8 @@ const SALE_STATUS = Object.freeze({
 })
 
 const MINT_SELECTOR_TYPE = Object.freeze({
-	Range: 0,
-	SpinButton: 1
+	SpinButton: 0,
+	Range: 1
 })
 
 export {

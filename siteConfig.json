@@ -15,7 +15,7 @@
 	"iconURL": null,
 	"faviconURL": null,
 	"isCounterHidden": false,
-	"mintCountSelector": 0,
+	"mintCountSelectorType": 0,
 	"widgetBotConfig": {
 		"server": "926589433833213962",
 		"channel": "970772831019347968",

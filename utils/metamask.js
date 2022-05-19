@@ -31,6 +31,7 @@ export const POLYGON_MAINNET_PARAMS = {
 		decimals: 18,
 	},
 	rpcUrls: [
+		'https://polygon-mainnet.g.alchemy.com/v2/OxEWUuDPnngCoLo6PnBesWmmg7BUqyLN',
 		'https://polygon-rpc.com',
 		'https://rpc-mainnet.matic.network',
 		'https://rpc-mainnet.maticvigil.com',
