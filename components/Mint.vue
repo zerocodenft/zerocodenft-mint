@@ -12,15 +12,16 @@
 			<h5 v-if="!$siteConfig.isCounterHidden" class="pt-2 text-center">
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
-            <div v-if="mintMax > 1">
+            <!-- <div v-if="mintMax > 1">
                 <div v-if="$siteConfig.mintCountSelector === MINT_SELECTOR_TYPE.SpinButton" class="mb-2">
-                    <SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
                 </div>
                 <div v-else-if="$siteConfig.mintCountSelector === MINT_SELECTOR_TYPE.Range" class="d-flex">
                     <RangeSelector :max="mintMax" @onChange="onSelectedCountChange" />
                     <h5 class="pl-3 font-weight-bold">{{ mintCount }}</h5>
                 </div>
-            </div>
+            </div> -->
+            <SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
+            <br/>
 			<MintButtonV2 :mintCount="mintCount" :soldOut="soldOut" />
 		</div>
 	</div>
