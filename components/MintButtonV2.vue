@@ -10,26 +10,31 @@
 					target="_blank"
 					>SOLD OUT</b-button
 				>
-				<b-button v-else class="bg-gradient-primary border-0" size="lg" block @click="mint"
+				<b-button
+					v-else
+					class="bg-gradient-primary border-0"
+					size="lg"
+					block
+					@click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
-						<b-button
-			variant="link"
-			class="text-dark mt-1"
-			:disabled="isBusy"
-			v-show="$wallet.isConnected && $wallet.canDisconnect"
-			@click="$wallet.disconnect"
-			>Disconnect Wallet</b-button
-		>
+				<b-button
+					variant="link"
+					class="text-light mt-1"
+					:disabled="isBusy"
+					v-show="$wallet.isConnected && $wallet.canDisconnect"
+					@click="$wallet.disconnect"
+					>Disconnect Wallet</b-button
+				>
 			</b-overlay>
 		</div>
 		<b-alert
-            :show="message.show || !!message.text"
-            :variant="message.variant"
-            dismissible
-            class="text-center">
-            {{ message.text }}
-        </b-alert>
+			:show="message.show || !!message.text"
+			:variant="message.variant"
+			dismissible
+			class="text-center">
+			{{ message.text }}
+		</b-alert>
 	</div>
 </template>
 
@@ -43,22 +48,22 @@ export default {
 		soldOut: Boolean,
 		mintCount: {
 			type: Number,
-			default: 1
-		}
+			default: 1,
+		},
 	},
-    data() {
+	data() {
 		return {
 			isBusy: false,
-			message: {}
+			message: {},
 		}
 	},
-    methods: {
-        async mint() {
+	methods: {
+		async mint() {
 			const {
 				chainId: targetChainId,
 				hasWhitelist,
 				whitelist,
-				firstXFree
+				firstXFree,
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
@@ -74,7 +79,9 @@ export default {
 
 				this.isBusy = true
 
-				const signedContract = this.$smartContract.connect(this.$wallet.provider.getSigner())
+				const signedContract = this.$smartContract.connect(
+					this.$wallet.provider.getSigner()
+				)
 				const saleStatus = await signedContract.saleStatus()
 
 				if (saleStatus === SALE_STATUS.Paused) {
@@ -110,24 +117,24 @@ export default {
 
 				let total = this.mintCount * buyPrice
 
-				if(firstXFree > 0) {					
+				if (firstXFree > 0) {
 					const mintedCount = +(await signedContract.totalSupply())
-					if(mintedCount < firstXFree) {
+					if (mintedCount < firstXFree) {
 						total = 0
 						const overflow = mintedCount + this.mintCount - firstXFree
-						if(overflow > 0) {
+						if (overflow > 0) {
 							this.mintCount -= overflow
 						}
-						console.log({mintedCount, overflow, mintCount: this.mintCount})
+						console.log({ mintedCount, overflow, mintCount: this.mintCount })
 					}
 				}
-	
+
 				const value = ethers.utils.parseEther(total.toString())
 
 				console.log({
 					buyPrice,
 					total,
-					value
+					value,
 				})
 
 				const gasPrice = await this.$wallet.provider.getGasPrice()
@@ -138,12 +145,12 @@ export default {
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
-						gasPrice
+						gasPrice,
 					})
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, {
 						value,
-						gasPrice
+						gasPrice,
 					})
 				}
 
@@ -177,6 +184,6 @@ export default {
 				this.isBusy = false
 			}
 		},
-    }
+	},
 }
 </script>
