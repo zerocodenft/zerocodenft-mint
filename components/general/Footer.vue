@@ -2,10 +2,8 @@
 	<footer class="bg-dark py-4 footer">
 		<b-container fluid>
 			<b-row>
-				<b-col sm="12" md="3">
-					<b-nav v-if="$siteConfig.iconURL" class="justify-content-center justify-content-md-start">
-						<b-img-lazy :src="$siteConfig.iconURL" width="60px" alt="logo" />
-					</b-nav>
+				<b-col sm="12" md="3" class="d-flex justify-content-center justify-content-md-start">
+					<b-img-lazy v-if="$siteConfig.iconURL" id="userLogo" height="60px" :src="$siteConfig.iconURL" alt="logo" />
 				</b-col>
 				<b-col sm="12" md="6" class="d-flex justify-content-center py-2">
 					<b-link
@@ -66,14 +64,3 @@
 	</footer>
 </template>
 
-<script>
-export default {
-	name: 'Footer',
-}
-</script>
-
-<style lang="scss" scoped>
-.footer {
-	height: $footer-height;
-}
-</style>

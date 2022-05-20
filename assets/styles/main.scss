@@ -16,7 +16,7 @@
 }
 
 .zc-container {
-  height: calc(100vh - $footer-height - $header-height);
+  height: calc(100vh - $header-height - $footer-height);
   &:first-child { 
     height: inherit;
   }

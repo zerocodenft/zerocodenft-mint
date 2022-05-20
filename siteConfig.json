@@ -12,7 +12,7 @@
 	"tiktokURL": null,
 	"marketplaceURL": "https://testnets.opensea.io/collection/zerocodenftofficial",
 	"backgroundImageURL": "/img/background.png",
-	"iconURL": null,
+	"iconURL": "/img/background.png",
 	"faviconURL": null,
 	"isCounterHidden": false,
 	"mintCountSelectorType": 0,
@@ -21,7 +21,7 @@
 		"channel": "970772831019347968",
 		"notifications": true,
 		"indicator": true,
-		"location": ["top", "right"]
+		"location": ["bottom", "left"]
 	},
 	"stylesConfig": {
 		"mintBtnBgColor": "#8859EC",

@@ -29,9 +29,3 @@
 			</b-collapse>
 		</b-navbar>
 </template>
-
-<style lang="scss" scoped>
-.header {
-	height: $header-height
-}
-</style>
