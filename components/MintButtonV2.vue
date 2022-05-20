@@ -4,7 +4,7 @@
 			<b-overlay :show="isBusy">
 				<b-button
 					v-if="soldOut"
-					class="bg-gradient-primary border-0"
+					class="mint-button font-weight-bold border-0"
 					:disabled="!$siteConfig.marketplaceURL"
 					:href="$siteConfig.marketplaceURL"
 					target="_blank"

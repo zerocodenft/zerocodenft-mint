@@ -9,13 +9,14 @@
 				Address {{ resolvedAddress }} is whitelisted
 			</b-form-valid-feedback>
 		</b-form-group>
-		<b-button
-			block
-			class="bg-gradient-primary border-0"
-			:disabled="!address"
-			@click="checkWhitelisted"
-			>Check</b-button
-		>
+        <div class="text-center">
+            <b-button
+                class="mint-button font-weight-bold border-0"
+                :disabled="!address"
+                @click="checkWhitelisted"
+                >Check</b-button
+            >
+        </div>
 	</b-form>
 </template>
 

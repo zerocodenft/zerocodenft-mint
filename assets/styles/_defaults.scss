@@ -14,10 +14,12 @@ $mintBtnFontSize: 1rem;
 }
 
 $pageBackground: #fff;
+$pageTextColor: #8859EC;
 
 .zc-background {
-    background: var(--pageBackground, $pageBackground);
     background-size: 100% 100%;
+    background: var(--pageBackground, $pageBackground);
+    color: var(--pageTextColor, $pageTextColor);
 }
 
 @media (max-width: 600px) {

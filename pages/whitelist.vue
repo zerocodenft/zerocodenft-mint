@@ -1,17 +1,12 @@
 <template>
 	<div
-		class="zc-container d-flex justify-content-center align-items-center"
-		:style="{
-			backgroundImage: `url(&quot;${$siteConfig.backgroundImageURL}&quot;)`,
-			backgroundSize: '100% 100%',
-		}">
+		class="d-flex justify-content-center align-items-center zc-container zc-background"
 		>
 		<b-jumbotron
 			:header="$siteConfig.title"
-			class="shadow text-center py-4"
-			lead="Check whitelisted status"
+			class="shadow text-center jumbo py-4"
 			bg-variant="dark"
-			text-variant="white">
+			lead="Check whitelisted status">
 			<WhitelistCheck />
 		</b-jumbotron>
 	</div>

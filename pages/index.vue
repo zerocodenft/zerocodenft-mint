@@ -5,8 +5,7 @@
 			:header="$siteConfig.title"
 			:lead="$siteConfig.description"
 			class="shadow text-center jumbo py-4"
-			bg-variant="dark"
-			text-variant="white">
+			bg-variant="dark">
 			<Mint />
 		</b-jumbotron>
 	</div>
