@@ -23,6 +23,11 @@
 		"indicator": true,
 		"location": ["top", "right"]
 	},
+	"stylesConfig": {
+		"mintBtnBgColor": "white",
+		"mintBtnTextColor": "black",
+		"mintBtnFontSize": "20px"
+	},
 	"smartContract": {
 		"name": "Zero Code NFT",
 		"symbol": "ZC",

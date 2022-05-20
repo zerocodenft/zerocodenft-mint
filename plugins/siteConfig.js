@@ -4,6 +4,9 @@ export default async ({ redirect, route, $cloudFns, $axios }, inject) => {
     
     let siteConfig = siteConfigLocal
 
+    // inject('siteConfig', siteConfig)
+    // return
+
     if(route.path === '/error') {
         inject('siteConfig', siteConfig)
         return

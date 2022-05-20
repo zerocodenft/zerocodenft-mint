@@ -12,9 +12,7 @@
 				>
 				<b-button
 					v-else
-					class="bg-gradient-primary border-0"
-					size="lg"
-					block
+					class="mint-button font-weight-bold border-0"
 					@click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
@@ -187,3 +185,5 @@ export default {
 	},
 }
 </script>
+
+<style lang="scss" scoped src="@/assets/styles/mint-button.scss"></style>

@@ -1,0 +1,14 @@
+
+$mintBtnBgColor: #8859EC;
+$mintBtnTextColor: white;
+$mintBtnWidth: 100%;
+$mintBtnHeight: 100%;
+$mintBtnFontSize: 1rem;
+
+.mint-button {
+    background-color: var(--mintBtnBgColor, $mintBtnBgColor);
+    color: var(--mintBtnTextColor, $mintBtnTextColor);
+    width: var(--mintBtnWidth, $mintBtnWidth);
+    height: var(--mintBtnHeight, $mintBtnHeight);
+    font-size: var(--mintBtnFontSize, $mintBtnFontSize);
+}

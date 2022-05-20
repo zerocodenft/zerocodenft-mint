@@ -2,7 +2,6 @@
     <b-form-spinbutton
         :value="value"
         @input="onInput"
-        size="lg"
         :min="min"
         :max="max"
         :step="step">

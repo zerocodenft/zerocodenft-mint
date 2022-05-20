@@ -16,4 +16,11 @@ console.info(
   font-weight:bold;`
 )
 console.groupEnd()
+
+import StylesMixin from '@/mixins/styles'
+
+export default {
+  mixins: [StylesMixin]
+}
+
 </script>
