@@ -92,7 +92,7 @@ export default {
 	},
 
 	styleResources: {
-		scss: ['./assets/styles/_variables.scss']
+		scss: ['./assets/styles/_variables.scss', './assets/styles/_defaults.scss'],
 	},
 
 	sitemap: {

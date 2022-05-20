@@ -31,10 +31,6 @@ export default async ({ redirect, route, $cloudFns, $axios }, inject) => {
             redirect('/error?type=missingConfig')
         }
     }
-    const { iconURL, backgroundImageURL } = siteConfig
-
-    siteConfig.iconURL = iconURL || siteConfigLocal.iconURL
-    siteConfig.backgroundImageURL = backgroundImageURL || siteConfigLocal.backgroundImageURL
 
     inject('siteConfig', siteConfig)
 }

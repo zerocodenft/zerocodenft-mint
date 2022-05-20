@@ -1,9 +1,6 @@
 <template>
 	<div
-		class="zc-container d-flex justify-content-center align-items-center"
-		:style="{
-			backgroundImage: `url(&quot;${$siteConfig.backgroundImageURL}&quot;)`
-		}">
+		class="d-flex justify-content-center align-items-center zc-container zc-background">
 		<b-jumbotron
 			:header="$siteConfig.title"
 			:lead="$siteConfig.description"
@@ -14,14 +11,6 @@
 		</b-jumbotron>
 	</div>
 </template>
-
-<script>
-import WidgetBotMixin from '@/mixins/widgetBot'
-
-export default {
-	mixins: [WidgetBotMixin],
-}
-</script>
 
 <style lang="scss" scoped>
 // .backdrop-blur {

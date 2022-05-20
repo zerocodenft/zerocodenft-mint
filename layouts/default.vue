@@ -18,9 +18,10 @@ console.info(
 console.groupEnd()
 
 import StylesMixin from '@/mixins/styles'
+import WidgetBotMixin from '@/mixins/widgetBot'
 
 export default {
-  mixins: [StylesMixin]
+  mixins: [StylesMixin, WidgetBotMixin]
 }
 
 </script>

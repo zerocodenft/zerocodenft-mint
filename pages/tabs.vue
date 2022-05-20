@@ -1,19 +1,22 @@
 <template>
-	<b-tabs
-		content-class="mt-3"
-		justified
-		active-nav-item-class="font-weight-bold text-zerocodenft">
-		<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
-			<Mint />
-		</b-tab>
-		<b-tab
-			v-if="$siteConfig.smartContract.hasWhitelist"
-			title="Whitelist"
-			lazy
-			class="tab px-3 pb-2 border-0">
-			<WhitelistCheck />
-		</b-tab>
-	</b-tabs>
+	<div class="zc-background">
+		<b-tabs
+			content-class="mt-3"
+			justified
+			active-nav-item-class="font-weight-bold text-zerocodenft">
+			<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
+				<Mint />
+			</b-tab>
+			<b-tab
+				v-if="$siteConfig.smartContract.hasWhitelist"
+				title="Whitelist"
+				lazy
+				class="tab px-3 pb-2 border-0">
+				<WhitelistCheck />
+			</b-tab>
+		</b-tabs>
+		<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden" />
+	</div>
 </template>
 
 <script>

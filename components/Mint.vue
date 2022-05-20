@@ -67,7 +67,7 @@ export default {
                     console.group('Updates')
                     console.info('Minted count:', this.mintedCount)
                     console.groupEnd()
-                }, 5000)
+                }, 10000)
             }
 		} catch (err) {
 			console.error({err})
@@ -90,7 +90,6 @@ export default {
 	},
     methods: {
         onSelectedCountChange(val) {
-            console.log('onSelectedCountChange', val)
             this.mintCount = val
         }
     }

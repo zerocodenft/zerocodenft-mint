@@ -12,3 +12,16 @@ $mintBtnFontSize: 1rem;
     height: var(--mintBtnHeight, $mintBtnHeight);
     font-size: var(--mintBtnFontSize, $mintBtnFontSize);
 }
+
+$pageBackground: #fff;
+
+.zc-background {
+    background: var(--pageBackground, $pageBackground);
+    background-size: 100% 100%;
+}
+
+@media (max-width: 600px) {
+	.zc-background {
+		background-size: cover;
+	}
+}
