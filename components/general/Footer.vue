@@ -2,10 +2,10 @@
 	<footer class="bg-dark py-4 footer">
 		<b-container fluid>
 			<b-row>
-				<b-col sm="12" md="3" class="d-flex justify-content-center justify-content-md-start">
+				<b-col sm="12" md="3" class="d-none d-md-flex justify-content-center justify-content-md-start">
 					<b-img-lazy v-if="$siteConfig.iconURL" id="userLogo" height="60px" :src="$siteConfig.iconURL" alt="logo" />
 				</b-col>
-				<b-col sm="12" md="6" class="d-flex justify-content-center py-2">
+				<b-col sm="12" md="6" class="d-flex justify-content-center flex-wrap py-2">
 					<b-link
 						v-if="$siteConfig.twitterURL"
 						:href="$siteConfig.twitterURL"
@@ -51,7 +51,18 @@
 						<b-img src="@/assets/img/logos/etherscan.svg" width="30px" />
 					</b-link>
 				</b-col>
-				<b-col sm="12" md="3">
+				<b-col v-if="$siteConfig.iconURL" sm="12" md="3" class="d-flex d-sm-block justify-content-around">
+					<div class="d-block d-md-none">
+						<b-img-lazy id="userLogo" height="60px" :src="$siteConfig.iconURL" alt="logo" />
+					</div>
+					<div v-if="!$siteConfig.isAttributionHidden" class="d-flex flex-column align-items-end">
+						<span class="text-light" style="font-size: small">Powered By</span>
+						<b-link href="https://zerocodenft.com" target="_blank">
+							<b-img-lazy width="100px" src="/img/zerocodenftlogo_white.svg" />
+						</b-link>
+					</div>
+				</b-col>
+				<b-col v-else sm="12" md="3">
 					<div v-if="!$siteConfig.isAttributionHidden" class="d-flex flex-column align-items-center align-items-md-end">
 						<span class="text-light" style="font-size: small">Powered By</span>
 						<b-link href="https://zerocodenft.com" target="_blank">

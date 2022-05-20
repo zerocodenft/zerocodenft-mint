@@ -2,8 +2,7 @@
 	<div
 		class="zc-container d-flex justify-content-center align-items-center"
 		:style="{
-			backgroundImage: `url(&quot;${$siteConfig.backgroundImageURL}&quot;)`,
-			backgroundSize: '100% 100%',
+			backgroundImage: `url(&quot;${$siteConfig.backgroundImageURL}&quot;)`
 		}">
 		<b-jumbotron
 			:header="$siteConfig.title"
@@ -25,7 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.backdrop-blur {
-	// backdrop-filter: blur(1px);
-}
+// .backdrop-blur {
+// 	backdrop-filter: blur(1px);
+// }
 </style>
