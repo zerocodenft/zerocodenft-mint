@@ -24,8 +24,10 @@
 		"location": ["top", "right"]
 	},
 	"stylesConfig": {
-		"mintBtnBgColor": "white",
-		"mintBtnTextColor": "black",
+		"mintBtnBgColor": "#8859EC",
+		"mintBtnTextColor": "#FFFFFF",
+		"mintBtnWidth": "100%",
+		"mintBtnHeight": "16px",
 		"mintBtnFontSize": "20px"
 	},
 	"smartContract": {
