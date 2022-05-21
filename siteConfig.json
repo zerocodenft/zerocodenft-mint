@@ -28,7 +28,8 @@
 		"mintBtnTextColor": "#FFFFFF",
 		"mintBtnWidth": "100%",
 		"mintBtnHeight": "100%",
-		"mintBtnFontSize": "20px"
+		"mintBtnFontSize": "20px",
+		"pageTextColor":"#8859EC"
 	},
 	"smartContract": {
 		"name": "Zero Code NFT",

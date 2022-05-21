@@ -13,8 +13,18 @@ $mintBtnFontSize: 1rem;
     font-size: var(--mintBtnFontSize, $mintBtnFontSize);
 }
 
+$navbarBgColor: #343a40;
 $pageBackground: #fff;
 $pageTextColor: #8859EC;
+
+.zc-navbar {
+    background-color: var(--navbarBgColor, $navbarBgColor);
+    color: var(--pageTextColor, $pageTextColor);
+}
+
+.zc-text {
+    color: var(--pageTextColor, $pageTextColor) !important;
+}
 
 .zc-background {
     background-size: 100% 100%;
