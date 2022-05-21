@@ -31,8 +31,8 @@ export const POLYGON_MAINNET_PARAMS = {
 		decimals: 18,
 	},
 	rpcUrls: [
-		'https://polygon-rpc.com',
 		'https://polygon-mainnet.alchemyapi.io/v2/OxEWUuDPnngCoLo6PnBesWmmg7BUqyLN',
+		'https://polygon-rpc.com',
 		'https://rpc-mainnet.matic.quiknode.pro',
 		'https://rpc-mainnet.matic.network',
 		'https://rpc-mainnet.maticvigil.com',
@@ -49,8 +49,8 @@ export const POLYGON_MUMBAI_TESTNET_CONFIG = {
 		decimals: 18,
 	},
 	rpcUrls: [
-		'https://rpc-mumbai.maticvigil.com',
 		'https://polygon-mumbai.g.alchemy.com/v2/pNeHkDmnb5yRz1gD2uKctD9STtnAtmoS',
+		'https://rpc-mumbai.maticvigil.com/v1/00cd3c7b0d85f810ab36316f2732d0810a2a1e50',
 	],
 	blockExplorerUrls: ['https://mumbai.polygonscan.com']
 }

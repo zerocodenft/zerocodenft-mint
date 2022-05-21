@@ -43,8 +43,8 @@ export default {
 
 		if(supportsFortmatic) {
 			const rpcUrlMap = {
-				'80001': 'https://testnet2.matic.network',
-				'137': 'https://alpha.ethereum.matic.network',
+				'80001': 'https://rpc-mumbai.maticvigil.com/v1/00cd3c7b0d85f810ab36316f2732d0810a2a1e50',
+				'137': 'https://rpc-mainnet.maticvigil.com/v1/00cd3c7b0d85f810ab36316f2732d0810a2a1e50',
 				'4': 'https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279',
 				'1': 'https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279'
 			}
