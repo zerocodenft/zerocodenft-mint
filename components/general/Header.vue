@@ -42,6 +42,7 @@
 					</b-list-group-item>
 					<b-list-group-item>Balance: {{ balance }}</b-list-group-item>
 					<b-list-group-item class="text-capitalize">Network: {{ $wallet.networkName }}</b-list-group-item>
+					<b-list-group-item button @click="() => this.$wallet.disconnect()">Disconnect Wallet</b-list-group-item>
 					<b-list-group-item class="fm-deposit-btn" v-if="isFortmatic" button @click="onDeposit">Fortmatic Deposit</b-list-group-item>
 				</template>
 			</b-list-group>

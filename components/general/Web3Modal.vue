@@ -63,7 +63,7 @@ export default {
 	mounted() {
 		this.$nextTick(async () => {
 			const web3modal = this.$refs.web3modal
-			console.log(web3modal)
+			// console.log(web3modal)
 			// web3modal.onClose(console.log('onClose'))
 			// web3modal.onConnect(() => console.log('on connect'))
 			this.$wallet.web3Modal = web3modal

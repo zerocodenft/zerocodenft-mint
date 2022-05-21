@@ -55,9 +55,6 @@ export default {
 			message: {},
 		}
 	},
-	created() {
-		this.$nuxt.$on('web3ModalClosed', () => this.isBusy = false)
-	},
 	methods: {
 		async mint() {
 			const {
