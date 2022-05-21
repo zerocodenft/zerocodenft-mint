@@ -11,7 +11,8 @@
 			<b-navbar-nav>
 				<b-nav-item
 					v-if="$siteConfig.smartContract.hasWhitelist"
-					class="text-center"
+					link-classes="zc-text"
+					class="text-center zc-text"
 					to="/whitelist"
 					>Whitelist</b-nav-item
 				>
@@ -88,9 +89,6 @@ export default {
 			isSidebarOpen: false,
 		}
 	},
-	created() {
-		console.log()
-	},
 	computed: {
 		isFortmatic() {
 			return this.$wallet.type === WALLET_TYPE.Fortmatic
@@ -124,3 +122,10 @@ export default {
 	},
 }
 </script>
+
+<style lang="scss" scoped>
+	.fm-deposit-btn {
+		background-color: #8859EC;
+		color: white;
+	}
+</style>
