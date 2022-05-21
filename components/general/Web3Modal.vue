@@ -42,13 +42,20 @@ export default {
 		const supportsFortmatic = [4,1,80001,137,97,56].includes(+chainId) //supported chains
 
 		if(supportsFortmatic) {
+			const rpcUrlMap = {
+				'80001': 'https://testnet2.matic.network',
+				'137': 'https://alpha.ethereum.matic.network',
+				'4': 'https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279',
+				'1': 'https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279'
+			}
+
 			this.providerOptions.fortmatic = {
 				package: Fortmatic,
 				options: {
 					key: this.$config.FORTMATIC_KEY,
 					network: {
 						chainId: chainId,
-						rpcUrl: CHAINID_CONFIG_MAP[chainId].rpcUrls[0]
+						rpcUrl: rpcUrlMap[chainId]
 					}
 				}
 			}

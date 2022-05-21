@@ -31,11 +31,11 @@ export const POLYGON_MAINNET_PARAMS = {
 		decimals: 18,
 	},
 	rpcUrls: [
-		'https://polygon-mainnet.g.alchemy.com/v2/OxEWUuDPnngCoLo6PnBesWmmg7BUqyLN',
 		'https://polygon-rpc.com',
+		'https://polygon-mainnet.alchemyapi.io/v2/OxEWUuDPnngCoLo6PnBesWmmg7BUqyLN',
+		'https://rpc-mainnet.matic.quiknode.pro',
 		'https://rpc-mainnet.matic.network',
 		'https://rpc-mainnet.maticvigil.com',
-		'https://rpc-mainnet.matic.quiknode.pro',
 	],
 	blockExplorerUrls: ['https://polygonscan.com'],
 }
@@ -48,7 +48,10 @@ export const POLYGON_MUMBAI_TESTNET_CONFIG = {
 		symbol: 'MATIC',
 		decimals: 18,
 	},
-	rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+	rpcUrls: [
+		'https://rpc-mumbai.maticvigil.com',
+		'https://polygon-mumbai.g.alchemy.com/v2/pNeHkDmnb5yRz1gD2uKctD9STtnAtmoS',
+	],
 	blockExplorerUrls: ['https://mumbai.polygonscan.com']
 }
 
@@ -88,7 +91,10 @@ export const ETHEREUM_RINKEBY = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ["https://eth-rinkeby.alchemyapi.io/v2/eY57F0-qi9WoMojLu9bc3xQuByUU4S-c"],
+	rpcUrls: [
+		"https://eth-rinkeby.alchemyapi.io/v2/eY57F0-qi9WoMojLu9bc3xQuByUU4S-c",
+		"https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279"
+	],
 	blockExplorerUrls: ['https://rinkeby.etherscan.io']
 }
 
@@ -100,7 +106,10 @@ export const ETHEREUM_MAINNET = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ["https://eth-mainnet.alchemyapi.io/v2/KTOAt8HziAmtVspf4HpKYmWK7gAMs7t1"],
+	rpcUrls: [
+		"https://eth-mainnet.alchemyapi.io/v2/KTOAt8HziAmtVspf4HpKYmWK7gAMs7t1",
+		"https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279",
+	],
 	blockExplorerUrls: ['https://etherscan.io'],
 }
 
