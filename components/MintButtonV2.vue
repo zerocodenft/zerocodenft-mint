@@ -175,7 +175,7 @@ export default {
 			} catch (err) {
 				console.error(err)
 
-				if(err?.message === 'JSON RPC response format is invalid') {
+				if(!err || err.message === 'JSON RPC response format is invalid') {
 					return
 				}
 

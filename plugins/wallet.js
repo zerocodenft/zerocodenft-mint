@@ -90,14 +90,18 @@ export default (ctx, inject) => {
             if(newAccount) {
                 this.account = newAccount
                 this.accountCompact = `${newAccount.substring(0, 4)}...${newAccount.substring(newAccount.length - 4)}`
-
-                // console.log('here', this, this.provider)
-                const balance = (await this.provider.getBalance(newAccount)).toString()
-                this.balance = `${(+ethers.utils.formatEther(balance)).toFixed(3)} ${getCurrency(this.network.chainId)}`
+                this.balance = await this.getBalance()
             }
             else {
                 this.disconnect()
             }
+        },
+
+        async getBalance() {
+            if(!this.isConnected) return
+
+            const balance = (await this.provider.getBalance(this.account)).toString()
+            return `${(+ethers.utils.formatEther(balance)).toFixed(3)} ${getCurrency(this.chainId)}`
         },
 
         async switchNetwork(chainId) {

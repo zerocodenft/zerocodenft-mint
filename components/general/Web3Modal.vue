@@ -25,18 +25,6 @@ const wcConfig = {
 	}
 }
 
-
-// const fortmaticConfig = {
-// 	package: Fortmatic,
-//     options: {
-//       key: process.env.FC,
-//       network: {
-// 		  chainId: 
-// 	  }
-//     }
-// }
-
-
 export default {
 	components: {
 		Web3ModalVue,
@@ -50,9 +38,8 @@ export default {
 		}
 	},
 	created() {
-		console.log(+this.$siteConfig.smartContract.chainId)
-		const supportsFortmatic = [4,1,80001,137,97,56].includes(+this.$siteConfig.smartContract.chainId)
-		console.log(supportsFortmatic)
+		const chainId = this.$siteConfig.smartContract.chainId
+		const supportsFortmatic = [4,1,80001,137,97,56].includes(+chainId) //supported chains
 
 		if(supportsFortmatic) {
 			this.providerOptions.fortmatic = {
@@ -60,8 +47,8 @@ export default {
 				options: {
 					key: this.$config.FORTMATIC_KEY,
 					network: {
-						chainId: this.$siteConfig.smartContract.chainId,
-						rpcUrl: CHAINID_CONFIG_MAP[this.$siteConfig.smartContract.chainId].rpcUrls[0]
+						chainId: chainId,
+						rpcUrl: CHAINID_CONFIG_MAP[chainId].rpcUrls[0]
 					}
 				}
 			}
@@ -76,7 +63,7 @@ export default {
 	mounted() {
 		this.$nextTick(async () => {
 			const web3modal = this.$refs.web3modal
-			// console.log(web3modal)
+			console.log(web3modal)
 			// web3modal.onClose(console.log('onClose'))
 			// web3modal.onConnect(() => console.log('on connect'))
 			this.$wallet.web3Modal = web3modal

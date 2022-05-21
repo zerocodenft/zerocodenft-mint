@@ -17,8 +17,17 @@ const checkWhitelisted = (list, address) => {
 	return merkleTree.verify(hexProof, ethers.utils.keccak256(address), merkleTree.getRoot())
 }
 
+const copyToClipboard = async function(value) {
+    await navigator.clipboard.writeText(value)
+    this.$bvToast.toast('Copied to clipboard!', {
+        title: 'Clipboard',
+        variant: 'info',
+    })
+}
+
 export {
 	getMerkeTree,
 	getHexProof,
-	checkWhitelisted
+	checkWhitelisted,
+	copyToClipboard
 }
