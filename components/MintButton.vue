@@ -21,7 +21,7 @@
 			class="text-white mt-1"
 			:disabled="isBusy"
 			v-show="$wallet.isConnected && $wallet.canDisconnect"
-			@click="$wallet.disconnect"
+			@click="() => $wallet.disconnect"
 			>Disconnect Wallet</b-button
 		>
 	</b-overlay>

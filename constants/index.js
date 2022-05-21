@@ -9,7 +9,14 @@ const MINT_SELECTOR_TYPE = Object.freeze({
 	Range: 1
 })
 
+const WALLET_TYPE = Object.freeze({
+	Other: 0,
+	Metamask: 1,
+	Fortmatic: 2,
+})
+
 export {
     SALE_STATUS,
-    MINT_SELECTOR_TYPE
+    MINT_SELECTOR_TYPE,
+	WALLET_TYPE
 }
