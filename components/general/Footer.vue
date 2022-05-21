@@ -1,5 +1,5 @@
 <template>
-	<footer class="bg-dark py-4 footer">
+	<footer class="py-4 footer zc-navbar">
 		<b-container fluid>
 			<b-row>
 				<b-col sm="12" md="3" class="d-none d-md-flex justify-content-center justify-content-md-start">
