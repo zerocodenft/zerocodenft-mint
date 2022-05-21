@@ -7,6 +7,7 @@
 			class="shadow text-center jumbo py-4"
 			bg-variant="dark">
 			<Mint />
+			<PoweredByZeroCode />
 		</b-jumbotron>
 	</div>
 </template>

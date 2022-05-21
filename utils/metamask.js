@@ -61,8 +61,9 @@ export const FANTOM_TESTNET_CONFIG = {
 		decimals: 18,
 	},
 	rpcUrls: [
+		'https://rpc.testnet.fantom.network',
 		'https://xapi.testnet.fantom.network/lachesis',
-		'https://rpc.testnet.fantom.network'
+		'https://rpc.ankr.com/fantom_testnet'
 	],
 	blockExplorerUrls: ['https://testnet.ftmscan.com']
 }

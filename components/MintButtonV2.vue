@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="text-center mb-2">
-			<b-overlay :show="isBusy">
+			<b-overlay :show="isBusy" z-index="2">
 				<b-button
 					v-if="soldOut"
 					class="mint-button font-weight-bold border-0"
@@ -21,7 +21,7 @@
 					class="text-light mt-1"
 					:disabled="isBusy"
 					v-show="$wallet.isConnected && $wallet.canDisconnect"
-					@click="$wallet.disconnect"
+					@click="() => $wallet.disconnect()"
 					>Disconnect Wallet</b-button
 				>
 			</b-overlay>
@@ -55,6 +55,9 @@ export default {
 			message: {},
 		}
 	},
+	created() {
+		this.$nuxt.$on('web3ModalClosed', () => this.isBusy = false)
+	},
 	methods: {
 		async mint() {
 			const {
@@ -67,7 +70,8 @@ export default {
 			this.message = {}
 
 			try {
-				if (!this.$wallet.account) {
+				
+				if (!this.$wallet.isConnected) {
 					await this.$wallet.connect()
 				}
 
@@ -80,6 +84,7 @@ export default {
 				const signedContract = this.$smartContract.connect(
 					this.$wallet.provider.getSigner()
 				)
+
 				const saleStatus = await signedContract.saleStatus()
 
 				if (saleStatus === SALE_STATUS.Paused) {
@@ -169,7 +174,10 @@ export default {
 				})
 			} catch (err) {
 				console.error(err)
-				if (!err) return
+
+				if(err?.message === 'JSON RPC response format is invalid') {
+					return
+				}
 
 				const { data, reason, message, code, method, error } = err
 				const text =
@@ -178,6 +186,8 @@ export default {
 					variant: 'danger',
 					text,
 				}
+
+				// this.$wallet.rawProvider.user?.deposit()
 			} finally {
 				this.isBusy = false
 			}
