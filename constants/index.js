@@ -2,6 +2,9 @@ const SALE_STATUS = Object.freeze({
 	Paused: 0,
 	Presale: 1,
 	Public: 2,
+	0: 'Paused',
+	1: 'Presale',
+	2: 'Public'
 })
 
 const MINT_SELECTOR_TYPE = Object.freeze({

@@ -11,19 +11,6 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Fortmatic from "fortmatic";
 import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
-const wcConfig = {
-	package: WalletConnectProvider,
-	options: {
-		rpc: Object.entries(CHAINID_CONFIG_MAP)
-			.filter(([k, _]) => !isNaN(k))
-			.reduce((acc, val) => {
-				const [key, value] = val
-				const rpcUrl = value.rpcUrls[0]
-				acc[key] = rpcUrl
-				return acc
-			}, {})
-	}
-}
 
 export default {
 	components: {
@@ -33,13 +20,30 @@ export default {
 		return {
 			theme: 'light',
 			providerOptions: {
-				walletconnect: wcConfig
+				walletconnect: null,
+				fortmatic: null
 			},
 		}
 	},
 	created() {
 		const chainId = this.$siteConfig.smartContract.chainId
 		const supportsFortmatic = [4,1,80001,137,97,56].includes(+chainId) //supported chains
+
+		const wcConfig = {
+			package: WalletConnectProvider,
+			options: {
+				network: CHAINID_CONFIG_MAP[chainId.toString()],
+				rpc: Object.entries(CHAINID_CONFIG_MAP)
+					.filter(([k, _]) => !isNaN(k))
+					.reduce((acc, val) => {
+						const [key, value] = val
+						const rpcUrl = value.rpcUrls[0]
+						acc[key] = rpcUrl
+						return acc
+					}, {})
+			}
+		}
+		this.providerOptions.walletconnect = wcConfig
 
 		if(supportsFortmatic) {
 			const rpcUrlMap = {
