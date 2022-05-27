@@ -78,11 +78,7 @@ export default {
 
 				this.isBusy = true
 
-				const signedContract = this.$smartContract.connect(
-					this.$wallet.provider.getSigner()
-				)
-
-				const saleStatus = await signedContract.saleStatus()
+				const saleStatus = await this.$smartContract.saleStatus()
 
 				if (saleStatus === SALE_STATUS.Paused) {
 					this.message = {
@@ -112,33 +108,37 @@ export default {
 				let txResponse
 
 				const buyPrice = isPresale
-					? +ethers.utils.formatEther(await signedContract.PRESALE_MINT_PRICE())
-					: +ethers.utils.formatEther(await signedContract.MINT_PRICE())
+					? +ethers.utils.formatEther(await this.$smartContract.PRESALE_MINT_PRICE())
+					: +ethers.utils.formatEther(await this.$smartContract.MINT_PRICE())
 
 				let total = this.mintCount * buyPrice
 
 				if (firstXFree > 0) {
-					const mintedCount = +(await signedContract.totalSupply())
-					if (mintedCount < firstXFree) {
-						total = 0
-						const overflow = mintedCount + this.mintCount - firstXFree
-						if (overflow > 0) {
-							this.mintCount -= overflow
+					const mintedCount = +(await this.$smartContract.totalSupply())
+					if (firstXFree > mintedCount) {
+						const freeLeft = firstXFree - mintedCount
+						const difference = freeLeft - this.mintCount
+						if(difference < 0) {
+							total = Math.abs(difference) * buyPrice
+						} else {
+							total = 0
 						}
-						console.log({ mintedCount, overflow, mintCount: this.mintCount })
+						console.log('FIRSTXFREE >> ', { mintedCount, difference, mintCount: this.mintCount })
 					}
 				}
 
 				const value = ethers.utils.parseEther(total.toString())
+				const gasPrice = await this.$wallet.provider.getGasPrice()
 
 				console.log({
 					buyPrice,
 					total,
-					value,
+					gasPrice: `${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`
 				})
 
-				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
+				const signedContract = this.$smartContract.connect(
+					this.$wallet.provider.getSigner()
+				)
 
 				if (hasWhitelist) {
 					const hexProof = getHexProof(whitelist, this.$wallet.account)

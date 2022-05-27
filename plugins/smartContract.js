@@ -15,7 +15,7 @@ export default function ({ $siteConfig }, inject) {
     } = $siteConfig.smartContract
 
     const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
-    const jsonRpcProvider = new ethers.providers.JsonRpcProvider(providerUrl)
+    const jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(providerUrl)
     const smartContract = new ethers.Contract(address, abi, jsonRpcProvider)
 
     // console.log(smartContract)

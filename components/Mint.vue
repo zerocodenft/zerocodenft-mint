@@ -32,49 +32,52 @@ export default {
 		return {
             MINT_SELECTOR_TYPE,
             mintCount: 1,
-            mintMax: 1,
 			mintedCount: 0,
 			collectionSize: 0,
-			mintedCountIntervalId: null,
-            saleStatus: null
+			intervalId: null,
+            saleStatus: SALE_STATUS.Paused
 		}
 	},
     async created() {
 		try {
             const { 
-				isCounterHidden
+				isCounterHidden,
+                smartContract
 			} = this.$siteConfig
-            const { maxTokensPerTransaction, maxTokensPerPersonOnWhitelist, collectionSize } = this.$siteConfig.smartContract
 
-            this.collectionSize = collectionSize
-            
-            const hasSaleStatus = typeof this.$smartContract.saleStatus === 'function'
-            if(hasSaleStatus) {
+            this.collectionSize = smartContract.collectionSize
+            this.saleStatus = await this.$smartContract.saleStatus()
+            // this.mintMax = this.saleStatus === SALE_STATUS.Whitelist 
+            //     ? maxTokensPerPersonOnWhitelist
+            //     : maxTokensPerTransaction || collectionSize
+
+			// const hasTotalSupply = typeof this.$smartContract.totalSupply === 'function'
+
+            this.mintedCount = +(await this.$smartContract.totalSupply())
+
+            this.intervalId = setInterval(async () => {
+                console.group('Updates')
+
                 this.saleStatus = await this.$smartContract.saleStatus()
-            }
+                console.info('Sale status', SALE_STATUS[this.saleStatus])
 
-            this.mintMax = this.saleStatus === SALE_STATUS.Whitelist 
-                ? maxTokensPerPersonOnWhitelist
-                : maxTokensPerTransaction || collectionSize
-
-			const hasTotalSupply = typeof this.$smartContract.totalSupply === 'function'
-			if(isCounterHidden || !hasTotalSupply) {
-				return
-			} else {
-                this.mintedCount = +(await this.$smartContract.totalSupply())
-                this.mintedCountIntervalId = setInterval(async () => {
+                if(!isCounterHidden) {
                     this.mintedCount = +(await this.$smartContract.totalSupply())
-                    console.group('Updates')
                     console.info('Minted count:', this.mintedCount)
-                    console.groupEnd()
-                }, 10000)
-            }
+                }
+
+                console.groupEnd()
+
+                if(this.soldOut) {
+                    clearInterval(this.intervalId)
+                }
+            }, 10000)
 		} catch (err) {
 			console.error({err})
 		}
 	},
     beforeDestroy() {
-        this.mintedCountIntervalId = null
+        this.intervalId = null
     },
 	computed: {
         dropDate() {
@@ -87,6 +90,13 @@ export default {
         soldOut() {
 			return this.mintedCount >= this.collectionSize
 		},
+        mintMax() {
+            const { maxTokensPerTransaction, maxTokensPerPersonOnWhitelist, collectionSize } = this.$siteConfig.smartContract
+
+            return this.saleStatus === SALE_STATUS.Presale 
+                ? maxTokensPerPersonOnWhitelist
+                : maxTokensPerTransaction || collectionSize
+        }
 	},
     methods: {
         onSelectedCountChange(val) {

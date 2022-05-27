@@ -22,6 +22,7 @@
 
 <script>
 import { ethers } from 'ethers'
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 import { checkWhitelisted } from '@/utils'
 
 export default {
@@ -31,6 +32,11 @@ export default {
             isWhitelisted: null,
             resolvedAddress: ''
         }
+    },
+    created() {
+        const chainId = this.$siteConfig.smartContract.chainId
+        const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
+        this.provider = new ethers.providers.StaticJsonRpcProvider(providerUrl)
     },
     watch: {
         '$wallet.account': function(newVal, oldVal) {
@@ -45,13 +51,14 @@ export default {
         async checkWhitelisted() {
             try {
                 if(!this.address) return
-                if (!this.$wallet.account) {
-                    await this.$wallet.connect()
+                
+                if(!ethers.utils.isAddress(this.address)) {
+                    throw new Error("Provided address format is invalid (bad checksum)")
                 }
     
                 let addressToCheck = this.address
                 if(addressToCheck.endsWith('.eth')){
-                    addressToCheck = await this.$wallet.provider.resolveName(this.address)
+                    addressToCheck = await this.provider.resolveName(this.address)
                     this.resolvedAddress = addressToCheck
                     console.info(`Address resolved to ${addressToCheck}`)
                 }
@@ -65,7 +72,7 @@ export default {
             } catch (err) {
                 console.error(err)
                 this.$bvToast.toast(
-					'Check failed',
+					err.message || 'Check failed',
 					{
 						title: 'Whitelist',
 						variant: 'danger',
