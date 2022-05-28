@@ -1,5 +1,6 @@
 import { MerkleTree } from 'merkletreejs'
 import { ethers } from 'ethers'
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
 const getMerkeTree = (whitelist) => {
     const leafNodes = whitelist.map(a => ethers.utils.keccak256(a))
@@ -25,9 +26,17 @@ const copyToClipboard = async function(value) {
     })
 }
 
+const getProvider = (chainId, isStatic = true) => {
+    const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
+    return isStatic
+        ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
+        : new ethers.providers.JsonRpcProvider(providerUrl)
+}
+
 export {
 	getMerkeTree,
 	getHexProof,
 	checkWhitelisted,
-	copyToClipboard
+	copyToClipboard,
+	getProvider
 }
