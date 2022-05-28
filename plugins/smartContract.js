@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
+import { getProvider } from '@/utils'
 
 export default function ({ $siteConfig }, inject) {
 
@@ -14,8 +14,7 @@ export default function ({ $siteConfig }, inject) {
         chainId
     } = $siteConfig.smartContract
 
-    const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
-    const jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(providerUrl)
+    const jsonRpcProvider = getProvider(chainId)
     const smartContract = new ethers.Contract(address, abi, jsonRpcProvider)
 
     // console.log(smartContract)
