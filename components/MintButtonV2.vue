@@ -10,10 +10,7 @@
 					target="_blank"
 					>SOLD OUT</b-button
 				>
-				<b-button
-					v-else
-					class="mint-button font-weight-bold border-0"
-					@click="mint"
+				<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
 				<b-button
@@ -61,13 +58,11 @@ export default {
 				chainId: targetChainId,
 				hasWhitelist,
 				whitelist,
-				firstXFree,
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
 
 			try {
-				
 				if (!this.$wallet.isConnected) {
 					await this.$wallet.connect()
 				}
@@ -91,11 +86,12 @@ export default {
 				const isPresale = saleStatus === SALE_STATUS.Presale
 
 				if (isPresale) {
-
 					let wlData = whitelist
-					try { 
+					try {
 						const smId = this.$siteConfig.smartContract.id
-						const { data } = await this.$axios.get(`/smartcontracts/${smId}/whitelist`)
+						const { data } = await this.$axios.get(
+							`/smartcontracts/${smId}/whitelist`
+						)
 						wlData = data
 					} catch {}
 
@@ -115,33 +111,13 @@ export default {
 
 				let txResponse
 
-				const buyPrice = isPresale
-					? +ethers.utils.formatEther(await this.$smartContract.PRESALE_MINT_PRICE())
-					: +ethers.utils.formatEther(await this.$smartContract.MINT_PRICE())
-
-				let total = this.mintCount * buyPrice
-
-				if (firstXFree > 0) {
-					const mintedCount = +(await this.$smartContract.totalSupply())
-					if (firstXFree > mintedCount) {
-						const freeLeft = firstXFree - mintedCount
-						const difference = freeLeft - this.mintCount
-						if(difference < 0) {
-							total = Math.abs(difference) * buyPrice
-						} else {
-							total = 0
-						}
-						console.log('FIRSTXFREE >> ', { mintedCount, difference, mintCount: this.mintCount })
-					}
-				}
-
-				const value = ethers.utils.parseEther(total.toString())
+				const total = await this.calcTotal(this.mintCount, saleStatus)
+				const value = ethers.utils.parseEther(total)
 				const gasPrice = await this.$wallet.provider.getGasPrice()
 
 				console.log({
-					buyPrice,
 					total,
-					gasPrice: `${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`
+					gasPrice: `${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`,
 				})
 
 				const signedContract = this.$smartContract.connect(
@@ -180,7 +156,7 @@ export default {
 			} catch (err) {
 				console.error(err)
 
-				if(!err || err.message === 'JSON RPC response format is invalid') {
+				if (!err || err.message === 'JSON RPC response format is invalid') {
 					return
 				}
 
@@ -197,7 +173,42 @@ export default {
 				this.isBusy = false
 			}
 		},
+		async calcTotal(mintCount, saleStatus) {
+			const buyPrice =
+				saleStatus === SALE_STATUS.Presale
+					? await this.$smartContract.PRESALE_MINT_PRICE()
+					: await this.$smartContract.MINT_PRICE()
+
+			const hasCalcPriceFunc =
+				typeof this.$smartContract.functions.calcTotal === 'function'
+
+			console.log(hasCalcPriceFunc)
+
+			if (hasCalcPriceFunc) {
+				const total = await this.$smartContract.calcTotal(mintCount, buyPrice)
+				return ethers.utils.formatEther(total)
+			} else {
+				const firstXFree = this.$siteConfig.smartContract.firstXFree
+				const priceInEth = +ethers.utils.formatEther(buyPrice)
+				let total = mintCount * priceInEth
+
+				if (firstXFree > 0) {
+					const mintedCount = +(await this.$smartContract.totalSupply())
+					if (firstXFree > mintedCount) {
+						const freeLeft = firstXFree - mintedCount
+						const difference = freeLeft - mintCount
+						if (difference < 0) {
+							total = Math.abs(difference) * priceInEth
+						} else {
+							total = 0
+						}
+						console.log('FIRSTXFREE >> ', { mintedCount, difference, mintCount })
+					}
+				}
+
+				return total.toString()
+			}
+		},
 	},
 }
 </script>
-
