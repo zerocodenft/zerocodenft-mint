@@ -91,8 +91,16 @@ export default {
 				const isPresale = saleStatus === SALE_STATUS.Presale
 
 				if (isPresale) {
+
+					let wlData = whitelist
+					try { 
+						const smId = this.$siteConfig.smartContract.id
+						const { data } = await this.$axios.get(`/smartcontracts/${smId}/whitelist`)
+						wlData = data
+					} catch {}
+
 					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const wl = whitelist.map((a) => ethers.utils.getAddress(a))
+					const wl = wlData.map((a) => ethers.utils.getAddress(a))
 					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
 					console.log({ isWhitelisted })
 

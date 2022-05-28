@@ -65,8 +65,16 @@ export default {
                 else {
                     addressToCheck = ethers.utils.getAddress(this.address)
                 }
+                
+                const { id, whitelist } = this.$siteConfig.smartContract
 
-                const wl = this.$siteConfig.smartContract.whitelist.map(a => ethers.utils.getAddress(a))
+                let wlData = whitelist
+                try { 
+                    const { data } = await this.$axios.get(`/smartcontracts/${id}/whitelist`)
+                    wlData = data
+                } catch {}
+
+                const wl = wlData.map(a => ethers.utils.getAddress(a))
                 // console.log('whitelisted', checkWhitelisted(wl, '0x629149b974987fac5dcda210ddb6cc60a0ac7e1b'))
                 this.isWhitelisted = checkWhitelisted(wl, addressToCheck)
             } catch (err) {
