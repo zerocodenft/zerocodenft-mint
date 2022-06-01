@@ -51,10 +51,6 @@ export default {
         async checkWhitelisted() {
             try {
                 if(!this.address) return
-                
-                if(!ethers.utils.isAddress(this.address)) {
-                    throw new Error("Provided address format is invalid (bad checksum)")
-                }
     
                 let addressToCheck = this.address
                 if(addressToCheck.endsWith('.eth')){
@@ -63,6 +59,9 @@ export default {
                     console.info(`Address resolved to ${addressToCheck}`)
                 }
                 else {
+                    if(!ethers.utils.isAddress(this.address)) {
+                        throw new Error("Provided address format is invalid (bad checksum)")
+                    }
                     addressToCheck = ethers.utils.getAddress(this.address)
                 }
                 
