@@ -14,6 +14,10 @@ export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
 
+	server: {
+		port: 9001,
+	},
+
 	publicRuntimeConfig: {
 		API_URL,
 		AZURE_FUNCTIONS_URL,
