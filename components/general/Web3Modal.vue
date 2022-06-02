@@ -32,7 +32,7 @@ export default {
 		const wcConfig = {
 			package: WalletConnectProvider,
 			options: {
-				network: CHAINID_CONFIG_MAP[chainId.toString()],
+				// network: CHAINID_CONFIG_MAP[chainId.toString()],
 				rpc: Object.entries(CHAINID_CONFIG_MAP)
 					.filter(([k, _]) => !isNaN(k))
 					.reduce((acc, val) => {
@@ -44,6 +44,8 @@ export default {
 			}
 		}
 		this.providerOptions.walletconnect = wcConfig
+
+		console.log(wcConfig)
 
 		if(supportsFortmatic) {
 			const rpcUrlMap = {
