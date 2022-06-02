@@ -92,7 +92,7 @@ export const ETHEREUM_RINKEBY = {
 		decimals: 18
 	},
 	rpcUrls: [
-		"https://eth-rinkeby.alchemyapi.io/v2/eY57F0-qi9WoMojLu9bc3xQuByUU4S-c",
+		"https://eth-rinkeby.alchemyapi.io/v2/-cUzoxu1XKrGZTjZkdyApr6pgcA45CQr",
 		"https://rinkeby.infura.io/v3/98302611de2949f1bd81e48d0b52d279"
 	],
 	blockExplorerUrls: ['https://rinkeby.etherscan.io']
@@ -107,7 +107,7 @@ export const ETHEREUM_MAINNET = {
 		decimals: 18
 	},
 	rpcUrls: [
-		"https://eth-mainnet.alchemyapi.io/v2/KTOAt8HziAmtVspf4HpKYmWK7gAMs7t1",
+		"https://eth-mainnet.alchemyapi.io/v2/Ck_TxTHd6T3d4PO38SpSoloqLdUe_2mh",
 		"https://mainnet.infura.io/v3/98302611de2949f1bd81e48d0b52d279",
 	],
 	blockExplorerUrls: ['https://etherscan.io'],
