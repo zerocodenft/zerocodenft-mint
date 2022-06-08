@@ -45,8 +45,6 @@ export default {
 		}
 		this.providerOptions.walletconnect = wcConfig
 
-		console.log(wcConfig)
-
 		if(supportsFortmatic) {
 			const rpcUrlMap = {
 				'80001': 'https://rpc-mumbai.maticvigil.com/v1/00cd3c7b0d85f810ab36316f2732d0810a2a1e50',
