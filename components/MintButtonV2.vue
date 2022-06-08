@@ -53,11 +53,24 @@ export default {
 		}
 	},
 	methods: {
+		async getWL() {
+			const { id, whitelist } = this.$siteConfig.smartContract
+			let wlData = []
+			try {
+				const { data } = await this.$axios.get(
+					`/smartcontracts/${id}/whitelist`
+				)
+				wlData = data
+			} catch {
+				wlData = whitelist
+			}
+
+			return wlData.map((a) => ethers.utils.getAddress(a))
+		},
 		async mint() {
 			const {
 				chainId: targetChainId,
 				hasWhitelist,
-				whitelist,
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
@@ -75,39 +88,13 @@ export default {
 
 				const saleStatus = await this.$smartContract.saleStatus()
 
-				if (saleStatus === SALE_STATUS.Paused) {
-					this.message = {
-						variant: 'warning',
-						text: 'Minting is currently PAUSED',
-					}
-					return
-				}
-
-				const isPresale = saleStatus === SALE_STATUS.Presale
-
-				if (isPresale) {
-					let wlData = whitelist
-					try {
-						const smId = this.$siteConfig.smartContract.id
-						const { data } = await this.$axios.get(
-							`/smartcontracts/${smId}/whitelist`
-						)
-						wlData = data
-					} catch {}
-
-					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const wl = wlData.map((a) => ethers.utils.getAddress(a))
-					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
-					console.log({ isWhitelisted })
-
-					if (!isWhitelisted) {
-						this.message = {
-							variant: 'danger',
-							text: `Address ${this.$wallet.accountCompact} is not whitelisted`,
-						}
-						return
-					}
-				}
+				// if (saleStatus === SALE_STATUS.Paused) {
+				// 	this.message = {
+				// 		variant: 'warning',
+				// 		text: 'Minting is currently PAUSED',
+				// 	}
+				// 	return
+				// }
 
 				let txResponse
 
@@ -125,6 +112,7 @@ export default {
 				)
 
 				if (hasWhitelist) {
+					const whitelist = await this.getWL()
 					const hexProof = getHexProof(whitelist, this.$wallet.account)
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
@@ -175,19 +163,26 @@ export default {
 		},
 		async calcTotal(mintCount, saleStatus) {
 			const buyPrice =
-				saleStatus === SALE_STATUS.Presale
-					? await this.$smartContract.PRESALE_MINT_PRICE()
-					: await this.$smartContract.MINT_PRICE()
+					saleStatus === SALE_STATUS.Presale
+						? await this.$smartContract.PRESALE_MINT_PRICE()
+						: await this.$smartContract.MINT_PRICE()
 
-			const hasCalcPriceFunc =
-				typeof this.$smartContract.functions.calcTotal === 'function'
+			const calcTotalFunc = this.$smartContract.interface.fragments.find(f => f.name === 'calcTotal')
 
-			console.log(hasCalcPriceFunc)
+			if(calcTotalFunc) {
+				// calc total needs msg.sender so call has to be signed
+				const signedContract = this.$smartContract.connect(
+					this.$wallet.provider.getSigner()
+				)
+				const needsBuyPrice = calcTotalFunc.inputs.length > 1 //for backwards compatibility
 
-			if (hasCalcPriceFunc) {
-				const total = await this.$smartContract.calcTotal(mintCount, buyPrice)
+				const total = needsBuyPrice 
+					? await signedContract.calcTotal(mintCount, buyPrice)
+					: await signedContract.calcTotal(mintCount)
+
 				return ethers.utils.formatEther(total)
 			} else {
+				// backwards compatibility
 				const firstXFree = this.$siteConfig.smartContract.firstXFree
 				const priceInEth = +ethers.utils.formatEther(buyPrice)
 				let total = mintCount * priceInEth
