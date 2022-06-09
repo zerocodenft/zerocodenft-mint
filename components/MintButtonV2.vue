@@ -35,7 +35,7 @@
 
 <script>
 import { ethers } from 'ethers'
-import { getHexProof, checkWhitelisted } from '@/utils'
+import { getHexProof } from '@/utils'
 import { SALE_STATUS } from '@/constants'
 
 export default {
@@ -65,7 +65,8 @@ export default {
 				wlData = whitelist
 			}
 
-			return wlData.map((a) => ethers.utils.getAddress(a))
+			// return wlData.map((a) => ethers.utils.getAddress(a))
+			return wlData
 		},
 		async mint() {
 			const {
