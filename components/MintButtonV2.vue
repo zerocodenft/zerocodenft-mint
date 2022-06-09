@@ -113,8 +113,15 @@ export default {
 				)
 
 				if (hasWhitelist) {
-					const whitelist = await this.getWL()
-					const hexProof = getHexProof(whitelist, this.$wallet.account)
+					let hexProof
+					if(saleStatus === SALE_STATUS.Presale) {
+						const whitelist = await this.getWL()
+						hexProof = getHexProof(whitelist, this.$wallet.account)
+					}
+					else {
+						console.log('here')
+						hexProof = []
+					}
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
