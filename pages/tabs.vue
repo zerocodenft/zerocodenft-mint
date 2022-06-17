@@ -15,7 +15,9 @@
 				<WhitelistCheck />
 			</b-tab>
 		</b-tabs>
-		<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden" />
+		<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden">
+			Powered by Zero Code NFT
+		</PoweredByZeroCode>
 	</div>
 </template>
 

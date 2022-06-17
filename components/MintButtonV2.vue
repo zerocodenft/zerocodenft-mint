@@ -90,7 +90,7 @@ export default {
 				
 				window.gtag('event', ANALYTICS_EVENTS.WalletConnected, {
 					name,
-					walletAddress: this.$wallet.address
+					walletAddress: `address_${this.$wallet.account}` // prefix address_ cause gtag converts hex address into digits
 				})
 
 				const saleStatus = await this.$smartContract.saleStatus()
@@ -105,8 +105,9 @@ export default {
 
 				window.gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
 					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
 					saleStatus: SALE_STATUS[saleStatus],
-					quantity: this.mintCount,
+					quantity: this.mintCount
 				})
 
 				let txResponse
@@ -150,6 +151,7 @@ export default {
 
 				window.gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
 					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
 					saleStatus: SALE_STATUS[saleStatus],
 					quantity: this.mintCount,
 					total
@@ -185,6 +187,7 @@ export default {
 
 				window.gtag('event', ANALYTICS_EVENTS.CheckoutError, {
 					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
 					saleStatus: SALE_STATUS[saleStatus],
 					message: text
 				})

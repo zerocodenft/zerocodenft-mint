@@ -57,17 +57,17 @@
 					</div>
 					<div v-if="!$siteConfig.isAttributionHidden" class="d-flex flex-column align-items-end">
 						<span class="text-light" style="font-size: small">Powered By</span>
-						<b-link href="https://zerocodenft.com" target="_blank">
+						<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden">
 							<b-img-lazy width="100px" src="/img/zerocodenftlogo_white.svg" />
-						</b-link>
+						</PoweredByZeroCode>
 					</div>
 				</b-col>
 				<b-col v-else sm="12" md="3">
 					<div v-if="!$siteConfig.isAttributionHidden" class="d-flex flex-column align-items-center align-items-md-end">
 						<span class="text-light" style="font-size: small">Powered By</span>
-						<b-link href="https://zerocodenft.com" target="_blank">
+						<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden">
 							<b-img-lazy width="100px" src="/img/zerocodenftlogo_white.svg" />
-						</b-link>
+						</PoweredByZeroCode>
 					</div>
 				</b-col>
 			</b-row>

@@ -1,13 +1,20 @@
 <template>
 	<div
-		class="d-flex justify-content-center align-items-center zc-container zc-background">
+		class="
+			d-flex
+			justify-content-center
+			align-items-center
+			zc-container zc-background
+		">
 		<b-jumbotron
 			:header="$siteConfig.title"
 			:lead="$siteConfig.description"
 			class="shadow text-center jumbo py-4"
 			bg-variant="dark">
 			<Mint />
-			<PoweredByZeroCode />
+			<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden">
+				Powered by Zero Code NFT
+			</PoweredByZeroCode>
 		</b-jumbotron>
 	</div>
 </template>
