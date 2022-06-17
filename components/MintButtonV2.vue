@@ -36,7 +36,7 @@
 <script>
 import { ethers } from 'ethers'
 import { getHexProof } from '@/utils'
-import { SALE_STATUS } from '@/constants'
+import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 
 export default {
 	props: {
@@ -72,6 +72,7 @@ export default {
 			const {
 				chainId: targetChainId,
 				hasWhitelist,
+				name
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
@@ -86,6 +87,11 @@ export default {
 				}
 
 				this.isBusy = true
+				
+				window.gtag('event', ANALYTICS_EVENTS.WalletConnected, {
+					name,
+					walletAddress: this.$wallet.address
+				})
 
 				const saleStatus = await this.$smartContract.saleStatus()
 
@@ -96,6 +102,12 @@ export default {
 				// 	}
 				// 	return
 				// }
+
+				window.gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
+					name,
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount,
+				})
 
 				let txResponse
 
@@ -136,6 +148,13 @@ export default {
 
 				console.log({ txResponse })
 
+				window.gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
+					name,
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount,
+					total
+				})
+
 				this.message = {
 					variant: 'success',
 					text: 'Mint successful!',
@@ -163,6 +182,12 @@ export default {
 					variant: 'danger',
 					text,
 				}
+
+				window.gtag('event', ANALYTICS_EVENTS.CheckoutError, {
+					name,
+					saleStatus: SALE_STATUS[saleStatus],
+					message: text
+				})
 
 				// this.$wallet.rawProvider.user?.deposit()
 			} finally {
