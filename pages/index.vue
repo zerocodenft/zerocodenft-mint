@@ -12,7 +12,7 @@
 			class="shadow text-center jumbo py-4"
 			bg-variant="dark">
 			<Mint />
-			<PoweredByZeroCode v-if="!$siteConfig.isAttributionHidden">
+			<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden">
 				Powered by Zero Code NFT
 			</PoweredByZeroCode>
 		</b-jumbotron>
