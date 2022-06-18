@@ -18,8 +18,18 @@ const WALLET_TYPE = Object.freeze({
 	Fortmatic: 2,
 })
 
+const ANALYTICS_EVENTS = Object.freeze({
+	WalletConected: 'zerocodenft_wallet_connected',
+	CheckoutBegin: 'zerocodenft_checkout_begin',
+	CheckoutComplete: 'zerocodenft_checkout_complete',
+	CheckoutError: 'zerocodenft_checkout_failed',
+	ZeroCodeLinkClicked: 'zerocodenft_link_clicked'
+})
+
+
 export {
     SALE_STATUS,
     MINT_SELECTOR_TYPE,
-	WALLET_TYPE
+	WALLET_TYPE,
+	ANALYTICS_EVENTS
 }

@@ -3,7 +3,8 @@ import getSiteMeta from './utils/siteMeta'
 const {
 	API_URL,
 	AZURE_FUNCTIONS_URL,
-	FORTMATIC_KEY
+	FORTMATIC_KEY,
+	GTAG_ID
 } = process.env
 
 const siteConfig = require('./siteConfig.json')
@@ -21,7 +22,8 @@ export default {
 	publicRuntimeConfig: {
 		API_URL,
 		AZURE_FUNCTIONS_URL,
-		FORTMATIC_KEY
+		FORTMATIC_KEY,
+		GTAG_ID: GTAG_ID || 'G-2JGS75VE88'
 	},
 
 	// Target: https://go.nuxtjs.dev/config-target
