@@ -15,13 +15,13 @@ import { ANALYTICS_EVENTS } from '@/constants'
 export default {
 	methods: {
 		onLinkClick() {
-			const { id, name } = this.$siteConfig.smartContract
-			window.gtag('event', ANALYTICS_EVENTS.ZeroCodeLinkClicked, {
-				name,
-				scId: id,
-				// prefix address_ cause gtag converts hex address into digits
-				walletAddress: `address_${this.$wallet.account}`
-			})
+			// const { id, name } = this.$siteConfig.smartContract
+			// window.gtag('event', ANALYTICS_EVENTS.ZeroCodeLinkClicked, {
+			// 	name,
+			// 	scId: id,
+			// 	// prefix address_ cause gtag converts hex address into digits
+			// 	walletAddress: `address_${this.$wallet.account}`
+			// })
 			window.open('https://zerocodenft.com', '_blank')
 		}
 	}
