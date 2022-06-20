@@ -16,7 +16,7 @@ export default {
 	methods: {
 		onLinkClick() {
 			// const { id, name } = this.$siteConfig.smartContract
-			// window.gtag('event', ANALYTICS_EVENTS.ZeroCodeLinkClicked, {
+			// this.$gtag('event', ANALYTICS_EVENTS.ZeroCodeLinkClicked, {
 			// 	name,
 			// 	scId: id,
 			// 	// prefix address_ cause gtag converts hex address into digits

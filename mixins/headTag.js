@@ -1,45 +1,52 @@
+import Vue from 'vue'
+
 export default {
 	head() {
 		const scripts = []
 
-		const { widgetBotConfig, analytics } = this.$siteConfig
+		const { widgetBot, analytics } = JSON.parse(this.$siteConfig.configs || '{}')
 
 		// https://widgetbot.io/
-		const { server, channel } = JSON.parse(widgetBotConfig || '{}')
-		if (server && channel) {
-			scripts.push({
-				src: 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3',
-				async: true,
-				defer: true,
-				callback: () => {
-					new Crate({
-						server,
-						channel,
-					})
-				},
-			})
-		}
+		const { server, channel } = widgetBot || {}
+		scripts.push({
+			hid: 'widgetbot',
+			src: 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3',
+			async: true,
+			defer: true,
+			once: true,
+			skip: !server || !channel,
+			callback: () => {
+				new Crate({
+					server,
+					channel,
+				})
+			},
+		})
 
 		// analytics
 		scripts.push({
+			hid: 'gtag',
 			src: `https://www.googletagmanager.com/gtag/js?id=${this.$config.GTAG_ID}`,
 			async: true,
+			once: true,
 			callback: () => {
 				window.dataLayer = window.dataLayer || []
 
 				function gtag() {
 					dataLayer.push(arguments)
 				}
-				window.gtag = gtag
+				Vue.prototype.$gtag = gtag
 
 				gtag('js', new Date())
 				gtag('config', this.$config.GTAG_ID, { 'debug_mode': process.env.NODE_ENV !== 'production'})
 
 				// add user defined gtag
-				const { gtagId } = JSON.parse(analytics || '{}')
-				console.log({ gtagId })
-				if(gtagId) {
-					gtag('config', gtagId)
+				if(analytics) {
+					const { gtagId } = analytics
+					console.log({ gtagId })
+					if(gtagId) {
+						gtag('config', gtagId)
+					}
 				}
 			},
 		})
