@@ -16,12 +16,17 @@
 	"faviconURL": null,
 	"isCounterHidden": false,
 	"mintCountSelectorType": 0,
-	"widgetBotConfig": {
-		"server": "926589433833213962",
-		"channel": "970772831019347968",
-		"notifications": true,
-		"indicator": true,
-		"location": ["bottom", "left"]
+	"configs": {
+		"widgetBot": {
+			"server": "926589433833213962",
+			"channel": "970772831019347968",
+			"notifications": true,
+			"indicator": true,
+			"location": ["bottom", "left"]
+		},
+		"analytics": {
+			"gtagId": null
+		}
 	},
 	"stylesConfig": {
 		"mintBtnBgColor": "#8859EC",

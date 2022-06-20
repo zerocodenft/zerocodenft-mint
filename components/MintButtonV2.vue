@@ -88,27 +88,19 @@ export default {
 
 				this.isBusy = true
 				
-				// window.gtag('event', ANALYTICS_EVENTS.WalletConnected, {
-				// 	name,
-				// 	walletAddress: `address_${this.$wallet.account}` // prefix address_ cause gtag converts hex address into digits
-				// })
-
 				const saleStatus = await this.$smartContract.saleStatus()
 
-				// if (saleStatus === SALE_STATUS.Paused) {
-				// 	this.message = {
-				// 		variant: 'warning',
-				// 		text: 'Minting is currently PAUSED',
-				// 	}
-				// 	return
-				// }
+				this.$gtag('event', ANALYTICS_EVENTS.WalletConnected, {
+					name,
+					walletAddress: `address_${this.$wallet.account}` // prefix address_ cause gtag converts hex address into digits
+				})
 
-				// window.gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
-				// 	name,
-				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
-				// 	saleStatus: SALE_STATUS[saleStatus],
-				// 	quantity: this.mintCount
-				// })
+				this.$gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
+					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount
+				})
 
 				let txResponse
 
@@ -149,13 +141,13 @@ export default {
 
 				console.log({ txResponse })
 
-				// window.gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
-				// 	name,
-				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
-				// 	saleStatus: SALE_STATUS[saleStatus],
-				// 	quantity: this.mintCount,
-				// 	total
-				// })
+				this.$gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
+					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount,
+					total
+				})
 
 				this.message = {
 					variant: 'success',
@@ -185,12 +177,11 @@ export default {
 					text,
 				}
 
-				// window.gtag('event', ANALYTICS_EVENTS.CheckoutError, {
-				// 	name,
-				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
-				// 	saleStatus: SALE_STATUS[saleStatus],
-				// 	message: text
-				// })
+				this.$gtag('event', ANALYTICS_EVENTS.CheckoutError, {
+					name,
+					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+					message: text
+				})
 
 				// this.$wallet.rawProvider.user?.deposit()
 			} finally {
