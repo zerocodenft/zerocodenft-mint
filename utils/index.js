@@ -1,11 +1,6 @@
 import { MerkleTree } from 'merkletreejs'
 import { ethers } from 'ethers'
-
-const SALE_STATUS = Object.freeze({
-	Paused: 0,
-	Presale: 1,
-	Public: 2,
-})
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
 const getMerkeTree = (whitelist) => {
     const leafNodes = whitelist.map(a => ethers.utils.keccak256(a))
@@ -23,9 +18,25 @@ const checkWhitelisted = (list, address) => {
 	return merkleTree.verify(hexProof, ethers.utils.keccak256(address), merkleTree.getRoot())
 }
 
+const copyToClipboard = async function(value) {
+    await navigator.clipboard.writeText(value)
+    this.$bvToast.toast('Copied to clipboard!', {
+        title: 'Clipboard',
+        variant: 'info',
+    })
+}
+
+const getProvider = (chainId, isStatic = true) => {
+    const providerUrl = CHAINID_CONFIG_MAP[chainId.toString()].rpcUrls[0]
+    return isStatic
+        ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
+        : new ethers.providers.JsonRpcProvider(providerUrl)
+}
+
 export {
-    SALE_STATUS,
 	getMerkeTree,
 	getHexProof,
-	checkWhitelisted
+	checkWhitelisted,
+	copyToClipboard,
+	getProvider
 }

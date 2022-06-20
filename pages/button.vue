@@ -1,34 +1,15 @@
 <template>
-	<div class="p-1">
-		<div v-if="showCountdown">
-			<Countdown :date="dropDate" />
-		</div>
-        <div v-else>
-            <h6 v-if="!$siteConfig.isCounterHidden" class="pt-1 text-center">
-                Minted: {{ mintedCount }}/{{ collectionSize }}
-            </h6>
-            <MintButtonV2 :soldOut="soldOut" />
-            <div v-if="!$siteConfig.isAttributionHidden" class="text-center pt-2">
-                <b-link
-                    class="text-muted zerocode-link text-monospace"
-                    href="https://zerocodenft.com"
-                    target="_blank">
-                    Powered by Zero Code NFT
-                </b-link>
-            </div>
-        </div>
+	<div
+		class="p-1 zc-background">
+		<Mint />
+		<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden">
+			Powered by Zero Code NFT
+		</PoweredByZeroCode>
 	</div>
 </template>
 
 <script>
-import MintMixin from '@/mixins/mint'
-
 export default {
-    layout: 'no-headers',
-    mixins: [MintMixin],
+	layout: 'no-headers',
 }
 </script>
-
-<style lang="scss">
-
-</style>

@@ -1,32 +1,13 @@
 <template>
-	<b-container id="container" fluid>
-		<b-row id="landing" :style='{
-			"backgroundImage": `url("${$siteConfig.backgroundImageURL}")`,
-			"backgroundSize": "100% 100%"
-		}'>
-			<b-col
-				class="d-flex align-items-center justify-content-center backdrop-blur">
-				<b-jumbotron
-					:header="$siteConfig.title"
-					class="shadow text-center"
-					lead="Check whitelisted status"
-					bg-variant="dark"
-					text-variant="white">
-					<WhitelistCheck />
-				</b-jumbotron>
-			</b-col>
-		</b-row>
-	</b-container>
+	<div
+		class="d-flex justify-content-center align-items-center zc-container zc-background"
+		>
+		<b-jumbotron
+			:header="$siteConfig.title"
+			class="shadow text-center jumbo py-4"
+			bg-variant="dark"
+			lead="Check whitelisted status">
+			<WhitelistCheck />
+		</b-jumbotron>
+	</div>
 </template>
-
-
-<style scoped>
-#container {
-	overflow: hidden;
-	min-height: calc(100vh - 164px);
-}
-
-#landing {
-	min-height: inherit;
-}
-</style>

@@ -1,72 +1,84 @@
 <template>
 	<div>
-		<b-form-input
-			v-model.number="mintCount"
-			class="mb-2"
-			size="lg"
-			type="range"
-			min="1"
-			:max="
-				$siteConfig.smartContract.maxTokensPerTransaction ||
-				$siteConfig.smartContract.collectionSize
-			"
-			step="1">
-		</b-form-input>
-        <b-alert
-            :show="message.show || !!message.text"
-            :variant="message.variant"
-            dismissible
-            class="text-center">
-            {{ message.text }}
-        </b-alert>
-		<div class="text-center">
-			<b-overlay :show="isBusy">
+		<div class="text-center mb-2">
+			<b-overlay :show="isBusy" z-index="2">
 				<b-button
 					v-if="soldOut"
-					class="bg-gradient-primary border-0"
+					class="mint-button font-weight-bold border-0"
 					:disabled="!$siteConfig.marketplaceURL"
 					:href="$siteConfig.marketplaceURL"
 					target="_blank"
 					>SOLD OUT</b-button
 				>
-				<b-button v-else class="bg-gradient-primary border-0" block @click="mint"
+				<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
 					>Mint [{{ mintCount }}]</b-button
+				>
+				<b-button
+					variant="link"
+					class="text-light mt-1"
+					:disabled="isBusy"
+					v-show="$wallet.isConnected && $wallet.canDisconnect"
+					@click="() => $wallet.disconnect()"
+					>Disconnect Wallet</b-button
 				>
 			</b-overlay>
 		</div>
+		<b-alert
+			:show="message.show || !!message.text"
+			:variant="message.variant"
+			dismissible
+			class="text-center">
+			{{ message.text }}
+		</b-alert>
 	</div>
 </template>
 
 <script>
 import { ethers } from 'ethers'
-import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
+import { getHexProof } from '@/utils'
+import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 
 export default {
 	props: {
 		soldOut: Boolean,
+		mintCount: {
+			type: Number,
+			default: 1,
+		},
 	},
-    data() {
+	data() {
 		return {
-			mintCount: 1,
 			isBusy: false,
 			message: {},
 		}
 	},
-    methods: {
-        async mint() {
+	methods: {
+		async getWL() {
+			const { id, whitelist } = this.$siteConfig.smartContract
+			let wlData = []
+			try {
+				const { data } = await this.$axios.get(
+					`/smartcontracts/${id}/whitelist`
+				)
+				wlData = data
+			} catch {
+				wlData = whitelist
+			}
+
+			// return wlData.map((a) => ethers.utils.getAddress(a))
+			return wlData
+		},
+		async mint() {
 			const {
 				chainId: targetChainId,
-				address,
 				hasWhitelist,
-				abi,
-				whitelist,
-				firstXFree
+				name
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
 
 			try {
-				if (!this.$wallet.account) {
+				if (!this.$wallet.isConnected) {
 					await this.$wallet.connect()
 				}
 
@@ -75,89 +87,81 @@ export default {
 				}
 
 				this.isBusy = true
+				
+				// window.gtag('event', ANALYTICS_EVENTS.WalletConnected, {
+				// 	name,
+				// 	walletAddress: `address_${this.$wallet.account}` // prefix address_ cause gtag converts hex address into digits
+				// })
 
-				const signedContract = new ethers.Contract(
-					address,
-					abi,
-					this.$wallet.provider.getSigner()
-				)
-				const saleStatus = await signedContract.saleStatus()
+				const saleStatus = await this.$smartContract.saleStatus()
 
-				if (saleStatus === SALE_STATUS.Paused) {
-					this.message = {
-						variant: 'warning',
-						text: 'Minting is currently PAUSED',
-					}
-					return
-				}
+				// if (saleStatus === SALE_STATUS.Paused) {
+				// 	this.message = {
+				// 		variant: 'warning',
+				// 		text: 'Minting is currently PAUSED',
+				// 	}
+				// 	return
+				// }
 
-				const isPresale = saleStatus === SALE_STATUS.Presale
-
-				if (isPresale) {
-					const addressToCheck = ethers.utils.getAddress(this.$wallet.account)
-					const wl = whitelist.map((a) => ethers.utils.getAddress(a))
-					const isWhitelisted = checkWhitelisted(wl, addressToCheck)
-					console.log({ isWhitelisted })
-
-					if (!isWhitelisted) {
-						this.message = {
-							variant: 'danger',
-							text: `Address ${this.$wallet.accountCompact} is not whitelisted`,
-						}
-						return
-					}
-				}
+				// window.gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
+				// 	name,
+				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+				// 	saleStatus: SALE_STATUS[saleStatus],
+				// 	quantity: this.mintCount
+				// })
 
 				let txResponse
 
-				const buyPrice = isPresale
-					? +ethers.utils.formatEther(await signedContract.PRESALE_MINT_PRICE())
-					: +ethers.utils.formatEther(await signedContract.MINT_PRICE())
-
-				let total = this.mintCount * buyPrice
-
-				if(firstXFree > 0) {					
-					const mintedCount = +(await signedContract.totalSupply())
-					if(mintedCount < firstXFree) {
-						total = 0
-						const overflow = mintedCount + this.mintCount - firstXFree
-						if(overflow > 0) {
-							this.mintCount -= overflow
-						}
-						console.log({mintedCount, overflow, mintCount: this.mintCount})
-					}
-				}
-	
-				const value = ethers.utils.parseEther(total.toString())
+				const total = await this.calcTotal(this.mintCount, saleStatus)
+				const value = ethers.utils.parseEther(total)
+				const gasPrice = await this.$wallet.provider.getGasPrice()
 
 				console.log({
-					buyPrice,
 					total,
-					value
+					gasPrice: `${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`,
 				})
 
-				// if(targetChainId === '137') {
-				// 	// polygon requires 30 gwei min gas fee to combat spam
-				// 	// https://medium.com/stakingbits/polygon-minimum-gas-fee-is-now-30-gwei-to-curb-spam-8bd4313c83a2
-				// }
-				const gasPrice = await this.$wallet.provider.getGasPrice()
-				console.log(`GAS PRICE: ${ethers.utils.formatUnits(gasPrice, 'gwei')} gwei`)
+				const signedContract = this.$smartContract.connect(
+					this.$wallet.provider.getSigner()
+				)
 
 				if (hasWhitelist) {
-					const hexProof = getHexProof(whitelist, this.$wallet.account)
+					let hexProof
+					if(saleStatus === SALE_STATUS.Presale) {
+						const whitelist = await this.getWL()
+						hexProof = getHexProof(whitelist, this.$wallet.account)
+					}
+					else {
+						console.log('here')
+						hexProof = []
+					}
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
 					txResponse = await signedContract.redeem(hexProof, this.mintCount, {
 						value,
-						gasPrice
+						gasPrice,
 					})
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, {
 						value,
-						gasPrice
+						gasPrice,
 					})
 				}
 
 				console.log({ txResponse })
+
+				// window.gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
+				// 	name,
+				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+				// 	saleStatus: SALE_STATUS[saleStatus],
+				// 	quantity: this.mintCount,
+				// 	total
+				// })
+
+				this.message = {
+					variant: 'success',
+					text: 'Mint successful!',
+					show: 5,
+				}
 
 				txResponse.wait().then(async (res) => {
 					// console.log({ res });
@@ -166,15 +170,12 @@ export default {
 						text: 'Mint confirmed! 🎉',
 					}
 				})
-
-				this.message = {
-					variant: 'success',
-					text: 'Mint successful!',
-					show: 5,
-				}
 			} catch (err) {
 				console.error(err)
-				if (!err) return
+
+				if (!err || err.message === 'JSON RPC response format is invalid') {
+					return
+				}
 
 				const { data, reason, message, code, method, error } = err
 				const text =
@@ -183,10 +184,62 @@ export default {
 					variant: 'danger',
 					text,
 				}
+
+				// window.gtag('event', ANALYTICS_EVENTS.CheckoutError, {
+				// 	name,
+				// 	walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+				// 	saleStatus: SALE_STATUS[saleStatus],
+				// 	message: text
+				// })
+
+				// this.$wallet.rawProvider.user?.deposit()
 			} finally {
 				this.isBusy = false
 			}
 		},
-    }
+		async calcTotal(mintCount, saleStatus) {
+			const buyPrice =
+					saleStatus === SALE_STATUS.Presale
+						? await this.$smartContract.PRESALE_MINT_PRICE()
+						: await this.$smartContract.MINT_PRICE()
+
+			const calcTotalFunc = this.$smartContract.interface.fragments.find(f => f.name === 'calcTotal')
+
+			if(calcTotalFunc) {
+				// calc total needs msg.sender so call has to be signed
+				const signedContract = this.$smartContract.connect(
+					this.$wallet.provider.getSigner()
+				)
+				const needsBuyPrice = calcTotalFunc.inputs.length > 1 //for backwards compatibility
+
+				const total = needsBuyPrice 
+					? await signedContract.calcTotal(mintCount, buyPrice)
+					: await signedContract.calcTotal(mintCount)
+
+				return ethers.utils.formatEther(total)
+			} else {
+				// backwards compatibility
+				const firstXFree = this.$siteConfig.smartContract.firstXFree
+				const priceInEth = +ethers.utils.formatEther(buyPrice)
+				let total = mintCount * priceInEth
+
+				if (firstXFree > 0) {
+					const mintedCount = +(await this.$smartContract.totalSupply())
+					if (firstXFree > mintedCount) {
+						const freeLeft = firstXFree - mintedCount
+						const difference = freeLeft - mintCount
+						if (difference < 0) {
+							total = Math.abs(difference) * priceInEth
+						} else {
+							total = 0
+						}
+						console.log('FIRSTXFREE >> ', { mintedCount, difference, mintCount })
+					}
+				}
+
+				return total.toString()
+			}
+		},
+	},
 }
 </script>

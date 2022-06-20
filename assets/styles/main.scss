@@ -1,4 +1,9 @@
-$theme-gradient: linear-gradient(100.07deg, #DB6F3D -28.71%, #9534DE 36.75%, #5FB9E6 103.59%);
+@import './variables';
+
+html, body {
+	height: 100%;
+	background-color: var(--pageBackground);
+}
 
 .required:after {
   content: " *";
@@ -12,6 +17,13 @@ $theme-gradient: linear-gradient(100.07deg, #DB6F3D -28.71%, #9534DE 36.75%, #5F
 .form-control {
   &.is-invalid {
     border: 1px solid #dc3545;
+  }
+}
+
+.zc-container {
+  min-height: calc(100vh - $header-height - $footer-height);
+  &:first-child { 
+    height: inherit;
   }
 }
 
@@ -35,5 +47,19 @@ $theme-gradient: linear-gradient(100.07deg, #DB6F3D -28.71%, #9534DE 36.75%, #5F
 		);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
+	}
+}
+
+.jumbo {
+	max-width: 60%;
+	overflow-wrap: break-word;
+}
+
+@media (max-width: 600px) {
+	.jumbo {
+		max-width: 100%;
+	}
+	.display-3 {
+		font-size: 3rem;
 	}
 }

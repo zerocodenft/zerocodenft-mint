@@ -2,6 +2,9 @@ import getSiteMeta from './utils/siteMeta'
 
 const {
 	API_URL,
+	AZURE_FUNCTIONS_URL,
+	FORTMATIC_KEY,
+	GTAG_ID
 } = process.env
 
 const siteConfig = require('./siteConfig.json')
@@ -11,6 +14,17 @@ const { title, description, url, mainImage } = siteConfig
 export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
+
+	server: {
+		port: 9001,
+	},
+
+	publicRuntimeConfig: {
+		API_URL,
+		AZURE_FUNCTIONS_URL,
+		FORTMATIC_KEY,
+		GTAG_ID: GTAG_ID || 'G-2JGS75VE88'
+	},
 
 	// Target: https://go.nuxtjs.dev/config-target
 	target: 'static',
@@ -56,10 +70,14 @@ export default {
 		'@/plugins/wallet',
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
+		'@/plugins/smartContract'
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
-	components: true,
+	components: [
+		'@/components',
+		'@/components/general'
+	],
 
 	// Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
 	buildModules: [],
@@ -70,14 +88,19 @@ export default {
 		'bootstrap-vue/nuxt',
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
+		'@nuxtjs/style-resources'
 	],
 
 	axios: {
-		baseURL: API_URL,
+		baseURL: API_URL
 	},
 
 	bootstrapVue: {
 		icons: false,
+	},
+
+	styleResources: {
+		scss: ['./assets/styles/_variables.scss', './assets/styles/_defaults.scss'],
 	},
 
 	sitemap: {

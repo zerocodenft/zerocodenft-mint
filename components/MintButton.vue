@@ -21,14 +21,15 @@
 			class="text-white mt-1"
 			:disabled="isBusy"
 			v-show="$wallet.isConnected && $wallet.canDisconnect"
-			@click="$wallet.disconnect"
+			@click="() => $wallet.disconnect"
 			>Disconnect Wallet</b-button
 		>
 	</b-overlay>
 </template>
 
 <script>
-import { SALE_STATUS, getHexProof, checkWhitelisted } from '@/utils'
+import { SALE_STATUS } from '@/constants'
+import { getHexProof, checkWhitelisted } from '@/utils'
 import { ethers } from 'ethers'
 import { getExplorerUrl } from '@/utils/metamask'
 

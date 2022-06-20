@@ -1,9 +1,11 @@
 {
-  "name": "zerocodenft-nuxt-nft-template",
+  "name": "zerocodenft-mint",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "stag": "SET NODE_ENV=staging && nuxt --dotenv .env.staging",
+    "prod": "SET NODE_ENV=production && nuxt --dotenv .env.production",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate --fail-on-error"
@@ -17,12 +19,14 @@
     "core-js": "^3.15.1",
     "dayjs": "^1.11.0",
     "ethers": "5.5.1",
+    "fortmatic": "^2.3.0",
     "merkletreejs": "^0.2.30",
     "nuxt": "^2.15.7",
     "web3": "^1.7.1",
     "web3modal-vue": "^1.0.5"
   },
   "devDependencies": {
+    "@nuxtjs/style-resources": "^1.2.1",
     "@openzeppelin/contracts": "^4.3.2",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.2",

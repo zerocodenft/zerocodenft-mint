@@ -1,8 +1,11 @@
 import siteConfigLocal from '@/siteConfig.json'
 
-export default async ({env, redirect, route, $cloudFns, $axios}, inject) => {
+export default async ({ redirect, route, $cloudFns, $axios }, inject) => {
     
     let siteConfig = siteConfigLocal
+
+    // inject('siteConfig', siteConfig)
+    // return
 
     if(route.path === '/error') {
         inject('siteConfig', siteConfig)
@@ -12,22 +15,21 @@ export default async ({env, redirect, route, $cloudFns, $axios}, inject) => {
     const siteId = route.query['siteId'] || localStorage.getItem('siteId')
     localStorage.setItem('siteId', siteId)
     if(!siteId) {
-        // alert("Site configuration is missing!")
         redirect('/error?type=missingConfig')
     }
-    
+        
     try {
-        // const { data: websiteConfig } = await $cloudFns.get('/siteconfig', { params: { websiteId: env.WEBSITE_ID }} )
-        const { data } = await $axios.get(`/websites/${siteId}/config`)
-        const { iconURL, backgroundImageURL } = data
-
-        data.iconURL = iconURL || siteConfigLocal.iconURL
-        data.backgroundImageURL = backgroundImageURL || siteConfigLocal.backgroundImageURL
-
+        const { data } = await $cloudFns.get('/siteconfig', { params: { websiteId: siteId } })
         siteConfig = data
-    } catch (err) {
-        // console.error('Error getting config', {err})
-        redirect('/error?type=missingConfig')
+    }
+    catch(err1) {
+        try {
+            // fallback in case cloud function is not working
+            const { data } = await $axios.get(`/websites/${siteId}/config`)
+            siteConfig = data
+        } catch(err2) {
+            redirect('/error?type=missingConfig')
+        }
     }
 
     inject('siteConfig', siteConfig)

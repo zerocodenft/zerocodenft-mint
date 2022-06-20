@@ -1,0 +1,39 @@
+
+$mintBtnBgColor: #8859EC;
+$mintBtnTextColor: #fff;
+$mintBtnWidth: 100%;
+$mintBtnHeight: 100%;
+$mintBtnFontSize: 1rem;
+
+.mint-button {
+    background-color: var(--mintBtnBgColor, $mintBtnBgColor);
+    color: var(--mintBtnTextColor, $mintBtnTextColor);
+    width: var(--mintBtnWidth, $mintBtnWidth);
+    height: var(--mintBtnHeight, $mintBtnHeight);
+    font-size: var(--mintBtnFontSize, $mintBtnFontSize);
+}
+
+$navbarBgColor: #343a40;
+$pageBackground: #fff;
+$pageTextColor: #8859EC;
+
+.zc-navbar {
+    background-color: var(--navbarBgColor, $navbarBgColor);
+    color: var(--pageTextColor, $pageTextColor);
+}
+
+.zc-text {
+    color: var(--pageTextColor, $pageTextColor) !important;
+}
+
+.zc-background {
+    background-size: 100% 100%;
+    background: var(--pageBackground, $pageBackground);
+    color: var(--pageTextColor, $pageTextColor);
+}
+
+@media (max-width: 600px) {
+	.zc-background {
+		background-size: cover;
+	}
+}
