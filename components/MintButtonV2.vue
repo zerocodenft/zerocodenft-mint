@@ -124,7 +124,6 @@ export default {
 						hexProof = getHexProof(whitelist, this.$wallet.account)
 					}
 					else {
-						console.log('here')
 						hexProof = []
 					}
 					// console.log(merkleTree.verify(hexProof, this.$wallet.account, merkleTree.getRoot()))
