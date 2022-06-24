@@ -38,14 +38,14 @@ export default {
 				Vue.prototype.$gtag = gtag
 
 				gtag('js', new Date())
-				gtag('config', this.$config.GTAG_ID, { 'debug_mode': process.env.NODE_ENV !== 'production'})
+				gtag('config', this.$config.GTAG_ID, { 'debug_mode': this.$config.GTAG_DEBUG })
 
 				// add user defined gtag
 				if(analytics) {
 					const { gtagId } = analytics
 					console.log({ gtagId })
 					if(gtagId) {
-						gtag('config', gtagId)
+						gtag('config', gtagId, { 'debug_mode': this.$config.GTAG_DEBUG })
 					}
 				}
 			},
