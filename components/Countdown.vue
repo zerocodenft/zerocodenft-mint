@@ -1,32 +1,32 @@
 <template>
   <b-container class="countdown-wrapper">
-    <p class="header text-warning font-weight-bold text-nowrap text-center mb-0 mb-lg-2">Minting available in...</p>
+    <p class="header font-weight-bold text-nowrap text-center mb-0 mb-lg-2">Minting available in...</p>
     <b-row class="d-flex flex-nowrap box w-100 m-0">
       <b-col class="d-flex align-items-center flex-column m-1 p-0">
-        <p class="digit text-warning m-0 font-weight-bold">{{ twoDigits(days) }}</p>
-        <span class="title text-warning">days</span>
+        <p class="digit m-0 font-weight-bold">{{ twoDigits(days) }}</p>
+        <span class="title">days</span>
       </b-col>
       <b-col class="d-flex justify-content-center m-0 p-0">
-        <span class="digit text-warning m-0">:</span>
+        <span class="digit m-0">:</span>
       </b-col>
 
       <b-col class="d-flex align-items-center flex-column m-1 p-0">
-        <p class="digit text-warning m-0 font-weight-bold">{{ twoDigits(hours) }}</p>
-        <span class="title text-warning">hours</span>
+        <p class="digit m-0 font-weight-bold">{{ twoDigits(hours) }}</p>
+        <span class="title">hours</span>
       </b-col>
       <b-col class="d-flex justify-content-center m-0 p-0">
-        <span class="digit text-warning m-0">:</span>
+        <span class="digit m-0">:</span>
       </b-col>
       <b-col class="d-flex align-items-center flex-column m-1 p-0">
-        <p class="digit text-warning m-0 font-weight-bold">{{ twoDigits(minutes) }}</p>
-        <span class="title text-warning">min</span>
+        <p class="digit m-0 font-weight-bold">{{ twoDigits(minutes) }}</p>
+        <span class="title">min</span>
       </b-col>
       <b-col class="d-flex justify-content-center m-0 p-0">
-        <span class="digit text-warning m-0">:</span>
+        <span class="digit m-0">:</span>
       </b-col>
       <b-col class="d-flex align-items-center flex-column m-1 p-0">
-        <p class="digit text-warning m-0 font-weight-bold">{{ twoDigits(seconds) }}</p>
-        <span class="title text-warning">sec</span>
+        <p class="digit m-0 font-weight-bold">{{ twoDigits(seconds) }}</p>
+        <span class="title">sec</span>
       </b-col>
     </b-row>
   </b-container>

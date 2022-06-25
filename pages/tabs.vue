@@ -5,6 +5,7 @@
 			justified
 			active-nav-item-class="font-weight-bold">
 			<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
+				<p class="text-center">{{$siteConfig.description}}</p>
 				<Mint />
 			</b-tab>
 			<b-tab

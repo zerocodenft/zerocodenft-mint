@@ -1,7 +1,7 @@
 <template>
 	<div class="d-flex flex-column">
 		<Countdown v-if="showCountdown" :date="dropDate" />
-		<div else>
+		<div v-if="!showCountdown">
 			<h5 v-if="!$siteConfig.isCounterHidden" class="pt-2 text-center">
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
@@ -85,6 +85,7 @@ export default {
 			return dayjs.utc(dropDate).tz(dropTimeZone).format()
 		},
         showCountdown() {
+            console.log(this.dropDate, new Date(this.dropDate) > new Date())
             return new Date(this.dropDate) > new Date()
         },
         soldOut() {
