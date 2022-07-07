@@ -319,6 +319,38 @@ export const HECO_TESTNET = {
 	blockExplorerUrls: ['https://testnet.hecoinfo.com/'],
 }
 
+export const CUBE_MAINNET = {
+	chainId: '0x71A',
+	chainName: 'Cube Mainnet',
+	nativeCurrency: {
+		name: 'Cube Mainnet',
+		symbol: 'CUBE',
+		decimals: 18
+	},
+	rpcUrls: [
+		'https://http-mainnet.cube.network',
+		'https://http-mainnet-sg.cube.network',
+		'https://http-mainnet-us.cube.network'
+	],
+	blockExplorerUrls: ['https://www.cubescan.network'],
+}
+export const CUBE_TESTNET = {
+	chainId: '0x71B',
+	chainName: 'Cube Testnet',
+	nativeCurrency: {
+		name: 'Cube Testnet',
+		symbol: 'CUBET',
+		decimals: 18
+	},
+	rpcUrls: [
+		'https://http-testnet.cube.network',
+		'https://http-testnet-sg.cube.network',
+		'https://http-testnet-jp.cube.network',
+		'https://http-testnet-us.cube.network'
+	],
+	blockExplorerUrls: ['https://testnet.cubescan.network'],
+}
+
 
 export const testMainChainIdMap = {
 	'4': 1,
@@ -333,49 +365,9 @@ export const testMainChainIdMap = {
 	'69': 10,
 	'1666700000': 1666600000,
 	'1001': 8217,
-	'256' : 128
+	'256': 128,
+	'1819':1818
 }
-
-
-
-// const CHAINS_INFO = {
-// 	'0x4': {
-// 		isTestnet: true,
-// 		config: ETHEREUM_RINKEBY,
-// 		mainnetConfig: ETHEREUM_MAINNET,
-// 		mainnetChainId: 1,
-// 		currency: ETHEREUM_RINKEBY['0xA869']?.nativeCurrency.symbol || 'Unknown',
-// 		blockExplorer: ETHEREUM_RINKEBY['0xA869']?.blockExplorerUrls[0],
-// 		faucets: ["https://rinkebyfaucet.com", "https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"]
-// 	},
-// 	'0xA869': {
-// 		isTestnet: true,
-// 		config: AVALANCHE_TESTNET_PARAMS,
-// 		mainnetConfig: AVALANCHE_MAINNET_PARAMS,
-// 		mainnetChainId: 43114,
-// 		currency: AVALANCHE_TESTNET_PARAMS['0xA869']?.nativeCurrency.symbol || 'Unknown',
-// 		blockExplorer: AVALANCHE_TESTNET_PARAMS['0xA869']?.blockExplorerUrls[0],
-// 		faucets: ["https://faucet.avax-test.network"]
-// 	},
-// 	'0x61': {
-// 		isTestnet: true,
-// 		config: BSC_TESTNET,
-// 		mainnetConfig: BSC_MAINNET,
-// 		mainnetChainId: 56,
-// 		currency: BSC_TESTNET['0xA869']?.nativeCurrency.symbol || 'Unknown',
-// 		blockExplorer: BSC_TESTNET['0xA869']?.blockExplorerUrls[0],
-// 		faucets: ["https://testnet.binance.org/faucet-smart"]
-// 	},
-// 	'0x13881': {
-// 		isTestnet: true,
-// 		config: POLYGON_MUMBAI_TESTNET_CONFIG,
-// 		mainnetConfig: POLYGON_MAINNET_PARAMS,
-// 		mainnetChainId: 137,
-// 		currency: POLYGON_MUMBAI_TESTNET_CONFIG['0xA869']?.nativeCurrency.symbol || 'Unknown',
-// 		blockExplorer: POLYGON_MUMBAI_TESTNET_CONFIG['0xA869']?.blockExplorerUrls[0],
-// 		faucets: ["https://faucet.polygon.technology"]
-// 	},
-// }
 
 export const CHAINID_CONFIG_MAP = {
 	'1': ETHEREUM_MAINNET,
@@ -401,9 +393,11 @@ export const CHAINID_CONFIG_MAP = {
 	'1666700000': HARMONY_TESTNET,
 	'1666600000': HARMONY_MAINNET,
 	'1001': KLAYTN_TESTNET,
-	'8217':KLAYTN_MAINNET,
+	'8217': KLAYTN_MAINNET,
 	'128': HECO_MAINNET,
-	'256' :HECO_TESTNET,
+	'256': HECO_TESTNET,
+	'1818': CUBE_MAINNET,
+	'1819':CUBE_TESTNET,
 
 	'0x1': ETHEREUM_MAINNET,
 	'0x4': ETHEREUM_RINKEBY,
@@ -431,6 +425,8 @@ export const CHAINID_CONFIG_MAP = {
 	'0x3E9': KLAYTN_TESTNET,
 	'0x80': HECO_MAINNET,
 	'0x100' :HECO_TESTNET,	
+	'0x71A': CUBE_MAINNET,
+	'0x71B':CUBE_TESTNET,
 }
 
 export const FAUCETS = {
@@ -446,7 +442,8 @@ export const FAUCETS = {
 	'69': ["https://optimismfaucet.xyz"],
 	'166670e0000': ["https://stakely.io/en/faucet/harmony-one"],
 	'1001':["https://baobab.wallet.klaytn.foundation/faucet"],
-	'256' : ["https://scan-testnet.hecochain.com/faucet"]
+	'256': ["https://scan-testnet.hecochain.com/faucet"],
+	'1819':["https://faucet.cube.network"]
 }
 
 const toHex = (chainId) => {
@@ -458,7 +455,9 @@ const toHex = (chainId) => {
 
 // get corresponding mainnet config based on testnet chainID
 export function getMainnetConfig(testnetChainId) {
-	console.log({testnetChainId})
+	if(typeof testnetChainId !== 'string') {
+		testnetChainId = testnetChainId.toString()
+	}
 	if(['0x4', '4'].includes(testnetChainId)) return ETHEREUM_MAINNET
 	if(['0xA869', '43113'].includes(testnetChainId)) return AVALANCHE_MAINNET_PARAMS
 	if(['0x89', '80001'].includes(testnetChainId)) return POLYGON_MAINNET_PARAMS
@@ -472,6 +471,7 @@ export function getMainnetConfig(testnetChainId) {
 	if (["0x6357D2E0", '1666700000'].includes(testnetChainId)) return HARMONY_MAINNET
 	if (["0x3E9", '1001'].includes(testnetChainId)) return KLAYTN_MAINNET
 	if (["0x100", '256'].includes(testnetChainId)) return HECO_MAINNET
+	if (["0x71B", '1819'].includes(testnetChainId)) return CUBE_MAINNET
 
 	throw new Error("Matching mainnet config not found")
 }
