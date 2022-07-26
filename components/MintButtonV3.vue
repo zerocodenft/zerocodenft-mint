@@ -40,25 +40,17 @@ import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 import { init } from '@web3-onboard/vue'
 import injectedModule from '@web3-onboard/injected-wallets'
+import walletConnectModule from '@web3-onboard/walletconnect'
+
+// initialize the module with options
+const walletConnect = walletConnectModule({
+	qrcodeModalOptions: {
+		mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
+	},
+	connectFirstChainId: true,
+})
 
 const injected = injectedModule()
-
-const chains = Object.entries(CHAINID_CONFIG_MAP)
-	.filter(([k, _]) => !isNaN(k))
-	.map((config) => {
-		const [_, value] = config
-		const { chainId, chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = value
-		return {
-			id: chainId,
-			label: chainName,
-			namespace: 'evm',
-			rpcUrl: rpcUrls[0],
-			blockExplorerUrl: blockExplorerUrls[0],
-			token: nativeCurrency.symbol,
-		}
-	})
-
-// console.log(chains)
 
 export default {
 	props: {
@@ -69,13 +61,26 @@ export default {
 		},
 	},
 	setup(_, { root }) {
-        const { title, description, iconURL } = root.$siteConfig
+		const { smartContract, title, description, iconURL } = root.$siteConfig
+
+		const chainConfig = CHAINID_CONFIG_MAP[smartContract.chainId.toString()]
+		const { chainId, chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = chainConfig
+
 		const web3Onboard = init({
-			wallets: [injected],
-			chains,
+			wallets: [injected, walletConnect],
+			chains: [
+				{
+					id: chainId,
+					label: chainName,
+					rpcUrl: rpcUrls[0],
+					blockExplorerUrl: blockExplorerUrls[0],
+					token: nativeCurrency.symbol,
+					//icon: @TODO
+				},
+			],
 			appMetadata: {
 				name: title,
-				icon: iconURL || require("@/assets/img/zerocodenft.svg"),
+				icon: iconURL || require('@/assets/img/zerocodenft.svg'),
 				description: description,
 				recommendedInjectedWallets: [
 					{ name: 'Metamask', url: 'https://metamask.io/download' },
@@ -84,7 +89,7 @@ export default {
 			},
 		})
 
-        return { web3Onboard }
+		return { web3Onboard }
 	},
 	data() {
 		return {
@@ -117,9 +122,9 @@ export default {
 
 			try {
 				const connectedWallet = this.web3Onboard.connectedWallet
-                if(!connectedWallet) {
-                    await this.web3Onboard.connectWallet()
-                }
+				if (!connectedWallet) {
+					await this.web3Onboard.connectWallet()
+				}
 				const success = await this.web3Onboard.setChain({
 					chainId: `0x${targetChainId.toString(16)}`,
 				})
@@ -149,50 +154,14 @@ export default {
 				this.isBusy = false
 			}
 		},
-		async calcTotal(mintCount, saleStatus) {
-			const buyPrice =
-				saleStatus === SALE_STATUS.Presale
-					? await this.$smartContract.PRESALE_MINT_PRICE()
-					: await this.$smartContract.MINT_PRICE()
+		async calcTotal(mintCount) {
+            const signedContract = this.$smartContract.connect(
+                this.$wallet.provider.getSigner()
+            )
 
-			const calcTotalFunc = this.$smartContract.interface.fragments.find(
-				(f) => f.name === 'calcTotal'
-			)
+            const total = await signedContract.calcTotal(mintCount)
 
-			if (calcTotalFunc) {
-				// calc total needs msg.sender so call has to be signed
-				const signedContract = this.$smartContract.connect(
-					this.$wallet.provider.getSigner()
-				)
-				const needsBuyPrice = calcTotalFunc.inputs.length > 1 //for backwards compatibility
-
-				const total = needsBuyPrice
-					? await signedContract.calcTotal(mintCount, buyPrice)
-					: await signedContract.calcTotal(mintCount)
-
-				return ethers.utils.formatEther(total)
-			} else {
-				// backwards compatibility
-				const firstXFree = this.$siteConfig.smartContract.firstXFree
-				const priceInEth = +ethers.utils.formatEther(buyPrice)
-				let total = mintCount * priceInEth
-
-				if (firstXFree > 0) {
-					const mintedCount = +(await this.$smartContract.totalSupply())
-					if (firstXFree > mintedCount) {
-						const freeLeft = firstXFree - mintedCount
-						const difference = freeLeft - mintCount
-						if (difference < 0) {
-							total = Math.abs(difference) * priceInEth
-						} else {
-							total = 0
-						}
-						console.log('FIRSTXFREE >> ', { mintedCount, difference, mintCount })
-					}
-				}
-
-				return total.toString()
-			}
+			return ethers.utils.formatEther(total)
 		},
 	},
 }
