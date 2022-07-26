@@ -36,27 +36,29 @@
 <script>
 import { ethers } from 'ethers'
 import { getHexProof } from '@/utils'
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 import { init } from '@web3-onboard/vue'
 import injectedModule from '@web3-onboard/injected-wallets'
 
 const injected = injectedModule()
-const infuraKey = '<INFURA_KEY>'
-const rpcUrl = `https://mainnet.infura.io/v3/${infuraKey}`
 
-const web3Onboard = init({
-  wallets: [injected],
-  chains: [
-    {
-      id: '0x1',
-      token: 'ETH',
-      label: 'Ethereum Mainnet',
-      rpcUrl
-    }
-  ]
-})
+const chains = Object.entries(CHAINID_CONFIG_MAP)
+	.filter(([k, _]) => !isNaN(k))
+	.map((config) => {
+		const [_, value] = config
+		const { chainId, chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = value
+		return {
+			id: chainId,
+			label: chainName,
+			namespace: 'evm',
+			rpcUrl: rpcUrls[0],
+			blockExplorerUrl: blockExplorerUrls[0],
+			token: nativeCurrency.symbol,
+		}
+	})
 
-console.log(web3Onboard)
+// console.log(chains)
 
 export default {
 	props: {
@@ -66,7 +68,23 @@ export default {
 			default: 1,
 		},
 	},
-	setup() {
+	setup(_, { root }) {
+        const { title, description, iconURL } = root.$siteConfig
+		const web3Onboard = init({
+			wallets: [injected],
+			chains,
+			appMetadata: {
+				name: title,
+				icon: iconURL || require("@/assets/img/zerocodenft.svg"),
+				description: description,
+				recommendedInjectedWallets: [
+					{ name: 'Metamask', url: 'https://metamask.io/download' },
+					{ name: 'Coinbase', url: 'https://wallet.coinbase.com' },
+				],
+			},
+		})
+
+        return { web3Onboard }
 	},
 	data() {
 		return {
@@ -79,9 +97,7 @@ export default {
 			const { id, whitelist } = this.$siteConfig.smartContract
 			let wlData = []
 			try {
-				const { data } = await this.$axios.get(
-					`/smartcontracts/${id}/whitelist`
-				)
+				const { data } = await this.$axios.get(`/smartcontracts/${id}/whitelist`)
 				wlData = data
 			} catch {
 				wlData = whitelist
@@ -94,15 +110,19 @@ export default {
 			const {
 				chainId: targetChainId,
 				hasWhitelist,
-				name
+				name,
 			} = this.$siteConfig.smartContract
 
 			this.message = {}
 
 			try {
-
-                await web3Onboard.connectWallet()
-				
+				const connectedWallet = this.web3Onboard.connectedWallet
+                if(!connectedWallet) {
+                    await this.web3Onboard.connectWallet()
+                }
+				const success = await this.web3Onboard.setChain({
+					chainId: `0x${targetChainId.toString(16)}`,
+				})
 			} catch (err) {
 				console.error(err)
 
@@ -121,7 +141,7 @@ export default {
 				this.$gtag('event', ANALYTICS_EVENTS.CheckoutError, {
 					name,
 					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
-					message: text
+					message: text,
 				})
 
 				// this.$wallet.rawProvider.user?.deposit()
@@ -131,20 +151,22 @@ export default {
 		},
 		async calcTotal(mintCount, saleStatus) {
 			const buyPrice =
-					saleStatus === SALE_STATUS.Presale
-						? await this.$smartContract.PRESALE_MINT_PRICE()
-						: await this.$smartContract.MINT_PRICE()
+				saleStatus === SALE_STATUS.Presale
+					? await this.$smartContract.PRESALE_MINT_PRICE()
+					: await this.$smartContract.MINT_PRICE()
 
-			const calcTotalFunc = this.$smartContract.interface.fragments.find(f => f.name === 'calcTotal')
+			const calcTotalFunc = this.$smartContract.interface.fragments.find(
+				(f) => f.name === 'calcTotal'
+			)
 
-			if(calcTotalFunc) {
+			if (calcTotalFunc) {
 				// calc total needs msg.sender so call has to be signed
 				const signedContract = this.$smartContract.connect(
 					this.$wallet.provider.getSigner()
 				)
 				const needsBuyPrice = calcTotalFunc.inputs.length > 1 //for backwards compatibility
 
-				const total = needsBuyPrice 
+				const total = needsBuyPrice
 					? await signedContract.calcTotal(mintCount, buyPrice)
 					: await signedContract.calcTotal(mintCount)
 
