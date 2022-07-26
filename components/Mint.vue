@@ -85,7 +85,7 @@ export default {
 			return dayjs.utc(dropDate).tz(dropTimeZone).format()
 		},
         showCountdown() {
-            console.log(this.dropDate, new Date(this.dropDate) > new Date())
+            // console.log(this.dropDate, new Date(this.dropDate) > new Date())
             return new Date(this.dropDate) > new Date()
         },
         soldOut() {
