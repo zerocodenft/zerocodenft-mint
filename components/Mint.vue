@@ -14,7 +14,8 @@
                     <SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
                 </div>
             </div>
-			<MintButtonV2 :mintCount="mintCount" :soldOut="soldOut" />
+			<MintButtonV2 v-if="$siteConfig.mintButtonVersion === null || $siteConfig.mintButtonVersion === 'V2'" :mintCount="mintCount" :soldOut="soldOut" />
+			<MintButtonV3 v-else-if="$siteConfig.mintButtonVersion === 'V3'" :mintCount="mintCount" :soldOut="soldOut" />
 		</div>
 	</div>
 </template>
@@ -42,8 +43,11 @@ export default {
 		try {
             const { 
 				isCounterHidden,
-                smartContract
+                smartContract,
+                mintButtonVersion
 			} = this.$siteConfig
+
+            console.log(mintButtonVersion)
 
             this.collectionSize = smartContract.collectionSize
             this.saleStatus = await this.$smartContract.saleStatus()

@@ -6,7 +6,7 @@
 	"dropDate": null,
 	"instagramURL": "https://instagram.com/zerocodenft",
 	"twitterURL": "https://twitter.com/zero_code_nft",
-	"discordURL": "https://discord.gg/NdEpB6ZYKn",
+	"discordURL": "https://discord.gg/ZeroCodeNFT",
 	"blockExplorerUrl": "https://rinkeby.etherscan.io/address/0x402fe7a8c27f483e05ae216473da7f3b6fcef7cf",
 	"facebookURL": null,
 	"tiktokURL": null,
@@ -15,6 +15,7 @@
 	"iconURL": null,
 	"faviconURL": null,
 	"isCounterHidden": false,
+	"mintButtonVersion": "V3",
 	"mintCountSelectorType": 0,
 	"configs": {
 		"widgetBot": {

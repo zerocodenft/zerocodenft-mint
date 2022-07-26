@@ -2,10 +2,14 @@ import siteConfigLocal from '@/siteConfig.json'
 
 export default async ({ redirect, route, $cloudFns, $axios }, inject) => {
     
-    let siteConfig = siteConfigLocal
+    let siteConfig = {
+        ...siteConfigLocal,
+        configs: JSON.stringify(siteConfigLocal.configs),
+        stylesConfig: JSON.stringify(siteConfigLocal.stylesConfig)
+    }
 
-    // inject('siteConfig', siteConfig)
-    // return
+    inject('siteConfig', siteConfig)
+    return
 
     if(route.path === '/error') {
         inject('siteConfig', siteConfig)
