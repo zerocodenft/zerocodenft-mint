@@ -1,10 +1,11 @@
 import Vue from 'vue'
+import getSiteMeta from '@/utils/siteMeta'
 
 export default {
 	head() {
 		const scripts = []
-
-		const { widgetBot, analytics } = JSON.parse(this.$siteConfig.configs || '{}')
+		const { title, description, iconURL, configs } = this.$siteConfig
+		const { widgetBot, analytics } = JSON.parse(configs || '{}')
 
 		// https://widgetbot.io/
 		const { server, channel } = widgetBot || {}
@@ -50,7 +51,6 @@ export default {
 				// add user defined gtag
 				if(analytics) {
 					const { gtagId } = analytics
-					console.log({ gtagId })
 					if(gtagId) {
 						gtag('config', gtagId, { 'debug_mode': this.$config.GTAG_DEBUG })
 					}
@@ -59,7 +59,14 @@ export default {
 		})
 
 		return {
-			script: scripts,
+			meta: [
+				...getSiteMeta({
+					title,
+					description,
+					mainImage: iconURL || require('@/assets/img/zerocodenft.svg')
+				})
+			],
+			script: scripts
 		}
 	},
 }

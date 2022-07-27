@@ -55,23 +55,26 @@ export default {
 
             this.mintedCount = +(await this.$smartContract.totalSupply())
 
-            this.intervalId = setInterval(async () => {
-                console.group('Updates')
+            if(!this.$nuxt.context.isDev) {
+                this.intervalId = setInterval(async () => {
+                    console.group('Updates')
+    
+                    this.saleStatus = await this.$smartContract.saleStatus()
+                    console.info('Sale status', SALE_STATUS[this.saleStatus])
+    
+                    if(!isCounterHidden) {
+                        this.mintedCount = +(await this.$smartContract.totalSupply())
+                        console.info('Minted count:', this.mintedCount)
+                    }
+    
+                    console.groupEnd()
+    
+                    if(this.soldOut) {
+                        clearInterval(this.intervalId)
+                    }
+                }, 10000)
+            }
 
-                this.saleStatus = await this.$smartContract.saleStatus()
-                console.info('Sale status', SALE_STATUS[this.saleStatus])
-
-                if(!isCounterHidden) {
-                    this.mintedCount = +(await this.$smartContract.totalSupply())
-                    console.info('Minted count:', this.mintedCount)
-                }
-
-                console.groupEnd()
-
-                if(this.soldOut) {
-                    clearInterval(this.intervalId)
-                }
-            }, 10000)
 		} catch (err) {
 			console.error({err})
 		}
