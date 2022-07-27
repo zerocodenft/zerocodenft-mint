@@ -10,7 +10,7 @@ const {
 
 const siteConfig = require('./siteConfig.json')
 
-const { title, description, url, mainImage } = siteConfig
+const { title, url } = siteConfig
 
 export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -41,12 +41,7 @@ export default {
 			{ charset: 'utf-8' },
 			{ name: 'viewport', content: 'width=device-width, initial-scale=1' }, // mobile responsive https://search.google.com/test/mobile-friendly
 			{ name: 'format-detection', content: 'telephone=no' },
-			...getSiteMeta({
-				url: url,
-				title: title,
-				description: description,
-				mainImage: mainImage,
-			}),
+			...getSiteMeta(),
 		],
 		link: [
 			{

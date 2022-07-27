@@ -1,8 +1,8 @@
 const type = "website";
-const url = "https://zerocodenft.com";
-const title = "Zero Code NFT dApp";
-const description = "Another drop powered by Zero Code NFT";
-const mainImage = "https://zerocodenft-demo.netlify.app/img/zerocodenftlogo_dark.svg";
+const url = "https://mint.zerocodenft.com";
+const title = "NFT Mint Page";
+const description = "";
+const mainImage = "https://mint.zerocodenft.com/img/zerocodenftlogo_dark.svg";
 const twitterCard = "summary_large_image";
 
 export default (meta) => {
