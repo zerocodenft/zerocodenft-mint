@@ -38,7 +38,7 @@ export default ({$siteConfig}, inject) => {
                 ? (iconURL || require('assets/img/wallet.svg')) 
                 : require('static/img/zerocodenftlogo_dark.svg'),
                 
-            description: description,
+            description: description || `${title} Mint Page`,
             recommendedInjectedWallets: [
                 { name: 'Metamask', url: 'https://metamask.io/download' },
                 { name: 'Coinbase', url: 'https://wallet.coinbase.com' },
