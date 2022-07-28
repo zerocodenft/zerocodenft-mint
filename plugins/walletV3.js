@@ -4,7 +4,7 @@ import coinbaseWalletModule from '@web3-onboard/coinbase'
 import { init } from '@web3-onboard/vue'
 import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
-export default ({$siteConfig}, inject) => {
+export default ({$siteConfig, route}, inject) => {
 
     const walletConnect = walletConnectModule({
         qrcodeModalOptions: {
@@ -16,7 +16,7 @@ export default ({$siteConfig}, inject) => {
     const injected = injectedModule()
     const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 
-    const { smartContract, title, description, iconURL,  } = $siteConfig
+    const { smartContract, title, description, iconURL } = $siteConfig
     const chainConfig = CHAINID_CONFIG_MAP[smartContract.chainId.toString()]
     const { chainId, chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = chainConfig
 
@@ -44,6 +44,15 @@ export default ({$siteConfig}, inject) => {
                 { name: 'Coinbase', url: 'https://wallet.coinbase.com' },
             ],
         },
+        accountCenter: {
+            desktop: {
+                enabled: route.name !== 'button',
+                minimal: route.name === 'tabs'
+            },
+            mobile: {
+                enabled: route.name !== 'button'
+            }
+        }
     })
 
     // console.log(web3Onboard, useOnboard())

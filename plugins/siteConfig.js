@@ -3,21 +3,22 @@ import siteConfigLocal from '@/siteConfig.json'
 export default async ({ redirect, route, $cloudFns, $axios, app }, inject) => {
     
     let siteConfig
+    const siteId = route.query['siteId'] || localStorage.getItem('siteId')
+    localStorage.setItem('siteId', siteId)
 
-    if(app.context.isDev) {
+    if(app.context.isDev && !siteId) {
         siteConfig = {
             ...siteConfigLocal,
             configs: JSON.stringify(siteConfigLocal.configs),
             stylesConfig: JSON.stringify(siteConfigLocal.stylesConfig)
         }
     } else {
+        
         if(route.path === '/error') {
             inject('siteConfig', siteConfig)
             return
         }
         
-        const siteId = route.query['siteId'] || localStorage.getItem('siteId')
-        localStorage.setItem('siteId', siteId)
         if(!siteId) {
             redirect('/error?type=missingConfig')
         }
