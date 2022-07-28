@@ -33,10 +33,15 @@ const getProvider = (chainId, isStatic = true) => {
         : new ethers.providers.JsonRpcProvider(providerUrl)
 }
 
+const wait = (delay) => {
+	return new Promise((resolve) => setTimeout(resolve, delay))
+}
+
 export {
 	getMerkeTree,
 	getHexProof,
 	checkWhitelisted,
 	copyToClipboard,
-	getProvider
+	getProvider,
+    wait
 }

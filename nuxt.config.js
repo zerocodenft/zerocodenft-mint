@@ -20,6 +20,10 @@ export default {
 		port: 9001,
 	},
 
+	cli: {
+		badgeMessages: ['Zero Code NFT 😎']
+	},
+
 	publicRuntimeConfig: {
 		API_URL,
 		AZURE_FUNCTIONS_URL,
@@ -72,7 +76,8 @@ export default {
 		'@/plugins/wallet',
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
-		'@/plugins/smartContract'
+		'@/plugins/smartContract',
+		'@/plugins/walletV3'
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

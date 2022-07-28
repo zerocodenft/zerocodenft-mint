@@ -5,17 +5,18 @@
 			<h5 v-if="!$siteConfig.isCounterHidden" class="pt-2 text-center">
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
-            <div v-if="mintMax > 1" class="mb-2">
-                <div v-if="$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range" class="d-flex mb-2">
-                    <RangeSelector :max="mintMax" @onChange="onSelectedCountChange" />
-                    <h5 class="pl-3 font-weight-bold">{{ mintCount }}</h5>
-                </div>
-                <div v-else>
-                    <SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
-                </div>
-            </div>
-			<MintButtonV2 v-if="$siteConfig.mintButtonVersion === null || $siteConfig.mintButtonVersion === 'V2'" :mintCount="mintCount" :soldOut="soldOut" />
-			<MintButtonV3 v-else-if="$siteConfig.mintButtonVersion === 'V3'" :mintCount="mintCount" :soldOut="soldOut" />
+			<div v-if="mintMax > 1" class="mb-2">
+				<div
+					v-if="$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range"
+					class="d-flex mb-2">
+					<RangeSelector :max="mintMax" @onChange="onSelectedCountChange" />
+					<h5 class="pl-3 font-weight-bold">{{ mintCount }}</h5>
+				</div>
+				<div v-else>
+					<SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
+				</div>
+			</div>
+            <component :is="mintBtnComponent" :mintCount="mintCount" :soldOut="soldOut" />
 		</div>
 	</div>
 </template>
@@ -29,84 +30,87 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 export default {
-    data() {
+	data() {
 		return {
-            MINT_SELECTOR_TYPE,
-            mintCount: 1,
+			MINT_SELECTOR_TYPE,
+			mintCount: 1,
 			mintedCount: 0,
 			collectionSize: 0,
 			intervalId: null,
-            saleStatus: SALE_STATUS.Paused
+			saleStatus: SALE_STATUS.Paused,
 		}
 	},
-    async created() {
+	async created() {
 		try {
-            const { 
-				isCounterHidden,
-                smartContract,
-                mintButtonVersion
-			} = this.$siteConfig
+			const { isCounterHidden, smartContract } =
+				this.$siteConfig
 
-            console.log(mintButtonVersion)
+			this.collectionSize = smartContract.collectionSize
+			this.saleStatus = await this.$smartContract.saleStatus()
 
-            this.collectionSize = smartContract.collectionSize
-            this.saleStatus = await this.$smartContract.saleStatus()
-            // this.mintMax = this.saleStatus === SALE_STATUS.Whitelist 
-            //     ? maxTokensPerPersonOnWhitelist
-            //     : maxTokensPerTransaction || collectionSize
+			this.mintedCount = +(await this.$smartContract.totalSupply())
 
-			// const hasTotalSupply = typeof this.$smartContract.totalSupply === 'function'
+			if (!this.$nuxt.context.isDev) {
+				this.intervalId = setInterval(async () => {
+					console.group('Updates')
 
-            this.mintedCount = +(await this.$smartContract.totalSupply())
+					this.saleStatus = await this.$smartContract.saleStatus()
+					console.info('Sale status', SALE_STATUS[this.saleStatus])
 
-            this.intervalId = setInterval(async () => {
-                console.group('Updates')
+					if (!isCounterHidden) {
+						this.mintedCount = +(await this.$smartContract.totalSupply())
+						console.info('Minted count:', this.mintedCount)
+					}
 
-                this.saleStatus = await this.$smartContract.saleStatus()
-                console.info('Sale status', SALE_STATUS[this.saleStatus])
+					console.groupEnd()
 
-                if(!isCounterHidden) {
-                    this.mintedCount = +(await this.$smartContract.totalSupply())
-                    console.info('Minted count:', this.mintedCount)
-                }
-
-                console.groupEnd()
-
-                if(this.soldOut) {
-                    clearInterval(this.intervalId)
-                }
-            }, 10000)
+					if (this.soldOut) {
+						clearInterval(this.intervalId)
+					}
+				}, 10000)
+			}
 		} catch (err) {
-			console.error({err})
+			console.error({ err })
 		}
 	},
-    beforeDestroy() {
-        this.intervalId = null
-    },
+	beforeDestroy() {
+        clearInterval(this.intervalId)
+	},
 	computed: {
-        dropDate() {
-            const { dropDate, dropTimeZone } = this.$siteConfig
+        mintBtnComponent() {
+            switch(this.$siteConfig.mintButtonVersion) {
+                case 'V2': return 'MintButtonV2'
+                case 'V3': return 'MintButtonV3'
+                default: return 'MintButtonV2'
+            }
+        },
+		dropDate() {
+			const { dropDate, dropTimeZone } = this.$siteConfig
 			return dayjs.utc(dropDate).tz(dropTimeZone).format()
 		},
-        showCountdown() {
-            // console.log(this.dropDate, new Date(this.dropDate) > new Date())
-            return new Date(this.dropDate) > new Date()
-        },
-        soldOut() {
+		showCountdown() {
+			// console.log(this.dropDate, new Date(this.dropDate) > new Date())
+			return new Date(this.dropDate) > new Date()
+		},
+		soldOut() {
 			return this.mintedCount >= this.collectionSize
 		},
-        mintMax() {
-            const { maxTokensPerTransaction, maxTokensPerPersonOnWhitelist, collectionSize } = this.$siteConfig.smartContract
+		mintMax() {
+			const {
+				maxTokensPerTransaction,
+				maxTokensPerPersonOnWhitelist,
+				collectionSize,
+			} = this.$siteConfig.smartContract
 
-            return this.saleStatus === SALE_STATUS.Presale 
-                ? maxTokensPerPersonOnWhitelist
-                : maxTokensPerTransaction || collectionSize
-        }
+			return this.saleStatus === SALE_STATUS.Presale
+				? maxTokensPerPersonOnWhitelist
+				: maxTokensPerTransaction || collectionSize
+		},
 	},
-    methods: {
-        onSelectedCountChange(val) {
-            this.mintCount = val
-        }
-    }
+	methods: {
+		onSelectedCountChange(val) {
+			this.mintCount = val
+		},
+	},
 }
 </script>

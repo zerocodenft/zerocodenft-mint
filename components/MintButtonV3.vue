@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<div class="text-center mb-2">
+	<div class="mb-3">
+		<div class="text-center">
 			<b-overlay :show="isBusy" z-index="2">
 				<b-button
 					v-if="soldOut"
@@ -10,47 +10,44 @@
 					target="_blank"
 					>SOLD OUT</b-button
 				>
+				<b-button
+					v-else-if="!isConnected"
+					class="mint-button font-weight-bold border-0"
+					@click="connect"
+					>Connect Wallet</b-button
+				>
 				<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
 					>Mint [{{ mintCount }}]</b-button
 				>
-				<b-button
-					variant="link"
-					class="text-light mt-1"
-					:disabled="isBusy"
-					v-show="$wallet.isConnected && $wallet.canDisconnect"
-					@click="() => $wallet.disconnect()"
-					>Disconnect Wallet</b-button
-				>
 			</b-overlay>
+			<b-alert
+				:show="message.show || !!message.text"
+				:variant="message.variant"
+				dismissible
+				@dismissed="message = {}"
+				class="mt-2">
+				{{ message.text }}
+			</b-alert>
+			<b-button
+				variant="link"
+				class="mt-2 text-decoration-none"
+				:disabled="isBusy"
+				v-show="isConnected"
+				@click="disconnectConnectedWallet"
+				>Disconnect Wallet</b-button
+			>
 		</div>
-		<b-alert
-			:show="message.show || !!message.text"
-			:variant="message.variant"
-			dismissible
-			class="text-center">
-			{{ message.text }}
-		</b-alert>
 	</div>
 </template>
 
 <script>
 import { ethers } from 'ethers'
-import { getHexProof } from '@/utils'
-import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
+import { getHexProof, wait } from '@/utils'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
-import { init } from '@web3-onboard/vue'
-import injectedModule from '@web3-onboard/injected-wallets'
-import walletConnectModule from '@web3-onboard/walletconnect'
+// import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
-// initialize the module with options
-const walletConnect = walletConnectModule({
-	qrcodeModalOptions: {
-		mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
-	},
-	connectFirstChainId: true,
-})
-
-const injected = injectedModule()
+import { useOnboard } from '@web3-onboard/vue'
+import { ref, computed } from '@vue/composition-api'
 
 export default {
 	props: {
@@ -61,72 +58,155 @@ export default {
 		},
 	},
 	setup(_, { root }) {
-		const { smartContract, title, description, iconURL } = root.$siteConfig
+		const { name: smartContractName, chainId } = root.$siteConfig.smartContract
+		const hexChainId = `0x${chainId.toString(16)}`
 
-		const chainConfig = CHAINID_CONFIG_MAP[smartContract.chainId.toString()]
-		const { chainId, chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = chainConfig
+		const {
+			connectedWallet,
+			connectedChain,
+			connectingWallet,
+			connectWallet,
+			setChain,
+			disconnectConnectedWallet,
+		} = useOnboard()
+		const isMinting = ref(false)
+		const message = ref({})
+		const isBusy = computed(() => isMinting.value || connectingWallet.value)
+		const isConnected = computed(() => connectedWallet.value !== null)
+		// const isCorrectChain = computed(() => connectedChain.value?.id === hexChainId.value)
+		const walletAddress = computed(
+			() => connectedWallet.value?.accounts[0]?.address
+		)
+		const ethersProvider = computed(
+			() =>
+				new ethers.providers.Web3Provider(connectedWallet.value?.provider, 'any')
+		)
 
-		const web3Onboard = init({
-			wallets: [injected, walletConnect],
-			chains: [
-				{
-					id: chainId,
-					label: chainName,
-					rpcUrl: rpcUrls[0],
-					blockExplorerUrl: blockExplorerUrls[0],
-					token: nativeCurrency.symbol,
-					//icon: @TODO
-				},
-			],
-			appMetadata: {
-				name: title,
-				icon: iconURL || require('@/assets/img/zerocodenft.svg'),
-				description: description,
-				recommendedInjectedWallets: [
-					{ name: 'Metamask', url: 'https://metamask.io/download' },
-					{ name: 'Coinbase', url: 'https://wallet.coinbase.com' },
-				],
-			},
-		})
+		const checkChain = async () => {
+			if (connectedChain.value?.id !== hexChainId) {
+				await setChain({
+					chainId: hexChainId,
+				})
+				await wait(1000) // to allow chains to properly switch
+			}
+			return connectedChain.value?.id === hexChainId
+		}
 
-		return { web3Onboard }
-	},
-	data() {
+		const connect = async () => {
+			await connectWallet()
+			if (isConnected.value) {
+				root.$gtag('event', ANALYTICS_EVENTS.WalletConnected, {
+					smartContractName,
+					walletAddress: `address_${walletAddress.value}`, // prefix address_ cause gtag converts hex address into digits
+				})
+				await checkChain()
+			}
+		}
 		return {
-			isBusy: false,
-			message: {},
+			isBusy,
+			isConnected,
+			isMinting,
+			message,
+			walletAddress,
+			ethersProvider,
+			connectedWallet,
+			connectedChain,
+			connectingWallet,
+			connect,
+			checkChain,
+			disconnectConnectedWallet,
 		}
 	},
 	methods: {
 		async getWL() {
-			const { id, whitelist } = this.$siteConfig.smartContract
-			let wlData = []
+			let { id, whitelist } = this.$siteConfig.smartContract
 			try {
 				const { data } = await this.$axios.get(`/smartcontracts/${id}/whitelist`)
-				wlData = data
-			} catch {
-				wlData = whitelist
-			}
+				whitelist = data
+			} catch {}
 
 			// return wlData.map((a) => ethers.utils.getAddress(a))
-			return wlData
+			return whitelist
 		},
 		async mint() {
-			const {
-				chainId: targetChainId,
-				hasWhitelist,
-				name,
-			} = this.$siteConfig.smartContract
+			const { hasWhitelist, name: smartContractName } = this.$siteConfig.smartContract
 
 			this.message = {}
 
 			try {
-				const connectedWallet = this.web3Onboard.connectedWallet
-				if (!connectedWallet) {
-					await this.web3Onboard.connectWallet()
+				const success = await this.checkChain()
+				if (!success) {
+					throw new Error('Chain switch request failed')
 				}
-				const success = await this.web3Onboard.setChain({
-					chainId: `0x${targetChainId.toString(16)}`,
+
+				this.isMinting = true
+
+				const saleStatus = await this.$smartContract.saleStatus()
+
+				this.$gtag('event', ANALYTICS_EVENTS.CheckoutBegin, {
+					name: smartContractName,
+					walletAddress: `address_${this.walletAddress}`, // prefix address_ cause gtag converts hex address into digits
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount
+				})
+
+				let txResponse
+
+				const signedContract = this.$smartContract.connect(
+					this.ethersProvider.getSigner()
+				)
+	
+				const total = await signedContract.calcTotal(this.mintCount)
+				console.info({
+					total: ethers.utils.formatEther(total),
+				})
+
+				const txOverrides = {
+					value: total.toString()
+				}
+
+				// if(chainId !== 1) {
+				// 	txOverrides.gasPrice = await this.ethersProvider.getGasPrice()
+				// 	console.info({ gasPrice: `${ethers.utils.formatUnits(txOverrides.gasPrice, 'gwei')} gwei` })
+				// }
+
+				if (hasWhitelist) {
+					let hexProof
+					if(saleStatus === SALE_STATUS.Presale) {
+						const whitelist = await this.getWL()
+						hexProof = getHexProof(whitelist, this.walletAddress)
+					}
+					else {
+						hexProof = []
+					}
+					txResponse = await signedContract.redeem(hexProof, this.mintCount, txOverrides)
+				} else {
+					txResponse = await signedContract.mint(this.mintCount, txOverrides)
+				}
+
+				console.log({ txResponse })
+
+				this.$gtag('event', ANALYTICS_EVENTS.CheckoutComplete, {
+					name: smartContractName,
+					walletAddress: `address_${this.walletAddress}`, // prefix address_ cause gtag converts hex address into digits
+					saleStatus: SALE_STATUS[saleStatus],
+					quantity: this.mintCount,
+					total: ethers.utils.parseEther(txOverrides.value)
+				})
+
+				this.message = {
+					variant: 'success',
+					text: 'Transaction accepted!',
+					show: 5,
+				}
+
+				txResponse.wait().then(async (res) => {
+					// console.log({ res });
+					this.message = {
+						variant: 'success',
+						text: 'Mint confirmed! 🎉',
+						show: 10,
+					}
 				})
 			} catch (err) {
 				console.error(err)
@@ -138,30 +218,20 @@ export default {
 				const { data, reason, message, code, method, error } = err
 				const text =
 					error?.message || data?.message || reason || message || 'Minting failed'
+
 				this.message = {
 					variant: 'danger',
 					text,
 				}
 
 				this.$gtag('event', ANALYTICS_EVENTS.CheckoutError, {
-					name,
-					walletAddress: `address_${this.$wallet.account}`, // prefix address_ cause gtag converts hex address into digits
+					name: smartContractName,
+					walletAddress: `address_${this.walletAddress}`, // prefix address_ cause gtag converts hex address into digits
 					message: text,
 				})
-
-				// this.$wallet.rawProvider.user?.deposit()
 			} finally {
-				this.isBusy = false
+				this.isMinting = false
 			}
-		},
-		async calcTotal(mintCount) {
-            const signedContract = this.$smartContract.connect(
-                this.$wallet.provider.getSigner()
-            )
-
-            const total = await signedContract.calcTotal(mintCount)
-
-			return ethers.utils.formatEther(total)
 		},
 	},
 }

@@ -19,7 +19,7 @@
 			</b-navbar-nav>
 
 			<!-- Right aligned nav items -->
-			<b-navbar-nav class="ml-auto">
+			<b-navbar-nav class="ml-auto" v-if="$siteConfig.mintButtonVersion !== 'V3'">
 				<b-button
 					variant="link"
 					@click="() => (this.isSidebarOpen = !this.isSidebarOpen)">
@@ -34,11 +34,10 @@
 									v51.272v72.86h-15.357h-35.244h-87.85H547.508h-55.217v27.356v75.888v8.758v35.244v35.244v155.039h346.846v127.441H839.135z
 									M901.486,696.973h-28.352h-34H560.291V591.375v-35.244v-35.244v-23.889v-1.555h3.139h90.086h129.129h56.492h34h4.445h23.904
 									V696.973z M540.707,100.191l21.15,42.688l-238.955,65.218L540.707,100.191z" :fill="walletIconColor"/>
-								<polygon points="614.146,564.57 614.146,576.676 614.146,631.152 680.73,631.152 680.73,564.57 658.498,564.57 		"/>
+								<polygon points="614.146,564.57 614.146,576.676 614.146,631.152 680.73,631.152 680.73,564.57 658.498,564.57"/>
 							</g>
 						</g>
 						</svg>
-						<!-- <b-img src="@/assets/img/wallet.svg" width="25px" /> -->
 				</b-button>
 			</b-navbar-nav>
 		</b-collapse>
