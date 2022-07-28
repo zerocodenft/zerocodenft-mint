@@ -6,15 +6,7 @@
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
 			<div v-if="mintMax > 1" class="mb-2">
-				<div
-					v-if="$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range"
-					class="d-flex mb-2">
-					<RangeSelector :max="mintMax" @onChange="onSelectedCountChange" />
-					<h5 class="pl-3 font-weight-bold">{{ mintCount }}</h5>
-				</div>
-				<div v-else>
-					<SpinButton :max="mintMax" @onChange="onSelectedCountChange" />
-				</div>
+				<component :is="mintCountSelector" v-model.number="mintCount" :max="mintMax"></component>
 			</div>
             <component :is="mintBtnComponent" :mintCount="mintCount" :soldOut="soldOut" />
 		</div>
@@ -32,7 +24,6 @@ dayjs.extend(timezone)
 export default {
 	data() {
 		return {
-			MINT_SELECTOR_TYPE,
 			mintCount: 1,
 			mintedCount: 0,
 			collectionSize: this.$siteConfig.smartContract.collectionSize,
@@ -59,6 +50,11 @@ export default {
                 default: return 'MintButtonV3'
             }
         },
+		mintCountSelector() {
+			return this.$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range 
+				? 'RangeSelector' 
+				: 'SpinButton'
+		},
 		dropDate() {
 			const { dropDate, dropTimeZone } = this.$siteConfig
 			return dayjs.utc(dropDate).tz(dropTimeZone).format()
@@ -83,9 +79,6 @@ export default {
 		},
 	},
 	methods: {
-		onSelectedCountChange(val) {
-			this.mintCount = val
-		},
 		async refreshStats() {
 			try {
 				

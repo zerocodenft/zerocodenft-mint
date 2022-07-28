@@ -1,23 +1,24 @@
 <template>
-    <b-form-input
-        :value="value"
-        @input="onInput"
-        size="lg"
-        type="range"
-        :min="min"
-        :max="max"
-        :step="step">
-    </b-form-input>
+    <div class="d-flex">
+        <b-form-input
+            :value="value"
+            @input="(val) => $emit('input', val)"
+            size="lg"
+            type="range"
+            :min="min"
+            :max="max"
+            :step="step">
+        </b-form-input>
+        <h5 class="pl-3 font-weight-bold">{{ value }}</h5>
+    </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            value: 1
-        }
-    },
     props: {
+        value: {
+            type: Number
+        },
         max: {
             type: Number,
             default: 1
@@ -31,11 +32,5 @@ export default {
             default: 1
         },
     },
-    methods: {
-        onInput(val) {
-            this.value = val
-            this.$emit('onChange', +val)
-        }
-    }
 }
 </script>
