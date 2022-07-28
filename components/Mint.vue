@@ -35,42 +35,16 @@ export default {
 			MINT_SELECTOR_TYPE,
 			mintCount: 1,
 			mintedCount: 0,
-			collectionSize: 0,
+			collectionSize: this.$siteConfig.smartContract.collectionSize,
 			intervalId: null,
 			saleStatus: SALE_STATUS.Paused,
 		}
 	},
-	async created() {
-		try {
-			const { isCounterHidden, smartContract } =
-				this.$siteConfig
+	created() {
+		this.refreshStats()
 
-			this.collectionSize = smartContract.collectionSize
-			this.saleStatus = await this.$smartContract.saleStatus()
-
-			this.mintedCount = +(await this.$smartContract.totalSupply())
-
-			if (!this.$nuxt.context.isDev) {
-				this.intervalId = setInterval(async () => {
-					console.group('Updates')
-
-					this.saleStatus = await this.$smartContract.saleStatus()
-					console.info('Sale status', SALE_STATUS[this.saleStatus])
-
-					if (!isCounterHidden) {
-						this.mintedCount = +(await this.$smartContract.totalSupply())
-						console.info('Minted count:', this.mintedCount)
-					}
-
-					console.groupEnd()
-
-					if (this.soldOut) {
-						clearInterval(this.intervalId)
-					}
-				}, 10000)
-			}
-		} catch (err) {
-			console.error({ err })
+		if (!this.$nuxt.context.isDev) {
+			this.intervalId = setInterval(this.refreshStats, 10000)
 		}
 	},
 	beforeDestroy() {
@@ -111,6 +85,27 @@ export default {
 		onSelectedCountChange(val) {
 			this.mintCount = val
 		},
+		async refreshStats() {
+			try {
+				
+				this.saleStatus = await this.$smartContract.saleStatus()
+
+				if (!this.$siteConfig.isCounterHidden) {
+					this.mintedCount = +(await this.$smartContract.totalSupply())
+				}
+
+				if (this.soldOut) {
+					clearInterval(this.intervalId)
+				}
+
+				console.group('Updates')
+				console.info('Sale status', SALE_STATUS[this.saleStatus])
+				console.info('Minted count:', this.mintedCount)
+				console.groupEnd()
+			} catch (err) {
+				console.error({ err })
+			}
+		}
 	},
 }
 </script>
