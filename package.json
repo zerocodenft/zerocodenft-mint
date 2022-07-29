@@ -23,7 +23,7 @@
     "bootstrap-vue": "^2.22.0",
     "core-js": "^3.24.0",
     "dayjs": "^1.11.4",
-    "ethers": "5.5.1",
+    "ethers": "^5.6.9",
     "fortmatic": "^2.4.0",
     "merkletreejs": "^0.2.32",
     "nuxt": "^2.15.8",

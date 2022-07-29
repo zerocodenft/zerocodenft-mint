@@ -77,7 +77,7 @@ export default {
 		const walletAddress = computed(
 			() => connectedWallet.value?.accounts[0]?.address
 		)
-		const ethersProvider = computed(
+		const walletProvider = computed(
 			() =>
 				new ethers.providers.Web3Provider(connectedWallet.value?.provider, 'any')
 		)
@@ -108,7 +108,7 @@ export default {
 			isMinting,
 			message,
 			walletAddress,
-			ethersProvider,
+			walletProvider,
 			connectedWallet,
 			connectedChain,
 			connectingWallet,
@@ -153,7 +153,7 @@ export default {
 				let txResponse
 
 				const signedContract = this.$smartContract.connect(
-					this.ethersProvider.getSigner()
+					this.walletProvider.getSigner()
 				)
 	
 				const total = await signedContract.calcTotal(this.mintCount)
@@ -165,10 +165,27 @@ export default {
 					value: total.toString()
 				}
 
-				// if(chainId !== 1) {
-				// 	txOverrides.gasPrice = await this.ethersProvider.getGasPrice()
-				// 	console.info({ gasPrice: `${ethers.utils.formatUnits(txOverrides.gasPrice, 'gwei')} gwei` })
-				// }
+				const provider = this.$smartContract.provider
+
+				const { baseFeePerGas = ethers.BigNumber.from("0") } = await provider.getBlock('latest')
+				// console.info(block, baseFeePerGas)
+
+				// const feeData = await provider.getFeeData()
+				// console.log(feeData)
+
+				// const{ gasPrice, maxFeePerGas, maxPriorityFeePerGas } = feeData
+				// console.info({
+				// 	baseFeePerGas: ethers.utils.formatUnits(baseFeePerGas, 'gwei'),
+				// 	gasPrice: ethers.utils.formatUnits(gasPrice, 'gwei'),
+				// 	maxFeePerGas: ethers.utils.formatUnits(maxFeePerGas, 'gwei'),
+				// 	maxPriorityFeePerGas: ethers.utils.formatUnits(maxPriorityFeePerGas, 'gwei')
+				// })
+
+				// EIP-1559 support check
+				if(baseFeePerGas.toNumber() === 0) {
+					console.info("EIP-1559 not supported, using gasPrice instead")
+					txOverrides.gasPrice = await provider.getGasPrice()
+				}
 
 				if (hasWhitelist) {
 					let hexProof

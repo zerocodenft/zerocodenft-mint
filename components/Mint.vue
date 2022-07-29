@@ -43,11 +43,11 @@ export default {
 	},
 	computed: {
         mintBtnComponent() {
-            switch(this.$siteConfig.mintButtonVersion) {
+            switch(this.$siteConfig.mintBtnVersion) {
                 case 'V2': return 'MintButtonV2'
                 case 'V3': return 'MintButtonV3'
-                // default: return 'MintButtonV2' @TODO // remove after testing is done
-                default: return 'MintButtonV3'
+                default: return 'MintButtonV2'
+                // default: return 'MintButtonV3'
             }
         },
 		mintCountSelector() {

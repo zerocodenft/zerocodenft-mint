@@ -19,7 +19,7 @@
 			</b-navbar-nav>
 
 			<!-- Right aligned nav items -->
-			<b-navbar-nav class="ml-auto" v-if="$siteConfig.mintButtonVersion !== 'V3'">
+			<b-navbar-nav class="ml-auto" v-if="$siteConfig.mintBtnVersion !== 'V3'">
 				<b-button
 					variant="link"
 					@click="() => (this.isSidebarOpen = !this.isSidebarOpen)">
