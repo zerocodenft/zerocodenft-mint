@@ -2,7 +2,7 @@
 	<div
 		class="p-1 zc-background">
 		<Mint />
-		<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden">
+		<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden" class="mt-2">
 			Powered by Zero Code NFT
 		</PoweredByZeroCode>
 	</div>

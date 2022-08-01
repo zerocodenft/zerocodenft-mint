@@ -5,6 +5,10 @@ html, body {
 	background-color: var(--pageBackground);
 }
 
+:root {
+	--account-center-position-top: 18px;
+}
+
 .required:after {
   content: " *";
   color: red;

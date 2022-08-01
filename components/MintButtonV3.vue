@@ -1,5 +1,4 @@
 <template>
-	<div class="mb-3">
 		<div class="text-center">
 			<b-overlay :show="isBusy" z-index="2">
 				<b-button
@@ -29,6 +28,7 @@
 				{{ message.text }}
 			</b-alert>
 			<b-button
+				v-if="$route.name === 'button'"
 				variant="link"
 				class="mt-2 text-decoration-none"
 				:disabled="isBusy"
@@ -37,7 +37,6 @@
 				>Disconnect Wallet</b-button
 			>
 		</div>
-	</div>
 </template>
 
 <script>
@@ -226,7 +225,7 @@ export default {
 					}
 				})
 			} catch (err) {
-				console.error(err)
+				console.error(err, err.message)
 
 				if (!err || err.message === 'JSON RPC response format is invalid') {
 					return
@@ -234,7 +233,7 @@ export default {
 
 				const { data, reason, message, code, method, error } = err
 				const text =
-					error?.message || data?.message || reason || message || 'Minting failed'
+					reason || message || error?.message || data?.message || 'Minting failed'
 
 				this.message = {
 					variant: 'danger',

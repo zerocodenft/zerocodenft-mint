@@ -50,7 +50,8 @@ export default ({$siteConfig, route}, inject) => {
                 minimal: route.name === 'tabs'
             },
             mobile: {
-                enabled: route.name !== 'button'
+                enabled: route.name !== 'button',
+                minimal: route.name === 'tabs'
             }
         }
     })
