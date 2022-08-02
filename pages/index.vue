@@ -12,15 +12,15 @@
 			class="shadow text-center jumbo py-4"
 			bg-variant="dark">
 			<Mint />
-			<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden">
+			<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden" class="mt-2">
 				Powered by Zero Code NFT
 			</PoweredByZeroCode>
 		</b-jumbotron>
 	</div>
 </template>
 
-<style lang="scss" scoped>
-// .backdrop-blur {
-// 	backdrop-filter: blur(1px);
-// }
+<style lang="scss">
+:root {
+	--account-center-position-top: 40px;
+}
 </style>

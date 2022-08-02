@@ -1,7 +1,7 @@
 <template>
     <b-form-spinbutton
         :value="value"
-        @input="onInput"
+        @input="(val) => $emit('input', val)"
         :min="min"
         :max="max"
         :step="step">
@@ -10,12 +10,10 @@
 
 <script>
 export default {
-    data() {
-        return {
-            value: 1
-        }
-    },
     props: {
+        value: {
+            type: Number
+        },
         max: {
             type: Number,
             default: 1
@@ -29,11 +27,5 @@ export default {
             default: 1
         },
     },
-    methods: {
-        onInput(val) {
-            this.value = val
-            this.$emit('onChange', +val)
-        }
-    }
 }
 </script>

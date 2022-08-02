@@ -1,5 +1,5 @@
 <template>
-    <div id="container" class="d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center zc-container">
         <h1>{{ msg }} </h1>
     </div>
 </template>
@@ -17,10 +17,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-#container {
-	overflow: hidden;
-	min-height: calc(100vh - 164px);
-}
-</style>

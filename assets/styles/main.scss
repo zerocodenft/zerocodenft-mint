@@ -1,8 +1,23 @@
 @import './variables';
 
+@font-face {
+    font-family: 'Inter var';
+    src: url('../fonts/Inter-Regular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../fonts/Satoshi.ttf') format('truetype');
+}
+
 html, body {
 	height: 100%;
 	background-color: var(--pageBackground);
+	font-family: 'Inter var', 'Satoshi', sans-serif;
+}
+
+:root {
+	--account-center-position-top: 18px;
 }
 
 .required:after {
