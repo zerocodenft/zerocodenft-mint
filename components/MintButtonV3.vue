@@ -1,42 +1,42 @@
 <template>
-		<div class="text-center">
-			<b-overlay :show="isBusy" z-index="2">
-				<b-button
-					v-if="soldOut"
-					class="mint-button font-weight-bold border-0"
-					:disabled="!$siteConfig.marketplaceURL"
-					:href="$siteConfig.marketplaceURL"
-					target="_blank"
-					>SOLD OUT</b-button
-				>
-				<b-button
-					v-else-if="!isConnected"
-					class="mint-button font-weight-bold border-0"
-					@click="connect"
-					>Connect Wallet</b-button
-				>
-				<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
-					>Mint [{{ mintCount }}]</b-button
-				>
-			</b-overlay>
-			<b-alert
-				:show="message.show || !!message.text"
-				:variant="message.variant"
-				dismissible
-				@dismissed="message = {}"
-				class="mt-2">
-				{{ message.text }}
-			</b-alert>
+	<div class="text-center">
+		<b-overlay :show="isBusy" z-index="2" rounded>
 			<b-button
-				v-if="$route.name === 'button'"
-				variant="link"
-				class="mt-2 text-decoration-none"
-				:disabled="isBusy"
-				v-show="isConnected"
-				@click="disconnectConnectedWallet"
-				>Disconnect Wallet</b-button
+				v-if="soldOut"
+				class="mint-button font-weight-bold border-0"
+				:disabled="!$siteConfig.marketplaceURL"
+				:href="$siteConfig.marketplaceURL"
+				target="_blank"
+				>SOLD OUT</b-button
 			>
-		</div>
+			<b-button
+				v-else-if="!isConnected"
+				class="mint-button font-weight-bold border-0"
+				@click="connect"
+				>Connect Wallet</b-button
+			>
+			<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
+				>Mint [{{ mintCount }}]</b-button
+			>
+		</b-overlay>
+		<b-alert
+			:show="message.show || !!message.text"
+			:variant="message.variant"
+			dismissible
+			@dismissed="message = {}"
+			class="mt-2">
+			{{ message.text }}
+		</b-alert>
+		<b-button
+			v-if="$route.name === 'button'"
+			variant="link"
+			class="mt-2 text-decoration-none"
+			:disabled="isBusy"
+			v-show="isConnected"
+			@click="disconnectConnectedWallet"
+			>Disconnect Wallet</b-button
+		>
+	</div>
 </template>
 
 <script>
@@ -128,7 +128,8 @@ export default {
 			return whitelist
 		},
 		async mint() {
-			const { hasWhitelist, name: smartContractName } = this.$siteConfig.smartContract
+			const { hasWhitelist, name: smartContractName } =
+				this.$siteConfig.smartContract
 
 			this.message = {}
 
@@ -146,7 +147,7 @@ export default {
 					name: smartContractName,
 					walletAddress: `address_${this.walletAddress}`, // prefix address_ cause gtag converts hex address into digits
 					saleStatus: SALE_STATUS[saleStatus],
-					quantity: this.mintCount
+					quantity: this.mintCount,
 				})
 
 				let txResponse
@@ -154,19 +155,20 @@ export default {
 				const signedContract = this.$smartContract.connect(
 					this.walletProvider.getSigner()
 				)
-	
+
 				const total = await signedContract.calcTotal(this.mintCount)
 				console.info({
 					total: ethers.utils.formatEther(total),
 				})
 
 				const txOverrides = {
-					value: total.toString()
+					value: total.toString(),
 				}
 
 				const provider = this.$smartContract.provider
 
-				const { baseFeePerGas = ethers.BigNumber.from("0") } = await provider.getBlock('latest')
+				const { baseFeePerGas = ethers.BigNumber.from('0') } =
+					await provider.getBlock('latest')
 				// console.info(block, baseFeePerGas)
 
 				// const feeData = await provider.getFeeData()
@@ -181,21 +183,24 @@ export default {
 				// })
 
 				// EIP-1559 support check
-				if(baseFeePerGas.toNumber() === 0) {
-					console.info("EIP-1559 not supported, using gasPrice instead")
+				if (baseFeePerGas.toNumber() === 0) {
+					console.info('EIP-1559 not supported, using gasPrice instead')
 					txOverrides.gasPrice = await provider.getGasPrice()
 				}
 
 				if (hasWhitelist) {
 					let hexProof
-					if(saleStatus === SALE_STATUS.Presale) {
+					if (saleStatus === SALE_STATUS.Presale) {
 						const whitelist = await this.getWL()
 						hexProof = getHexProof(whitelist, this.walletAddress)
-					}
-					else {
+					} else {
 						hexProof = []
 					}
-					txResponse = await signedContract.redeem(hexProof, this.mintCount, txOverrides)
+					txResponse = await signedContract.redeem(
+						hexProof,
+						this.mintCount,
+						txOverrides
+					)
 				} else {
 					txResponse = await signedContract.mint(this.mintCount, txOverrides)
 				}
@@ -207,7 +212,7 @@ export default {
 					walletAddress: `address_${this.walletAddress}`, // prefix address_ cause gtag converts hex address into digits
 					saleStatus: SALE_STATUS[saleStatus],
 					quantity: this.mintCount,
-					total: ethers.utils.parseEther(txOverrides.value)
+					total: ethers.utils.parseEther(txOverrides.value),
 				})
 
 				this.message = {
