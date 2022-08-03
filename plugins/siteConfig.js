@@ -4,7 +4,9 @@ export default async ({ redirect, route, $cloudFns, $axios, app }, inject) => {
     
     let siteConfig
     const siteId = route.query['siteId'] || localStorage.getItem('siteId')
-    localStorage.setItem('siteId', siteId)
+    if(siteId) {
+        localStorage.setItem('siteId', siteId)
+    }
 
     if(app.context.isDev && !siteId) {
         siteConfig = {

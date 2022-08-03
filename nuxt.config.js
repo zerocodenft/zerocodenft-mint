@@ -72,7 +72,8 @@ export default {
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
 		'@/plugins/smartContract',
-		'@/plugins/walletV3'
+		'@/plugins/walletV3',
+		'@/plugins/vuera'
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

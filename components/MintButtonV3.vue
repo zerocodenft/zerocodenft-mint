@@ -1,5 +1,6 @@
 <template>
 	<div class="text-center">
+		<BrydgeWidget v-bind="brydgeProps" />
 		<b-overlay :show="isBusy" z-index="2" rounded>
 			<b-button
 				v-if="soldOut"
@@ -43,8 +44,8 @@
 import { ethers } from 'ethers'
 import { getHexProof, wait } from '@/utils'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
-// import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
-
+import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
+import { BrydgeWidget } from '@brydge-network/widget'
 import { useOnboard } from '@web3-onboard/vue'
 import { ref, computed } from '@vue/composition-api'
 
@@ -56,8 +57,11 @@ export default {
 			default: 1,
 		},
 	},
+	components: {
+		BrydgeWidget,
+	},
 	setup(_, { root }) {
-		const { name: smartContractName, chainId } = root.$siteConfig.smartContract
+		const { name: smartContractName, chainId, address, mintPrice } = root.$siteConfig.smartContract
 		const hexChainId = `0x${chainId.toString(16)}`
 
 		const {
@@ -101,6 +105,33 @@ export default {
 				await checkChain()
 			}
 		}
+
+		const chainConfig = CHAINID_CONFIG_MAP[chainId.toString()]
+		// const calldata = root.$smartContract.interface.encodeFunctionData('mint')
+
+		const brydgeProps = {
+			jsonRpcEndpoints: {
+				[chainId]: chainConfig.rpcUrls[0], //accept native token by default
+				43114: 'https://api.avax.network/ext/bc/C/rpc', //also avax
+				250: 'https://rpc.ftm.tools' // also ftm
+			},
+			provider: root.$smartContract.provider,
+			outputTokenAddress: 'NATIVE',
+			price: mintPrice,
+			title: smartContractName,
+			destinationChainId: chainId,
+			calls: [
+				{
+					_to: address,
+					_value: 0, // this is calucated by calling smart contract's 'calcTotal' function, need to know # of tokens user wants to mint
+					_calldata: '', // this will depend on current sales phase e.g. whitelist only vs public, etc.
+				},
+			],
+			onConnectWallet: connect
+		}
+
+		console.log({brydgeProps})
+
 		return {
 			isBusy,
 			isConnected,
@@ -111,6 +142,8 @@ export default {
 			connectedWallet,
 			connectedChain,
 			connectingWallet,
+			chainConfig,
+			brydgeProps,
 			connect,
 			checkChain,
 			disconnectConnectedWallet,
