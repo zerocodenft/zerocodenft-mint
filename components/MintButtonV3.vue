@@ -43,8 +43,6 @@
 import { ethers } from 'ethers'
 import { getHexProof, wait } from '@/utils'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
-// import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
-
 import { useOnboard } from '@web3-onboard/vue'
 import { ref, computed } from '@vue/composition-api'
 

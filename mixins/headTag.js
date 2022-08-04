@@ -66,6 +66,9 @@ export default {
 					mainImage: iconURL || require('@/assets/img/zerocodenft.svg')
 				})
 			],
+			link: [
+				{ rel: 'icon', type: 'image/x-icon', href: iconURL || '/favicon.ico' },
+			],
 			script: scripts
 		}
 	},
