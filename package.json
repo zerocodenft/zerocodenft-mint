@@ -17,6 +17,7 @@
     "@walletconnect/web3-provider": "^1.7.8",
     "@web3-onboard/coinbase": "^2.0.9",
     "@web3-onboard/injected-wallets": "^2.0.14",
+    "@web3-onboard/ledger": "^2.1.7",
     "@web3-onboard/vue": "^2.1.4",
     "@web3-onboard/walletconnect": "^2.0.7",
     "bootstrap": "^4.6.2",

@@ -1,6 +1,7 @@
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
+// import ledgerModule from '@web3-onboard/ledger'
 import { init } from '@web3-onboard/vue'
 import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
 
@@ -15,6 +16,7 @@ export default ({$siteConfig, route}, inject) => {
     
     const injected = injectedModule()
     const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
+    // const ledger = ledgerModule()
 
     const { smartContract, title, description, iconURL } = $siteConfig
     const chainConfig = CHAINID_CONFIG_MAP[smartContract.chainId.toString()]
