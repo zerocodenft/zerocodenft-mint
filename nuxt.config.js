@@ -16,6 +16,10 @@ export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
 
+	alias: {
+		"@ledgerhq/devices": "@ledgerhq/devices/lib-es", //https://github.com/LedgerHQ/ledger-live/issues/763
+	},
+
 	server: {
 		port: 9001,
 	},
