@@ -88,7 +88,6 @@ export default {
 		const isBusy = computed(() => isMinting.value || connectingWallet.value)
 		const isConnected = computed(() => connectedWallet.value !== null)
 		const isMetaMask = computed(() => connectedWallet.value?.label === 'MetaMask')
-		// const isCorrectChain = computed(() => connectedChain.value?.id === hexChainId.value)
 		const walletAddress = computed(
 			() => connectedWallet.value?.accounts[0]?.address
 		)
@@ -114,7 +113,7 @@ export default {
 		// 				const permissions = await walletProvider.value.send('wallet_getPermissions')
 		// 				const { value: connectedMMWallets } = permissions[0].caveats.find(x => x.type === 'restrictReturnedAccounts')
 		// 				console.log(connectedWallet.value, connectedMMWallets)
-		// 				root.$onboard.updateWallet(label, { // updateWallet is not exposed
+		// 				root.$onboard.state.actions.updateWallet(label, { // updateWallet is not exposed
 		// 					accounts: accounts.filter(a => connectedMMWallets.includes(a.address))
 		// 				})
 		// 			}
@@ -123,52 +122,53 @@ export default {
 		// )
 
 		watch(connectedWallet, async (newVal, oldVal) => {
+			
 			// connected wallet emits twice hence this check
-			const isRedundant =
-				newVal?.label === oldVal?.label &&
-				JSON.stringify(newVal?.accounts) === JSON.stringify(oldVal?.accounts)
+			try {
+				const isRedundant =
+					newVal?.label === oldVal?.label &&
+					JSON.stringify(newVal?.accounts) === JSON.stringify(oldVal?.accounts)
 
-			if (!newVal || isRedundant) return
+				if (!newVal || isRedundant) return
 
-			const { label, accounts } = newVal
+				const { label, accounts } = newVal
 
-			if (label === 'MetaMask') {
-				const [{ address: primaryWallet }] = accounts
-				const [activeWallet] = await walletProvider.value.listAccounts()
+				if (label === 'MetaMask') {
+					const [{ address: primaryWallet }] = accounts
+					const [activeWallet] = await walletProvider.value.listAccounts()
 
-				console.log({
-					primaryWallet,
-					activeWallet,
-				})
+					// console.log({
+					// 	primaryWallet,
+					// 	activeWallet,
+					// })
 
-				const normalizedPrimaryWallet = ethers.utils.getAddress(primaryWallet)
-				const noramlizedActiveWallet = ethers.utils.getAddress(activeWallet)
+					const normalizedPrimaryWallet = ethers.utils.getAddress(primaryWallet)
+					const noramlizedActiveWallet = ethers.utils.getAddress(activeWallet)
 
-				const permissions = await walletProvider.value.send('wallet_getPermissions')
-				const { value: connectedMMWallets } = permissions[0].caveats.find(
-					(x) => x.type === 'restrictReturnedAccounts'
-				)
+					const permissions = await walletProvider.value.send(
+						'wallet_getPermissions'
+					)
+					const { value: connectedMMWallets } = permissions[0].caveats.find(
+						(x) => x.type === 'restrictReturnedAccounts'
+					)
 
-				const isConnectedInMM =
-					connectedMMWallets
-						.map((a) => ethers.utils.getAddress(a))
-						.find((a) => a === normalizedPrimaryWallet) !== undefined
+					const isConnectedInMM =
+						connectedMMWallets
+							.map((a) => ethers.utils.getAddress(a))
+							.find((a) => a === normalizedPrimaryWallet) !== undefined
 
-				const isActive = normalizedPrimaryWallet === noramlizedActiveWallet
+					const isActive = normalizedPrimaryWallet === noramlizedActiveWallet
 
-				// console.log({
-				// 	connectedMMWallets,
-				// 	isConnectedInMM,
-				// 	isActive
-				// })
+					const shouldRequest = !isConnectedInMM || !isActive
 
-				const shouldRequest = !isConnectedInMM || !isActive
-
-				if (shouldRequest) {
-					await walletProvider.value.send('wallet_requestPermissions', [
-						{ eth_accounts: {} },
-					])
+					if (shouldRequest) {
+						await walletProvider.value.send('wallet_requestPermissions', [
+							{ eth_accounts: {} },
+						])
+					}
 				}
+			} catch (e) {
+				console.error(e)
 			}
 		})
 
@@ -217,7 +217,6 @@ export default {
 				whitelist = data
 			} catch {}
 
-			// return wlData.map((a) => ethers.utils.getAddress(a))
 			return whitelist
 		},
 		async mint() {
@@ -314,7 +313,7 @@ export default {
 					show: 5,
 				}
 
-				txResponse.wait().then(async (res) => {
+				txResponse.wait().then(async (_) => {
 					// console.log({ res });
 					this.message = {
 						variant: 'success',
@@ -322,7 +321,6 @@ export default {
 						show: 10,
 					}
 					await this.$onboard.state.actions.updateBalances([this.walletAddress])
-					// this.$onboard.state.actions.setPrimaryWallet(wallets[1])
 				})
 			} catch (err) {
 				console.error(err, err.message)
