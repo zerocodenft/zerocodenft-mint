@@ -8,9 +8,15 @@ $mintBtnFontSize: 1rem;
 .mint-button {
     background-color: var(--mintBtnBgColor, $mintBtnBgColor);
     color: var(--mintBtnTextColor, $mintBtnTextColor);
-    width: var(--mintBtnWidth, $mintBtnWidth);
-    height: var(--mintBtnHeight, $mintBtnHeight);
     font-size: var(--mintBtnFontSize, $mintBtnFontSize);
+    width: var(--mintBtnWidth, $mintBtnWidth);
+    // height: var(--mintBtnHeight, $mintBtnHeight);
+}
+
+.split-mint-button, .split-mint-toggle {
+    font-size: var(--mintBtnFontSize, $mintBtnFontSize);
+    background-color: var(--mintBtnBgColor, $mintBtnBgColor);
+    color: var(--mintBtnTextColor, $mintBtnTextColor);
 }
 
 $navbarBgColor: #343a40;

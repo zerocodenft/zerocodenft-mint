@@ -15,6 +15,23 @@
 				@click="connect"
 				>Connect Wallet</b-button
 			>
+			<b-dropdown
+				v-else-if="isConnected && isMetaMask"
+				split
+				block
+				split-class="split-mint-button font-weight-bold border-0"
+				menu-class="w-100 text-center"
+				toggle-class="split-mint-toggle"
+				:text="`Mint [${mintCount}]`"
+				@click="mint">
+				<b-dropdown-item @click="reconnectMetamask"
+					>Select Different Wallet</b-dropdown-item
+				>
+				<b-dropdown-item @click="disconnectConnectedWallet"
+					>Disconnect</b-dropdown-item
+				>
+			</b-dropdown>
+
 			<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
 				>Mint [{{ mintCount }}]</b-button
 			>
@@ -44,7 +61,7 @@ import { ethers } from 'ethers'
 import { getHexProof, wait } from '@/utils'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 import { useOnboard } from '@web3-onboard/vue'
-import { ref, computed } from '@vue/composition-api'
+import { ref, computed, watch } from '@vue/composition-api'
 
 export default {
 	props: {
@@ -70,6 +87,7 @@ export default {
 		const message = ref({})
 		const isBusy = computed(() => isMinting.value || connectingWallet.value)
 		const isConnected = computed(() => connectedWallet.value !== null)
+		const isMetaMask = computed(() => connectedWallet.value?.label === 'MetaMask')
 		// const isCorrectChain = computed(() => connectedChain.value?.id === hexChainId.value)
 		const walletAddress = computed(
 			() => connectedWallet.value?.accounts[0]?.address
@@ -78,6 +96,81 @@ export default {
 			() =>
 				new ethers.providers.Web3Provider(connectedWallet.value?.provider, 'any')
 		)
+
+		function reconnectMetamask() {
+			walletProvider.value
+				.send('wallet_requestPermissions', [{ eth_accounts: {} }])
+				.catch(console.error)
+		}
+
+		// const accountCenter$ = root.$onboard.state.select('accountCenter')
+		// const { unsubscribe: unsubscribeAC } = accountCenter$.subscribe(
+		// 	async ({expanded}) => {
+		// 		console.log(expanded)
+		// 		if(expanded) {
+		// 			const { label, accounts } = connectedWallet.value
+		// 			if(label === 'MetaMask' && accounts?.length > 0) {
+
+		// 				const permissions = await walletProvider.value.send('wallet_getPermissions')
+		// 				const { value: connectedMMWallets } = permissions[0].caveats.find(x => x.type === 'restrictReturnedAccounts')
+		// 				console.log(connectedWallet.value, connectedMMWallets)
+		// 				root.$onboard.updateWallet(label, { // updateWallet is not exposed
+		// 					accounts: accounts.filter(a => connectedMMWallets.includes(a.address))
+		// 				})
+		// 			}
+		// 		}
+		// 	}
+		// )
+
+		watch(connectedWallet, async (newVal, oldVal) => {
+			// connected wallet emits twice hence this check
+			const isRedundant =
+				newVal?.label === oldVal?.label &&
+				JSON.stringify(newVal?.accounts) === JSON.stringify(oldVal?.accounts)
+
+			if (!newVal || isRedundant) return
+
+			const { label, accounts } = newVal
+
+			if (label === 'MetaMask') {
+				const [{ address: primaryWallet }] = accounts
+				const [activeWallet] = await walletProvider.value.listAccounts()
+
+				console.log({
+					primaryWallet,
+					activeWallet,
+				})
+
+				const normalizedPrimaryWallet = ethers.utils.getAddress(primaryWallet)
+				const noramlizedActiveWallet = ethers.utils.getAddress(activeWallet)
+
+				const permissions = await walletProvider.value.send('wallet_getPermissions')
+				const { value: connectedMMWallets } = permissions[0].caveats.find(
+					(x) => x.type === 'restrictReturnedAccounts'
+				)
+
+				const isConnectedInMM =
+					connectedMMWallets
+						.map((a) => ethers.utils.getAddress(a))
+						.find((a) => a === normalizedPrimaryWallet) !== undefined
+
+				const isActive = normalizedPrimaryWallet === noramlizedActiveWallet
+
+				// console.log({
+				// 	connectedMMWallets,
+				// 	isConnectedInMM,
+				// 	isActive
+				// })
+
+				const shouldRequest = !isConnectedInMM || !isActive
+
+				if (shouldRequest) {
+					await walletProvider.value.send('wallet_requestPermissions', [
+						{ eth_accounts: {} },
+					])
+				}
+			}
+		})
 
 		const checkChain = async () => {
 			if (connectedChain.value?.id !== hexChainId) {
@@ -112,6 +205,8 @@ export default {
 			connect,
 			checkChain,
 			disconnectConnectedWallet,
+			reconnectMetamask,
+			isMetaMask,
 		}
 	},
 	methods: {
@@ -226,6 +321,8 @@ export default {
 						text: 'Mint confirmed! 🎉',
 						show: 10,
 					}
+					await this.$onboard.state.actions.updateBalances([this.walletAddress])
+					// this.$onboard.state.actions.setPrimaryWallet(wallets[1])
 				})
 			} catch (err) {
 				console.error(err, err.message)
