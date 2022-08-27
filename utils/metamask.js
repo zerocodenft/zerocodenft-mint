@@ -82,17 +82,19 @@ export const FANTOM_MAINNET_CONFIG = {
 	blockExplorerUrls: ['https://ftmscan.com'],
 }
 
-export const ETHEREUM_RINKEBY = {
-	chainId: '0x4',
-	chainName: 'Rinkeby',
+
+export const ETHEREUM_GOERLI = {
+	chainId: '0x5',
+	chainName: 'Goerli',
 	nativeCurrency: {
 		name: 'Ethereum',
-		symbol: 'ETH',
+		symbol: 'GoerliETH',
 		decimals: 18
 	},
-	rpcUrls: ["https://eth-rinkeby.alchemyapi.io/v2/-cUzoxu1XKrGZTjZkdyApr6pgcA45CQr"],
-	blockExplorerUrls: ['https://rinkeby.etherscan.io']
+	rpcUrls: ["https://eth-goerli.g.alchemy.com/v2/mOLxnODEDgfoeldZVup3j7LEd2TANS3U"],
+	blockExplorerUrls: ['https://goerli.etherscan.io']
 }
+
 
 export const ETHEREUM_MAINNET = {
 	chainId: '0x1',
@@ -353,7 +355,7 @@ export const CUBE_TESTNET = {
 
 
 export const testMainChainIdMap = {
-	'4': 1,
+	'5': 1,
 	'97': 56,
 	'80001': 137,
 	'43113': 43114,
@@ -371,7 +373,7 @@ export const testMainChainIdMap = {
 
 export const CHAINID_CONFIG_MAP = {
 	'1': ETHEREUM_MAINNET,
-	'4': ETHEREUM_RINKEBY,
+	'5': ETHEREUM_GOERLI,
 	'56': BSC_MAINNET,
 	'97': BSC_TESTNET,
 	'137': POLYGON_MAINNET_PARAMS,
@@ -400,7 +402,7 @@ export const CHAINID_CONFIG_MAP = {
 	'1819':CUBE_TESTNET,
 
 	'0x1': ETHEREUM_MAINNET,
-	'0x4': ETHEREUM_RINKEBY,
+	'0x5': ETHEREUM_GOERLI,
 	'0x38': BSC_MAINNET,
 	'0x61': BSC_TESTNET,
 	'0x89': POLYGON_MAINNET_PARAMS,
@@ -432,7 +434,7 @@ export const CHAINID_CONFIG_MAP = {
 export const FAUCETS = {
 	"43113": ["https://faucet.avax-test.network"],
 	"80001": ["https://faucet.polygon.technology"],
-	"4": ["https://rinkebyfaucet.com", "https://faucet.rinkeby.io", "https://faucets.chain.link/rinkeby"],
+	"5":["https://goerlifaucet.com/","https://goerli-faucet.mudit.blog/"],
 	"4002": ["https://faucet.fantom.network"],
 	"97": ["https://testnet.binance.org/faucet-smart"],
 	"338": ["https://cronos.org/faucet"],
@@ -458,7 +460,7 @@ export function getMainnetConfig(testnetChainId) {
 	if(typeof testnetChainId !== 'string') {
 		testnetChainId = testnetChainId.toString()
 	}
-	if(['0x4', '4'].includes(testnetChainId)) return ETHEREUM_MAINNET
+	if(['0x5', '5'].includes(testnetChainId)) return ETHEREUM_MAINNET
 	if(['0xA869', '43113'].includes(testnetChainId)) return AVALANCHE_MAINNET_PARAMS
 	if(['0x89', '80001'].includes(testnetChainId)) return POLYGON_MAINNET_PARAMS
 	if(['0xFA2', '4002'].includes(testnetChainId)) return FANTOM_MAINNET_CONFIG
