@@ -38,9 +38,9 @@
 		"pageTextColor":"#8859EC"
 	},
 	"smartContract": {
-		"name": "GoerliTest1",
-		"symbol": "GT1",
-		"address": "0xC55E11E07216bA5bAA62d6397A31b430205C9e70",
+		"name": "GoerliTest3",
+		"symbol": "GT3",
+		"address": "0x795db5Dd67BCB2c1d3ca1F973a134ef5Ac6049A0",
 		"collectionSize": 1111,
 		"maxTokensPerTransaction": 20,
 		"firstXFree": 0,
@@ -453,7 +453,7 @@
     "name": "saleStatus",
     "outputs": [
       {
-        "internalType": "enum GoerliTest1.SaleStatus",
+        "internalType": "enum GoerliTest3.SaleStatus",
         "name": "",
         "type": "uint8"
       }
@@ -508,7 +508,7 @@
   {
     "inputs": [
       {
-        "internalType": "enum GoerliTest1.SaleStatus",
+        "internalType": "enum GoerliTest3.SaleStatus",
         "name": "status",
         "type": "uint8"
       }

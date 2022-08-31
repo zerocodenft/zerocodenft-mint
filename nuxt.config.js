@@ -72,7 +72,8 @@ export default {
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
 		'@/plugins/smartContract',
-		'@/plugins/walletV3'
+		'@/plugins/walletV3',
+		{ src: '@/plugins/vuePlugins', mode: 'client' }
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -90,7 +91,8 @@ export default {
 		'bootstrap-vue/nuxt',
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
-		'@nuxtjs/style-resources'
+		'@nuxtjs/style-resources',
+		'vue-social-sharing/nuxt'
 	],
 
 	axios: {
@@ -98,7 +100,7 @@ export default {
 	},
 
 	bootstrapVue: {
-		icons: false,
+		icons: true,
 	},
 
 	styleResources: {

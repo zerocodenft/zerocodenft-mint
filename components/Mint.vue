@@ -6,9 +6,40 @@
 				Minted: {{ mintedCount }}/{{ collectionSize }}
 			</h5>
 			<div v-if="mintMax > 1" class="mb-2">
-				<component :is="mintCountSelector" v-model.number="mintCount" :max="mintMax"></component>
+				<component
+					:is="mintCountSelector"
+					v-model.number="mintCount"
+					:max="mintMax"
+				></component>
 			</div>
-            <component :is="mintBtnComponent" :mintCount="mintCount" :soldOut="soldOut" />
+			<component
+				:is="mintBtnComponent"
+				:mintCount="mintCount"
+				:soldOut="soldOut"
+			/>
+			<b-modal
+				v-model="$store.state.isBusy"
+				body-class="text-center"
+				title="Loading..."
+				size="lg"
+				centered
+				no-close-on-backdrop
+				no-close-on-esc
+				hide-footer
+				hide-header-close
+			>
+				<h4
+					v-if="$store.state.isBusyMessage"
+					v-html="$store.state.isBusyMessage"
+					class="break-word"
+				></h4>
+				<b-spinner
+					style="width: 3rem; height: 3rem;"
+					class="m-3"
+					label="Loading..."
+					type="grow"
+				></b-spinner>
+			</b-modal>
 		</div>
 	</div>
 </template>
@@ -39,20 +70,23 @@ export default {
 		}
 	},
 	beforeDestroy() {
-        clearInterval(this.intervalId)
+		clearInterval(this.intervalId)
 	},
 	computed: {
-        mintBtnComponent() {
-            switch(this.$siteConfig.mintBtnVersion) {
-                case 'V2': return 'MintButtonV2'
-                case 'V3': return 'MintButtonV3'
-                default: return 'MintButtonV2'
-                // default: return 'MintButtonV3'
-            }
-        },
+		mintBtnComponent() {
+			switch (this.$siteConfig.mintBtnVersion) {
+				case 'V2':
+					return 'MintButtonV2'
+				case 'V3':
+					return 'MintButtonV3'
+				default:
+					return 'MintButtonV2'
+				// default: return 'MintButtonV3'
+			}
+		},
 		mintCountSelector() {
-			return this.$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range 
-				? 'RangeSelector' 
+			return this.$siteConfig.mintCountSelectorType === MINT_SELECTOR_TYPE.Range
+				? 'RangeSelector'
 				: 'SpinButton'
 		},
 		dropDate() {
@@ -81,7 +115,6 @@ export default {
 	methods: {
 		async refreshStats() {
 			try {
-				
 				this.saleStatus = await this.$smartContract.saleStatus()
 
 				if (!this.$siteConfig.isCounterHidden) {
@@ -99,7 +132,7 @@ export default {
 			} catch (err) {
 				console.error({ err })
 			}
-		}
+		},
 	},
 }
 </script>
