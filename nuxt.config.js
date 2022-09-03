@@ -100,7 +100,7 @@ export default {
 	},
 
 	bootstrapVue: {
-		icons: true,
+		icons: false,
 	},
 
 	styleResources: {
