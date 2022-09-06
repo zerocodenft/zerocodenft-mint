@@ -5,7 +5,8 @@ const {
 	AZURE_FUNCTIONS_URL,
 	FORTMATIC_KEY,
 	GTAG_ID,
-	GTAG_DEBUG
+	GTAG_DEBUG,
+	OPENSEA_API_KEY
 } = process.env
 
 const siteConfig = require('./siteConfig.json')
@@ -33,7 +34,8 @@ export default {
 		AZURE_FUNCTIONS_URL,
 		FORTMATIC_KEY,
 		GTAG_ID: GTAG_ID || 'G-2JGS75VE88',
-		GTAG_DEBUG
+		GTAG_DEBUG,
+		OPENSEA_API_KEY
 	},
 
 	// Target: https://go.nuxtjs.dev/config-target
