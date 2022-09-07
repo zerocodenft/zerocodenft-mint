@@ -25,15 +25,16 @@
 				</span>
 			</ShareNetwork>
 		</div>
-		<div class="row d-flex justify-content-center">
-			<div class="col-6 my-2" v-for="(data, i) in images" :key="i">
-				<h6 class="text-muted text-center">{{ data.name }}</h6>
+		<div class="row d-flex justify-content-center ">
+			<div class="col-md-6 my-2 text-center" v-for="(data, i) in images" :key="i">
+				<h6 class="text-muted">{{ data.name }}</h6>
 				<b-img-lazy
-					class="rounded border border-success"
+					class="rounded"
 					width="200px"
 					blank-color="black"
 					blank-width="200px"
 					:src="data.imageSrc"
+					:style="{border:`2px solid ${mintBtnBgColor} !important`}"
 				/>
 			</div>
 		</div>
@@ -41,7 +42,7 @@
 </template>
 
 <script>
-import { OS_SUPPORTED_CHAINS } from '../constants'
+import { CHAIN_IDS } from '../constants'
 import { isChainSupportedByOS } from '../utils/index'
 
 export default {
@@ -61,17 +62,19 @@ export default {
 				isAttributionHidden,
 				name: smartContractName,
 			},
+			stylesConfig
 		} = root.$siteConfig
+		const { mintBtnBgColor } = JSON.parse(stylesConfig)
 		return {
 			address,
 			chainId,
 			isAttributionHidden,
 			marketplaceURL,
 			smartContractName,
+			mintBtnBgColor
 		}
 	},
-	async created() {
-		console.log({murl:this.marketplaceURL})
+	async mounted() {
 		if (!this.marketplaceURL) {
 			try {
 				if (!isChainSupportedByOS(this.chainId)) {
@@ -86,12 +89,11 @@ export default {
 				}
 				if (
 					[
-						OS_SUPPORTED_CHAINS.EthereumTestnet,
-						OS_SUPPORTED_CHAINS.PolygonTestnet,
-						OS_SUPPORTED_CHAINS.KlaytnTestnet,
+						CHAIN_IDS.Goerli,
+						CHAIN_IDS.Mumbai,
+						CHAIN_IDS.Baobab,
 					].includes(this.chainId)
 				) {
-					//testnet chains
 					url = `https://testnets-api.opensea.io/api/v1/asset_contract/${this.address}`
 					marketplaceLink = 'https://testnets.opensea.io/collection/'
 					delete options['headers']
@@ -99,7 +101,7 @@ export default {
 				const { data } = await this.$axios.get(url, options)
 				if (data.collection) {
 					this.marketplaceURL = `${marketplaceLink}${data.collection.slug}`
-				} else if (this.chainId === OS_SUPPORTED_CHAINS.EthereumTestnet) {
+				} else if (this.chainId === CHAIN_IDS.Goerli) {
 					this.marketplaceURL = `https://goerli.pixxiti.com/collections/${this.address.toLowerCase()}`
 				}
 			} catch (err) {

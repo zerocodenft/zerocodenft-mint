@@ -26,18 +26,18 @@ const ANALYTICS_EVENTS = Object.freeze({
 	ZeroCodeLinkClicked: 'zerocodenft_link_clicked',
 })
 
-const OS_SUPPORTED_CHAINS = Object.freeze({
-	EthereumMainnet: 1,
-	EthereumTestnet: 5,
-	PolygonMainnet: 137,
-	PolygonTestnet: 80001,
-	KlaytnMainnet: 8217,
-	KlaytnTestnet: 1001,
+const CHAIN_IDS = Object.freeze({
+	Ethereum: 1,
+	Goerli: 5,
+	Polygon: 137,
+	Mumbai: 80001,
+	Klaytn: 8217,
+	Baobab: 1001,
 })
 export {
 	SALE_STATUS,
 	MINT_SELECTOR_TYPE,
 	WALLET_TYPE,
 	ANALYTICS_EVENTS,
-	OS_SUPPORTED_CHAINS,
+	CHAIN_IDS,
 }

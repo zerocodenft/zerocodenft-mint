@@ -1,7 +1,7 @@
 import { MerkleTree } from 'merkletreejs'
 import { ethers } from 'ethers'
 import { CHAINID_CONFIG_MAP } from '@/utils/metamask'
-import { OS_SUPPORTED_CHAINS } from '../constants/index'
+import { CHAIN_IDS } from '../constants/index'
 
 /**
  *
@@ -81,7 +81,15 @@ const wait = (delay) => {
  * @returns {bool}
  */
 const isChainSupportedByOS = (chainId) => {
-	return Object.values(OS_SUPPORTED_CHAINS).includes(chainId)
+	return [
+		CHAIN_IDS.Ethereum,
+		CHAIN_IDS.Goerli,
+		CHAIN_IDS.Polygon,
+		CHAIN_IDS.Mumbai,
+		CHAIN_IDS.Klaytn,
+		CHAIN_IDS.Baobab,
+	]
+	.includes(chainId)
 }
 export {
 	getMerkeTree,

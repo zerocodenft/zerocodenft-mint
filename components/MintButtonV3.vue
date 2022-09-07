@@ -73,7 +73,7 @@ import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 import { useOnboard } from '@web3-onboard/vue'
 import { ref, computed, watch } from '@vue/composition-api'
 import { mapMutations } from 'vuex'
-import isMobile from '../hooks/isMobile';
+import isMobile from '../hooks/isMobile'
 export default {
 	props: {
 		soldOut: Boolean,
@@ -271,7 +271,6 @@ export default {
 					this.walletProvider.getSigner()
 				)
 				console.log('signedContract: ', signedContract)
-
 				const total = await signedContract.calcTotal(this.mintCount)
 				console.info({
 					total: ethers.utils.formatEther(total),
