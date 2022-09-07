@@ -88,8 +88,7 @@ const isChainSupportedByOS = (chainId) => {
 		CHAIN_IDS.Mumbai,
 		CHAIN_IDS.Klaytn,
 		CHAIN_IDS.Baobab,
-	]
-	.includes(chainId)
+	].includes(chainId)
 }
 export {
 	getMerkeTree,

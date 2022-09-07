@@ -5,6 +5,8 @@
 		centered
 		@hidden="$emit('hidden')"
 		hide-footer
+		no-close-on-backdrop
+		no-close-on-esc
 	>
 		<div class="text-center">
 			You've successfully minted {{ mintCount }} NFT{{
@@ -29,12 +31,11 @@
 			<div class="col-md-6 my-2 text-center" v-for="(data, i) in images" :key="i">
 				<h6 class="text-muted">{{ data.name }}</h6>
 				<b-img-lazy
-					class="rounded"
+					class="rounded nft-image"
 					width="200px"
 					blank-color="black"
 					blank-width="200px"
 					:src="data.imageSrc"
-					:style="{border:`2px solid ${mintBtnBgColor} !important`}"
 				/>
 			</div>
 		</div>
@@ -62,16 +63,13 @@ export default {
 				isAttributionHidden,
 				name: smartContractName,
 			},
-			stylesConfig
 		} = root.$siteConfig
-		const { mintBtnBgColor } = JSON.parse(stylesConfig)
 		return {
 			address,
 			chainId,
 			isAttributionHidden,
 			marketplaceURL,
 			smartContractName,
-			mintBtnBgColor
 		}
 	},
 	async mounted() {
@@ -128,4 +126,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+	.nft-image{
+		border:2px solid var(--mintBtnBgColor);
+	}
+</style>
