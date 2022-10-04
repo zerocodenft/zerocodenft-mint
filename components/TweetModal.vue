@@ -5,6 +5,8 @@
 		centered
 		@hidden="$emit('hidden')"
 		hide-footer
+		no-close-on-backdrop
+		no-close-on-esc
 	>
 		<div class="text-center">
 			You've successfully minted {{ mintCount }} NFT{{
@@ -25,11 +27,11 @@
 				</span>
 			</ShareNetwork>
 		</div>
-		<div class="row d-flex justify-content-center">
-			<div class="col-6 my-2" v-for="(data, i) in images" :key="i">
-				<h6 class="text-muted text-center">{{ data.name }}</h6>
+		<div class="row d-flex justify-content-center ">
+			<div class="col-md-6 my-2 text-center" v-for="(data, i) in images" :key="i">
+				<h6 class="text-muted">{{ data.name }}</h6>
 				<b-img-lazy
-					class="rounded border border-success"
+					class="rounded nft-image"
 					width="200px"
 					blank-color="black"
 					blank-width="200px"
@@ -41,6 +43,9 @@
 </template>
 
 <script>
+import { CHAIN_IDS } from '../constants'
+import { isChainSupportedByOS } from '../utils/index'
+
 export default {
 	props: {
 		images: Array,
@@ -49,37 +54,53 @@ export default {
 			default: 1,
 		},
 	},
-	data() {
+	setup(_, { root }) {
+		const {
+			marketplaceURL,
+			smartContract: {
+				address,
+				chainId,
+				isAttributionHidden,
+				name: smartContractName,
+			},
+		} = root.$siteConfig
 		return {
-			marketplaceURL: this.$siteConfig.marketplaceURL,
+			address,
+			chainId,
+			isAttributionHidden,
+			marketplaceURL,
+			smartContractName,
 		}
 	},
-	async created() {
+	async mounted() {
 		if (!this.marketplaceURL) {
 			try {
-				const isSupportedByOS = [5, 1, 80001, 137, 1001, 8217].includes(
-					this.$siteConfig.smartContract.chainId
-				)
-				if (!isSupportedByOS) {
+				if (!isChainSupportedByOS(this.chainId)) {
 					return
 				}
 				let marketplaceLink = 'https://opensea.io/collection/'
-				let url = `https://api.opensea.io/api/v1/asset_contract/${this.$siteConfig.smartContract.address}`
+				let url = `https://api.opensea.io/api/v1/asset_contract/${this.address}`
 				let options = {
 					headers: {
-						'X-API-KEY': process.env.OPENSEA_API_KEY,
+						'X-API-KEY': this.$config.OPENSEA_API_KEY,
 					},
 				}
-				if ([5, 80001, 1001].includes(this.$siteConfig.smartContract.chainId)) {
-					url = `https://testnets-api.opensea.io/api/v1/asset_contract/${this.$siteConfig.smartContract.address}`
+				if (
+					[
+						CHAIN_IDS.Goerli,
+						CHAIN_IDS.Mumbai,
+						CHAIN_IDS.Baobab,
+					].includes(this.chainId)
+				) {
+					url = `https://testnets-api.opensea.io/api/v1/asset_contract/${this.address}`
 					marketplaceLink = 'https://testnets.opensea.io/collection/'
 					delete options['headers']
 				}
 				const { data } = await this.$axios.get(url, options)
 				if (data.collection) {
 					this.marketplaceURL = `${marketplaceLink}${data.collection.slug}`
-				} else if (this.$siteConfig.smartContract.chainId === 5) {
-					this.marketplaceURL = `https://goerli.pixxiti.com/collections/${this.$siteConfig.smartContract.address.toLowerCase()}`
+				} else if (this.chainId === CHAIN_IDS.Goerli) {
+					this.marketplaceURL = `https://goerli.pixxiti.com/collections/${this.address.toLowerCase()}`
 				}
 			} catch (err) {
 				console.error(err)
@@ -88,15 +109,15 @@ export default {
 	},
 	computed: {
 		compTitle() {
-			let title = `I've just minted ${this.mintCount} NFTs from ${this.$siteConfig.smartContract.name} NFT Collection.`
-			if (!this.$siteConfig.smartContract.isAttributionHidden) {
+			let title = `I've just minted ${this.mintCount} NFTs from ${this.smartContractName} NFT Collection.`
+			if (!this.isAttributionHidden) {
 				title += ' Powered by @zero_code_nft!'
 			}
 			return title
 		},
 		compHashTags() {
-			let tags = [this.$siteConfig.smartContract.name, 'nocode', 'nft', 'mint']
-			if (!this.$siteConfig.smartContract.isAttributionHidden) {
+			let tags = [this.smartContractName, 'nocode', 'nft', 'mint']
+			if (!this.isAttributionHidden) {
 				tags.unshift('zerocodenft')
 			}
 			return tags
@@ -105,4 +126,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+	.nft-image{
+		border:2px solid var(--mintBtnBgColor);
+	}
+</style>
