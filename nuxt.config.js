@@ -5,7 +5,8 @@ const {
 	AZURE_FUNCTIONS_URL,
 	FORTMATIC_KEY,
 	GTAG_ID,
-	GTAG_DEBUG
+	GTAG_DEBUG,
+	OPENSEA_API_KEY
 } = process.env
 
 const siteConfig = require('./siteConfig.json')
@@ -33,7 +34,8 @@ export default {
 		AZURE_FUNCTIONS_URL,
 		FORTMATIC_KEY,
 		GTAG_ID: GTAG_ID || 'G-2JGS75VE88',
-		GTAG_DEBUG
+		GTAG_DEBUG,
+		OPENSEA_API_KEY
 	},
 
 	// Target: https://go.nuxtjs.dev/config-target
@@ -72,7 +74,8 @@ export default {
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
 		'@/plugins/smartContract',
-		'@/plugins/walletV3'
+		'@/plugins/walletV3',
+		{ src: '@/plugins/vuePlugins', mode: 'client' }
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -90,7 +93,8 @@ export default {
 		'bootstrap-vue/nuxt',
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
-		'@nuxtjs/style-resources'
+		'@nuxtjs/style-resources',
+		'vue-social-sharing/nuxt'
 	],
 
 	axios: {

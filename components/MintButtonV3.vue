@@ -16,14 +16,15 @@
 				>Connect Wallet</b-button
 			>
 			<b-dropdown
-				v-else-if="isConnected && isMetaMask"
+				v-else-if="isConnected && isMetaMask && !isMobile"
 				split
 				block
 				split-class="split-mint-button font-weight-bold border-0"
 				menu-class="w-100 text-center"
 				toggle-class="split-mint-toggle"
 				:text="`Mint [${mintCount}]`"
-				@click="mint">
+				@click="mint"
+			>
 				<b-dropdown-item @click="reconnectMetamask"
 					>Select Different Wallet</b-dropdown-item
 				>
@@ -32,7 +33,10 @@
 				>
 			</b-dropdown>
 
-			<b-button v-else class="mint-button font-weight-bold border-0" @click="mint"
+			<b-button
+				v-else
+				class="mint-button font-weight-bold border-0"
+				@click="mint"
 				>Mint [{{ mintCount }}]</b-button
 			>
 		</b-overlay>
@@ -41,7 +45,8 @@
 			:variant="message.variant"
 			dismissible
 			@dismissed="message = {}"
-			class="mt-2">
+			class="mt-2"
+		>
 			{{ message.text }}
 		</b-alert>
 		<b-button
@@ -53,6 +58,11 @@
 			@click="disconnectConnectedWallet"
 			>Disconnect Wallet</b-button
 		>
+		<TweetModal
+			:images="mintedTokens"
+			:mintCount="mintCount"
+			@hidden="handleTweetModalHide"
+		></TweetModal>
 	</div>
 </template>
 
@@ -62,7 +72,8 @@ import { getHexProof, wait } from '@/utils'
 import { SALE_STATUS, ANALYTICS_EVENTS } from '@/constants'
 import { useOnboard } from '@web3-onboard/vue'
 import { ref, computed, watch } from '@vue/composition-api'
-
+import { mapMutations } from 'vuex'
+import isMobile from '../hooks/isMobile'
 export default {
 	props: {
 		soldOut: Boolean,
@@ -72,6 +83,7 @@ export default {
 		},
 	},
 	setup(_, { root }) {
+		const mintedTokens = ref([])
 		const { name: smartContractName, chainId } = root.$siteConfig.smartContract
 		const hexChainId = `0x${chainId.toString(16)}`
 
@@ -87,13 +99,18 @@ export default {
 		const message = ref({})
 		const isBusy = computed(() => isMinting.value || connectingWallet.value)
 		const isConnected = computed(() => connectedWallet.value !== null)
-		const isMetaMask = computed(() => connectedWallet.value?.label === 'MetaMask')
+		const isMetaMask = computed(
+			() => connectedWallet.value?.label === 'MetaMask'
+		)
 		const walletAddress = computed(
 			() => connectedWallet.value?.accounts[0]?.address
 		)
 		const walletProvider = computed(
 			() =>
-				new ethers.providers.Web3Provider(connectedWallet.value?.provider, 'any')
+				new ethers.providers.Web3Provider(
+					connectedWallet.value?.provider,
+					'any'
+				)
 		)
 
 		function reconnectMetamask() {
@@ -122,7 +139,6 @@ export default {
 		// )
 
 		watch(connectedWallet, async (newVal, oldVal) => {
-			
 			// connected wallet emits twice hence this check
 			try {
 				const isRedundant =
@@ -207,21 +223,28 @@ export default {
 			disconnectConnectedWallet,
 			reconnectMetamask,
 			isMetaMask,
+			mintedTokens,
+			isMobile,
 		}
 	},
 	methods: {
+		...mapMutations(['setBusy']),
 		async getWL() {
 			let { id, whitelist } = this.$siteConfig.smartContract
 			try {
-				const { data } = await this.$axios.get(`/smartcontracts/${id}/whitelist`)
+				const { data } = await this.$axios.get(
+					`/smartcontracts/${id}/whitelist`
+				)
 				whitelist = data
 			} catch {}
 
 			return whitelist
 		},
 		async mint() {
-			const { hasWhitelist, name: smartContractName } =
-				this.$siteConfig.smartContract
+			const {
+				hasWhitelist,
+				name: smartContractName,
+			} = this.$siteConfig.smartContract
 
 			this.message = {}
 
@@ -247,7 +270,7 @@ export default {
 				const signedContract = this.$smartContract.connect(
 					this.walletProvider.getSigner()
 				)
-
+				
 				const total = await signedContract.calcTotal(this.mintCount)
 				console.info({
 					total: ethers.utils.formatEther(total),
@@ -259,8 +282,9 @@ export default {
 
 				const provider = this.$smartContract.provider
 
-				const { baseFeePerGas = ethers.BigNumber.from('0') } =
-					await provider.getBlock('latest')
+				const {
+					baseFeePerGas = ethers.BigNumber.from('0'),
+				} = await provider.getBlock('latest')
 				// console.info(block, baseFeePerGas)
 
 				// const feeData = await provider.getFeeData()
@@ -313,14 +337,41 @@ export default {
 					show: 5,
 				}
 
-				txResponse.wait().then(async (_) => {
-					// console.log({ res });
-					this.message = {
-						variant: 'success',
-						text: 'Mint confirmed! 🎉',
-						show: 10,
+				const txReceipt = await txResponse.wait()
+				this.message = {
+					variant: 'success',
+					text: 'Mint confirmed! 🎉',
+					show: 10,
+				}
+				await this.$onboard.state.actions.updateBalances([this.walletAddress])
+				let events = txReceipt.events.slice(0, 3)
+				this.setBusy({ isBusy: true })
+				const tokenURIPromises = events.map((e) =>
+					signedContract.tokenURI(e.args.tokenId)
+				)
+				const tokenURIs = await Promise.all(tokenURIPromises)
+
+				const metadataPromises = tokenURIs.map((uri) =>
+					fetch('https://ipfs.io/ipfs/' + uri.replace('ipfs://', ''))
+				)
+				const metadataResponses = await Promise.all(metadataPromises)
+
+				for (const res of metadataResponses) {
+					if (!res.ok) {
+						console.log(res.statusText)
+						return
 					}
-					await this.$onboard.state.actions.updateBalances([this.walletAddress])
+					const json = await res.json()
+					this.mintedTokens.push({
+						name: json.name,
+						imageSrc:
+							'https://ipfs.io/ipfs/' + json.image.replace('ipfs://', ''),
+					})
+				}
+				this.setBusy({ isBusy: false })
+				this.$bvModal.show('TwitterNftShareModal')
+				this.$confetti.start({
+					particles: [{ type: 'rect' }],
 				})
 			} catch (err) {
 				console.error(err, err.message)
@@ -329,9 +380,13 @@ export default {
 					return
 				}
 
-				const { data, reason, message, code, method, error } = err
+				const { data, reason, message, error } = err
 				const text =
-					reason || message || error?.message || data?.message || 'Minting failed'
+					reason ||
+					message ||
+					error?.message ||
+					data?.message ||
+					'Minting failed'
 
 				this.message = {
 					variant: 'danger',
@@ -345,7 +400,12 @@ export default {
 				})
 			} finally {
 				this.isMinting = false
+				this.setBusy({ isBusy: false })
 			}
+		},
+		handleTweetModalHide() {
+			this.$confetti.stop()
+			this.mintedTokens = []
 		},
 	},
 }
