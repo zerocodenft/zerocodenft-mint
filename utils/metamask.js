@@ -434,13 +434,13 @@ export const CHAINID_CONFIG_MAP = {
 export const FAUCETS = {
 	"43113": ["https://faucet.avax-test.network"],
 	"80001": ["https://faucet.polygon.technology"],
-	"5":["https://goerlifaucet.com/","https://goerli-faucet.mudit.blog/"],
+	"5": ["https://goerlifaucet.com","https://goerli-faucet.mudit.blog"],
 	"4002": ["https://faucet.fantom.network"],
 	"97": ["https://testnet.binance.org/faucet-smart"],
 	"338": ["https://cronos.org/faucet"],
 	"16": ["https://faucet.towolabs.com"],
 	"60001": ["https://www.thinkiumdev.net/DApp%20Development/Faucet.html"],
-	"421611": ["https://rinkebyfaucet.com", "https://faucets.chain.link/rinkeby", "https://faucet.rinkeby.io"],
+	"421611": ["https://goerlifaucet.com","https://goerli-faucet.mudit.blog"],
 	'69': ["https://optimismfaucet.xyz"],
 	'166670e0000': ["https://stakely.io/en/faucet/harmony-one"],
 	'1001':["https://baobab.wallet.klaytn.foundation/faucet"],
@@ -460,7 +460,7 @@ export function getMainnetConfig(testnetChainId) {
 	if(typeof testnetChainId !== 'string') {
 		testnetChainId = testnetChainId.toString()
 	}
-	if(['0x5', '5'].includes(testnetChainId)) return ETHEREUM_MAINNET
+	if(['0x4', '4', '0x5', '5'].includes(testnetChainId)) return ETHEREUM_MAINNET
 	if(['0xA869', '43113'].includes(testnetChainId)) return AVALANCHE_MAINNET_PARAMS
 	if(['0x89', '80001'].includes(testnetChainId)) return POLYGON_MAINNET_PARAMS
 	if(['0xFA2', '4002'].includes(testnetChainId)) return FANTOM_MAINNET_CONFIG

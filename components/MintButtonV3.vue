@@ -270,7 +270,7 @@ export default {
 				const signedContract = this.$smartContract.connect(
 					this.walletProvider.getSigner()
 				)
-				console.log('signedContract: ', signedContract)
+				
 				const total = await signedContract.calcTotal(this.mintCount)
 				console.info({
 					total: ethers.utils.formatEther(total),
