@@ -17,7 +17,7 @@
 			<ShareNetwork
 				ref="twitterShare"
 				network="twitter"
-				:url="marketplaceURL + '\n'"
+				:url="compUrl"
 				:title="compTitle"
 				:hashtags="compHashTags.toString()"
 			>
@@ -122,6 +122,9 @@ export default {
 			}
 			return tags
 		},
+		compUrl() {
+			return this.marketplaceURL ? this.marketplaceURL + '\n': '\n'
+		}
 	},
 }
 </script>

@@ -38,14 +38,14 @@
 		"pageTextColor":"#8859EC"
 	},
 	"smartContract": {
-		"name": "GoerliTest3",
-		"symbol": "GT3",
-		"address": "0x795db5Dd67BCB2c1d3ca1F973a134ef5Ac6049A0",
+		"name": "BinanceBin",
+		"symbol": "BB",
+		"address": "0xf44e5fb92F19BE0bcD5258891625b4b37A688d09",
 		"collectionSize": 1111,
 		"maxTokensPerTransaction": 20,
 		"firstXFree": 0,
 		"mintPrice": 0.05,
-		"chainId": 5,
+		"chainId": 97,
 		"hasWhitelist": false,
 		"whitelist": [],
 		"hasDelayedReveal": false,
@@ -177,32 +177,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "TOKENS_PER_PERSON_PUB_LIMIT",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "TOKENS_PER_TRAN_LIMIT",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -274,19 +248,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "contractURI",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -453,7 +414,7 @@
     "name": "saleStatus",
     "outputs": [
       {
-        "internalType": "enum GoerliTest3.SaleStatus",
+        "internalType": "enum BinanceBin.SaleStatus",
         "name": "",
         "type": "uint8"
       }
@@ -508,7 +469,7 @@
   {
     "inputs": [
       {
-        "internalType": "enum GoerliTest3.SaleStatus",
+        "internalType": "enum BinanceBin.SaleStatus",
         "name": "status",
         "type": "uint8"
       }
