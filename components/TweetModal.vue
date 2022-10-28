@@ -17,7 +17,7 @@
 			<ShareNetwork
 				ref="twitterShare"
 				network="twitter"
-				:url="marketplaceURL + '\n'"
+				:url="compUrl"
 				:title="compTitle"
 				:hashtags="compHashTags.toString()"
 			>
@@ -29,7 +29,6 @@
 		</div>
 		<div class="row d-flex justify-content-center ">
 			<div class="col-md-6 my-2 text-center" v-for="(data, i) in images" :key="i">
-				<h6 class="text-muted">{{ data.name }}</h6>
 				<b-img-lazy
 					class="rounded nft-image"
 					width="200px"
@@ -37,6 +36,7 @@
 					blank-width="200px"
 					:src="data.imageSrc"
 				/>
+				<h6 class="text-muted">{{ data.name }}</h6>
 			</div>
 		</div>
 	</b-modal>
@@ -122,6 +122,9 @@ export default {
 			}
 			return tags
 		},
+		compUrl() {
+			return this.marketplaceURL ? this.marketplaceURL + '\n': '\n'
+		}
 	},
 }
 </script>
