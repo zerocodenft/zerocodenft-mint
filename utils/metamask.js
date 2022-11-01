@@ -225,7 +225,7 @@ export const ARBITRUM_TESTNET = {
 		decimals: 18
 	},
 	rpcUrls: ['https://arb-goerli.g.alchemy.com/v2/11IOzUM7AuN5qGgBQ2WEPETQonMUnIT4'],
-	blockExplorerUrls: ['https://goerli.arbiscan.io/'],
+	blockExplorerUrls: ['https://goerli.arbiscan.io'],
 }
 
 export const OPTIMISM_MAINNET = {
