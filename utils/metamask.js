@@ -212,20 +212,20 @@ export const ARBITRUM_MAINNET = {
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+	rpcUrls: ['https://arb-mainnet.g.alchemy.com/v2/tnn0kuKPh4zkQWE6rK8X24xyh8gfLj6Q'],
 	blockExplorerUrls: ['https://arbiscan.io'],
 }
 
 export const ARBITRUM_TESTNET = {
-	chainId: '0x66EEB',
+	chainId: '0x66EED',
 	chainName: 'Arbitrum Testnet',
 	nativeCurrency: {
 		name: 'Arbitrum',
-		symbol: 'ETH',
+		symbol: 'AGOR',
 		decimals: 18
 	},
-	rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
-	blockExplorerUrls: ['https://testnet.arbiscan.io'],
+	rpcUrls: ['https://arb-goerli.g.alchemy.com/v2/11IOzUM7AuN5qGgBQ2WEPETQonMUnIT4'],
+	blockExplorerUrls: ['https://goerli.arbiscan.io'],
 }
 
 export const OPTIMISM_MAINNET = {
@@ -241,15 +241,15 @@ export const OPTIMISM_MAINNET = {
 }
 
 export const OPTIMISM_TESTNET = {
-	chainId: '0x45',
+	chainId: '0x1A4',
 	chainName: 'Optimistic Ethereum Testnet',
 	nativeCurrency: {
 		name: 'Ethereum',
 		symbol: 'ETH',
 		decimals: 18
 	},
-	rpcUrls: ['https://kovan.optimism.io'],
-	blockExplorerUrls: ['https://kovan-optimistic.etherscan.io'],
+	rpcUrls: ['https://opt-goerli.g.alchemy.com/v2/3oydbli3tKsKv5gQ2AJguh8xPJLCVjDi'],
+	blockExplorerUrls: ['https://goerli-optimism.etherscan.io'],
 }
 
 export const HARMONY_MAINNET = {
@@ -363,7 +363,7 @@ export const testMainChainIdMap = {
 	'338': 25,
 	'16': 19,
 	'60001': 70001,
-	'421611': 42161,
+	'421613': 42161,
 	'69': 10,
 	'1666700000': 1666600000,
 	'1001': 8217,
@@ -388,9 +388,9 @@ export const CHAINID_CONFIG_MAP = {
 	'16': SONGBIRD_TESTNET,
 	'60001': THINKIUM_TESTNET,
 	'70001': THINKIUM_MAINNET,
-	'421611': ARBITRUM_TESTNET,
+	'421613': ARBITRUM_TESTNET,
 	'42161': ARBITRUM_MAINNET,
-	'69': OPTIMISM_TESTNET,
+	'420': OPTIMISM_TESTNET,
 	'10': OPTIMISM_MAINNET,
 	'1666700000': HARMONY_TESTNET,
 	'1666600000': HARMONY_MAINNET,
@@ -417,9 +417,9 @@ export const CHAINID_CONFIG_MAP = {
 	'0x10': SONGBIRD_TESTNET,
 	'0xEA61': THINKIUM_TESTNET,
 	'0x11171': THINKIUM_MAINNET,
-	'0x66EEB': ARBITRUM_TESTNET,
+	'0x66EED': ARBITRUM_TESTNET,
 	'0xA4B1': ARBITRUM_MAINNET,
-	'0x45': OPTIMISM_TESTNET,
+	'0x1A4': OPTIMISM_TESTNET,
 	'0xA': OPTIMISM_MAINNET,
 	'0x6357D2E0': HARMONY_TESTNET,
 	'0x63564C40': HARMONY_MAINNET,
@@ -440,8 +440,8 @@ export const FAUCETS = {
 	"338": ["https://cronos.org/faucet"],
 	"16": ["https://faucet.towolabs.com"],
 	"60001": ["https://www.thinkiumdev.net/DApp%20Development/Faucet.html"],
-	"421611": ["https://goerlifaucet.com","https://goerli-faucet.mudit.blog"],
-	'69': ["https://optimismfaucet.xyz"],
+	"421613": ["https://goerlifaucet.com","https://goerli-faucet.mudit.blog"],
+	'420': ["https://optimismfaucet.xyz"],
 	'166670e0000': ["https://stakely.io/en/faucet/harmony-one"],
 	'1001':["https://baobab.wallet.klaytn.foundation/faucet"],
 	'256': ["https://scan-testnet.hecochain.com/faucet"],
@@ -468,8 +468,8 @@ export function getMainnetConfig(testnetChainId) {
 	if(['0x152', '338'].includes(testnetChainId)) return CRONOS_MAINNET
 	if(['0x10', '16'].includes(testnetChainId)) return SONGBIRD_MAINNET
 	if(['0xEA61', '60001'].includes(testnetChainId)) return THINKIUM_MAINNET
-	if(['0x66EEB', '421611'].includes(testnetChainId)) return ARBITRUM_MAINNET
-	if (['0x45', '69'].includes(testnetChainId)) return OPTIMISM_MAINNET
+	if(['0x66EED', '421613'].includes(testnetChainId)) return ARBITRUM_MAINNET
+	if (['0x1A4', '420'].includes(testnetChainId)) return OPTIMISM_MAINNET
 	if (["0x6357D2E0", '1666700000'].includes(testnetChainId)) return HARMONY_MAINNET
 	if (["0x3E9", '1001'].includes(testnetChainId)) return KLAYTN_MAINNET
 	if (["0x100", '256'].includes(testnetChainId)) return HECO_MAINNET
