@@ -1,24 +1,17 @@
-import getSiteMeta from './utils/siteMeta'
-
 const {
 	API_URL,
 	AZURE_FUNCTIONS_URL,
 	FORTMATIC_KEY,
-	GTAG_ID,
 	GTAG_DEBUG,
-	OPENSEA_API_KEY
+	OPENSEA_API_KEY,
 } = process.env
-
-const siteConfig = require('./siteConfig.json')
-
-const { title, url } = siteConfig
 
 export default {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
 
 	alias: {
-		"@ledgerhq/devices": "@ledgerhq/devices/lib-es", //https://github.com/LedgerHQ/ledger-live/issues/763
+		'@ledgerhq/devices': '@ledgerhq/devices/lib-es', //https://github.com/LedgerHQ/ledger-live/issues/763
 	},
 
 	server: {
@@ -26,16 +19,15 @@ export default {
 	},
 
 	cli: {
-		badgeMessages: ['Zero Code NFT 😎']
+		badgeMessages: ['Zero Code NFT 😎'],
 	},
 
 	publicRuntimeConfig: {
 		API_URL,
 		AZURE_FUNCTIONS_URL,
 		FORTMATIC_KEY,
-		GTAG_ID: GTAG_ID || 'G-2JGS75VE88',
 		GTAG_DEBUG,
-		OPENSEA_API_KEY
+		OPENSEA_API_KEY,
 	},
 
 	// Target: https://go.nuxtjs.dev/config-target
@@ -43,7 +35,6 @@ export default {
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
 	head: {
-		title: title,
 		htmlAttrs: {
 			lang: 'en',
 		},
@@ -51,38 +42,26 @@ export default {
 			{ charset: 'utf-8' },
 			{ name: 'viewport', content: 'width=device-width, initial-scale=1' }, // mobile responsive https://search.google.com/test/mobile-friendly
 			{ name: 'format-detection', content: 'telephone=no' },
-			...getSiteMeta(),
-		],
-		link: [
-			{
-				hid: 'canonical',
-				rel: 'canonical',
-				href: url,
-			},
 		],
 	},
 
 	// Global CSS: https://go.nuxtjs.dev/config-css
 	//css: ['@/assets/main.scss'],
-	css: [
-		'@/assets/styles/main.scss'
-	],
+	css: ['@/assets/styles/main.scss'],
 
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 	plugins: [
+		'@/plugins/appConfig',
 		'@/plugins/wallet',
 		'@/plugins/cloudFns',
 		'@/plugins/siteConfig',
 		'@/plugins/smartContract',
 		'@/plugins/walletV3',
-		{ src: '@/plugins/vuePlugins', mode: 'client' }
+		{ src: '@/plugins/vuePlugins', mode: 'client' },
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
-	components: [
-		'@/components',
-		'@/components/general'
-	],
+	components: ['@/components', '@/components/general'],
 
 	// Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
 	buildModules: [],
@@ -94,11 +73,11 @@ export default {
 		'@nuxtjs/sitemap',
 		'@nuxtjs/axios',
 		'@nuxtjs/style-resources',
-		'vue-social-sharing/nuxt'
+		'vue-social-sharing/nuxt',
 	],
 
 	axios: {
-		baseURL: API_URL
+		baseURL: API_URL,
 	},
 
 	bootstrapVue: {
@@ -110,7 +89,7 @@ export default {
 	},
 
 	sitemap: {
-		hostname: url,
+		hostname: 'https://mint.zerocodenft.com',
 		exclude: ['/admin/**'],
 		defaults: {
 			changefreq: 'daily',
@@ -120,15 +99,15 @@ export default {
 	},
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
-	build: { 
+	build: {
 		transpile: ['web3modal-vue'],
 		standalone: true,
 		extend(config) {
 			config.module.rules.push({
-			  test: /\.mjs$/,
-			  include: /node_modules/,
-			  type: 'javascript/auto',
+				test: /\.mjs$/,
+				include: /node_modules/,
+				type: 'javascript/auto',
 			})
 		},
-	}
+	},
 }
