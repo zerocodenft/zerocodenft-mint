@@ -3,7 +3,7 @@
 		<b-link
 			class="text-muted zerocode-link text-monospace"
 			@click.prevent="onLinkClick"
-			:href="$appConfig.frontEndURL"
+			:href="$appConfig.mainWebsiteURL"
 			target="_blank">
 			<slot></slot>
 		</b-link>
@@ -16,7 +16,7 @@ export default {
 	methods: {
 		onLinkClick() {
 			const { id, name } = this.$siteConfig.smartContract
-			const { gtagId, frontEndURL } = this.$appConfig
+			const { gtagId, mainWebsiteURL } = this.$appConfig
 			if (gtagId) {
 				this.$gtag('event', ANALYTICS_EVENTS.ZeroCodeLinkClicked, {
 					name,
@@ -25,7 +25,7 @@ export default {
 					walletAddress: `address_${this.$wallet.account}`,
 				})
 			}
-			window.open(frontEndURL, '_blank')
+			window.open(mainWebsiteURL, '_blank')
 		},
 	},
 }

@@ -1,7 +1,7 @@
 const type = 'website'
 const twitterCard = 'summary_large_image'
 
-export default ({ logoURL, frontEndURL, companyName, description }) => {
+export default ({ logoURL, mainWebsiteURL, companyName, description }) => {
 	return [
 		{
 			property: 'og:site_name',
@@ -30,7 +30,7 @@ export default ({ logoURL, frontEndURL, companyName, description }) => {
 		{
 			hid: 'og:url',
 			property: 'og:url',
-			content: frontEndURL,
+			content: mainWebsiteURL,
 		},
 		{
 			hid: 'og:title',
@@ -55,7 +55,7 @@ export default ({ logoURL, frontEndURL, companyName, description }) => {
 		{
 			hid: 'twitter:url',
 			name: 'twitter:url',
-			content: frontEndURL,
+			content: mainWebsiteURL,
 		},
 		{
 			hid: 'twitter:title',
