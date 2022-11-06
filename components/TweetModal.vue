@@ -6,8 +6,7 @@
 		@hidden="$emit('hidden')"
 		hide-footer
 		no-close-on-backdrop
-		no-close-on-esc
-	>
+		no-close-on-esc>
 		<div class="text-center">
 			You've successfully minted {{ mintCount }} NFT{{
 				mintCount > 1 ? 's' : ''
@@ -19,23 +18,19 @@
 				network="twitter"
 				:url="compUrl"
 				:title="compTitle"
-				:hashtags="compHashTags.toString()"
-			>
+				:hashtags="compHashTags.toString()">
 				<b-img src="@/assets/img/logos/twitter.svg" width="32px" />
-				<span>
-					Share on Twitter!
-				</span>
+				<span> Share on Twitter! </span>
 			</ShareNetwork>
 		</div>
-		<div class="row d-flex justify-content-center ">
+		<div class="row d-flex justify-content-center">
 			<div class="col-md-6 my-2 text-center" v-for="(data, i) in images" :key="i">
 				<b-img-lazy
 					class="rounded nft-image"
 					width="200px"
 					blank-color="black"
 					blank-width="200px"
-					:src="data.imageSrc"
-				/>
+					:src="data.imageSrc" />
 				<h6 class="text-muted">{{ data.name }}</h6>
 			</div>
 		</div>
@@ -43,8 +38,8 @@
 </template>
 
 <script>
-import { CHAIN_IDS } from '../constants'
-import { isChainSupportedByOS } from '../utils/index'
+import { CHAIN_IDS } from '@/constants'
+import { isChainSupportedByOS } from '@/utils/index'
 
 export default {
 	props: {
@@ -64,12 +59,17 @@ export default {
 				name: smartContractName,
 			},
 		} = root.$siteConfig
+
+		const { companyName, twitterTag } = root.$appConfig
+
 		return {
 			address,
 			chainId,
 			isAttributionHidden,
 			marketplaceURL,
 			smartContractName,
+			companyName,
+			twitterTag,
 		}
 	},
 	async mounted() {
@@ -86,11 +86,9 @@ export default {
 					},
 				}
 				if (
-					[
-						CHAIN_IDS.Goerli,
-						CHAIN_IDS.Mumbai,
-						CHAIN_IDS.Baobab,
-					].includes(this.chainId)
+					[CHAIN_IDS.Goerli, CHAIN_IDS.Mumbai, CHAIN_IDS.Baobab].includes(
+						this.chainId
+					)
 				) {
 					url = `https://testnets-api.opensea.io/api/v1/asset_contract/${this.address}`
 					marketplaceLink = 'https://testnets.opensea.io/collection/'
@@ -110,27 +108,28 @@ export default {
 	computed: {
 		compTitle() {
 			let title = `I've just minted ${this.mintCount} NFTs from ${this.smartContractName} NFT Collection.`
-			if (!this.isAttributionHidden) {
-				title += ' Powered by @zero_code_nft!'
+			if (!this.isAttributionHidden && this.twitterTag) {
+				title += ` Powered by ${this.twitterTag}!`
 			}
 			return title
 		},
 		compHashTags() {
 			let tags = [this.smartContractName, 'nocode', 'nft', 'mint']
-			if (!this.isAttributionHidden) {
-				tags.unshift('zerocodenft')
+			if (!this.isAttributionHidden && this.companyName) {
+				const name = this.companyName.toLowerCase().replace(/\s/g, '')
+				tags.unshift(name)
 			}
 			return tags
 		},
 		compUrl() {
-			return this.marketplaceURL ? this.marketplaceURL + '\n': '\n'
-		}
+			return this.marketplaceURL ? this.marketplaceURL + '\n' : '\n'
+		},
 	},
 }
 </script>
 
 <style>
-	.nft-image{
-		border:2px solid var(--mintBtnBgColor);
-	}
+.nft-image {
+	border: 2px solid var(--mintBtnBgColor);
+}
 </style>

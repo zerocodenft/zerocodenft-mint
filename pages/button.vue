@@ -1,10 +1,11 @@
 <template>
-	<div
-		class="p-1 zc-background">
+	<div class="p-1 zc-background">
 		<Mint />
-		<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden" class="mt-2">
-			Powered by Zero Code NFT
-		</PoweredByZeroCode>
+		<PoweredByBrand
+			v-if="!$siteConfig.smartContract.isAttributionHidden"
+			class="mt-2">
+			Powered by {{ $appConfig.companyName }}
+		</PoweredByBrand>
 	</div>
 </template>
 

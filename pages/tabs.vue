@@ -5,7 +5,7 @@
 			justified
 			active-nav-item-class="font-weight-bold">
 			<b-tab title="Mint" active class="tab px-3 pb-2 border-0">
-				<p class="text-center">{{$siteConfig.description}}</p>
+				<p class="text-center">{{ $siteConfig.description }}</p>
 				<Mint />
 			</b-tab>
 			<b-tab
@@ -16,15 +16,15 @@
 				<WhitelistCheck />
 			</b-tab>
 		</b-tabs>
-		<PoweredByZeroCode v-if="!$siteConfig.smartContract.isAttributionHidden">
-			Powered by Zero Code NFT
-		</PoweredByZeroCode>
+		<PoweredByBrand v-if="!$siteConfig.smartContract.isAttributionHidden">
+			Powered by {{ $appConfig.companyName }}
+		</PoweredByBrand>
 	</div>
 </template>
 
 <script>
 export default {
-    layout: 'no-headers',
+	layout: 'no-headers',
 }
 </script>
 
