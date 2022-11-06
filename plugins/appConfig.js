@@ -1,6 +1,21 @@
-export default async function ({ $axios }, inject) {
+// load tenant configuration
+
+export default async function ({ redirect, $cloudFns, $axios }, inject) {
+	let appConfigs = null
+
+	try {
+		const { data } = await $axios.get('/configs')
+		appConfigs = data
+	} catch (err1) {
+		try {
+			// fallback in case server is not working
+			const { data } = await $cloudFns.get('/appconfig')
+			appConfigs = data
+		} catch (err2) {
+			redirect('/error?type=missingConfig')
+		}
+	}
 	// Create a custom axios instance
-	const { data: appConfigs } = await $axios.get('/configs')
 
 	const appConfig = {
 		configs: appConfigs,
