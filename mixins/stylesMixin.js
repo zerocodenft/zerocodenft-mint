@@ -11,8 +11,10 @@ export default {
 		Object.entries(styles)
 			.filter(([_, v]) => v !== null)
 			.forEach(([k, v]) => {
-				if (k === 'pageBackground' && this.$appConfig.mintPageBackgroundImageURL) {
-					v = this.$appConfig.mintPageBackgroundImageURL
+				if (k === 'pageBackground') {
+					v =
+						this.$siteConfig.backgroundImageURL ??
+						this.$appConfig.mintPageBackgroundImageURL
 				}
 				if (typeof v === 'string' && v.startsWith('http')) {
 					v = `url('${v}')`
