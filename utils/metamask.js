@@ -176,7 +176,7 @@ export const SONGBIRD_MAINNET = {
 		symbol: 'SGB',
 		decimals: 18
 	},
-	rpcUrls: ['https://songbird.towolabs.com/rpc'],
+	rpcUrls: ['https://sgb.ftso.com.au/ext/bc/C/rpc	'],
 	blockExplorerUrls: ['https://songbird-explorer.flare.network'],
 }
 
